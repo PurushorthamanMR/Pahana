@@ -39,6 +39,28 @@ public class UserServlet extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
         
+        // If no action specified, default to list (load the page with data)
+        if (action == null || action.isEmpty()) {
+            action = "list";
+        }
+        
+        // Handle unauthenticated password reset actions first
+        if ("check-email-exists".equals(action) || "reset-password".equals(action) || "send-verification".equals(action)) {
+            switch (action) {
+                case "check-email-exists":
+                    handleCheckEmailExists(request, response);
+                    break;
+                case "send-verification":
+                    handleSendVerificationCode(request, response);
+                    break;
+                case "reset-password":
+                    handlePasswordReset(request, response);
+                    break;
+            }
+            return;
+        }
+        
+        // For other actions, require authentication
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login.jsp?error=Please login first.");
             return;
@@ -46,11 +68,6 @@ public class UserServlet extends HttpServlet {
 
         // Get current user's role
         String currentUserRole = (String) session.getAttribute("role");
-        
-        // If no action specified, default to list (load the page with data)
-        if (action == null || action.isEmpty()) {
-            action = "list";
-        }
         
         // Check role-based access
         if (!hasAccess(currentUserRole, action)) {
@@ -74,6 +91,13 @@ public class UserServlet extends HttpServlet {
             case "list":
                 handleListUsers(request, response, session);
                 break;
+            case "send-verification":
+                handleSendVerificationCode(request, response);
+                break;
+            case "verify-email":
+                handleVerifyEmailCode(request, response);
+                break;
+
             default:
                 response.sendRedirect("user.jsp?error=Invalid action.");
         }
@@ -109,6 +133,18 @@ public class UserServlet extends HttpServlet {
                 } else {
                     response.sendRedirect("user.jsp?error=You don't have permission to create users with this role.");
                 }
+                return;
+            }
+
+            // Check if username already exists in ANY table (customers or users)
+            if (facade.isUsernameExistsInAnyTable(username.trim())) {
+                response.sendRedirect("user.jsp?error=Username already exists in our system. Please use a different username.");
+                return;
+            }
+
+            // Check if email already exists in ANY table (customers or users)
+            if (facade.isEmailExistsInAnyTable(email.trim())) {
+                response.sendRedirect("user.jsp?error=Email already exists in our system. Please use a different email address.");
                 return;
             }
 
@@ -155,16 +191,31 @@ public class UserServlet extends HttpServlet {
     private void handleUpdateUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
         try {
+            System.out.println("=== USER UPDATE DEBUG ===");
+            System.out.println("Method called: handleUpdateUser");
+            
             int userId = Integer.parseInt(request.getParameter("user_id"));
             String username = request.getParameter("username");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             int roleId = Integer.parseInt(request.getParameter("role_id"));
+            
+            System.out.println("Parameters received:");
+            System.out.println("User ID: " + userId);
+            System.out.println("Username: " + username);
+            System.out.println("Email: " + email);
+            System.out.println("Password length: " + (password != null ? password.length() : 0));
+            System.out.println("Role ID: " + roleId);
 
             // Role-based validation
             String currentUserRole = (String) session.getAttribute("role");
             if (!canUpdateUser(currentUserRole, userId, roleId)) {
-                response.sendRedirect("user.jsp?error=You don't have permission to update this user.");
+                System.out.println("ERROR: Permission denied for role: " + currentUserRole);
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, false, "You don't have permission to update this user.");
+                } else {
+                    response.sendRedirect("user.jsp?error=You don't have permission to update this user.");
+                }
                 return;
             }
 
@@ -178,19 +229,64 @@ public class UserServlet extends HttpServlet {
             user.setPassword(password);
             user.setRole(role);
 
+            System.out.println("Updating user with new values:");
+            System.out.println("New email: " + email);
+            System.out.println("New username: " + username);
+
             boolean success = facade.updateUser(user);
 
+            System.out.println("Update result: " + success);
+
             if (success) {
+                // Check if password was changed and send email if needed
+                if (password != null && !password.trim().isEmpty()) {
+                    try {
+                        System.out.println("Password was changed, sending email to: " + email);
+                        EmailService emailService = new EmailService();
+                        boolean emailSent = emailService.sendPasswordEmail(email, password);
+                        
+                        if (emailSent) {
+                            System.out.println("✓ Password email sent successfully to: " + email);
+                            eventManager.logEvent("Password email sent successfully to: " + email, "INFO");
+                        } else {
+                            System.out.println("✗ Failed to send password email to: " + email);
+                            eventManager.logEvent("Failed to send password email to: " + email, "ERROR");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR sending password email: " + e.getMessage());
+                        e.printStackTrace();
+                        eventManager.logEvent("Error sending password email: " + e.getMessage(), "ERROR");
+                    }
+                } else {
+                    System.out.println("No password change detected, skipping email");
+                }
+                
                 eventManager.logEvent("User updated successfully: " + username, "INFO");
-                response.sendRedirect("user.jsp?message=User updated successfully.");
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, true, "User updated successfully. " + 
+                        (password != null && !password.trim().isEmpty() ? "New password has been sent to the user's email." : ""));
+                } else {
+                    response.sendRedirect("user.jsp?message=User updated successfully." + 
+                        (password != null && !password.trim().isEmpty() ? " New password has been sent to the user's email." : ""));
+                }
             } else {
                 eventManager.logEvent("User update failed: " + username, "ERROR");
-                response.sendRedirect("user.jsp?error=Failed to update user.");
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, false, "Failed to update user.");
+                } else {
+                    response.sendRedirect("user.jsp?error=Failed to update user.");
+                }
             }
 
         } catch (Exception e) {
+            System.out.println("ERROR in handleUpdateUser: " + e.getMessage());
+            e.printStackTrace();
             eventManager.logEvent("User update error: " + e.getMessage(), "ERROR");
-            response.sendRedirect("user.jsp?error=Error updating user: " + e.getMessage());
+            if (isAjaxRequest(request)) {
+                sendAjaxResponse(response, false, "Error updating user: " + e.getMessage());
+            } else {
+                response.sendRedirect("user.jsp?error=Error updating user: " + e.getMessage());
+            }
         }
     }
 
@@ -412,6 +508,152 @@ public class UserServlet extends HttpServlet {
         processRequest(request, response);
     }
 
+    private void handleSendVerificationCode(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String context = request.getParameter("context"); // New parameter to distinguish context
+            
+            if (email == null || email.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email is required\"}");
+                return;
+            }
+            
+            // Create email service and send verification code
+            EmailService emailService = new EmailService();
+            String verificationCode = emailService.generateVerificationCode();
+            
+            // Store the code in session for verification (in production, use Redis or database)
+            HttpSession session = request.getSession();
+            session.setAttribute("verification_code_" + email, verificationCode);
+            session.setAttribute("verification_email", email);
+            
+            // Send email based on context
+            boolean emailSent;
+            if ("email-change".equals(context)) {
+                emailSent = emailService.sendEmailChangeVerificationEmail(email, verificationCode);
+            } else if ("forgot-password".equals(context)) {
+                emailSent = emailService.sendForgotPasswordVerificationEmail(email, verificationCode);
+            } else {
+                emailSent = emailService.sendVerificationEmail(email, verificationCode);
+            }
+            
+            if (emailSent) {
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Verification code sent to " + email + "\"}");
+            } else {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to send verification email\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    
+    private void handleVerifyEmailCode(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String code = request.getParameter("code");
+            
+            if (email == null || code == null || email.trim().isEmpty() || code.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email and verification code are required\"}");
+                return;
+            }
+            
+            // Get stored verification code from session
+            HttpSession session = request.getSession();
+            String storedCode = (String) session.getAttribute("verification_code_" + email);
+            String storedEmail = (String) session.getAttribute("verification_email");
+            
+            // Check if code matches and email is correct
+            boolean isValid = storedCode != null && storedCode.equals(code) && 
+                            storedEmail != null && storedEmail.equals(email);
+            
+            if (isValid) {
+                // Mark email as verified in session
+                session.setAttribute("email_verified_" + email, true);
+                // Remove the used code
+                session.removeAttribute("verification_code_" + email);
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Email verified successfully\"}");
+            } else {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Invalid verification code\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    
+
+
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String xRequestedWith = request.getHeader("X-Requested-With");
+        return "XMLHttpRequest".equals(xRequestedWith);
+    }
+    
+    private void sendAjaxResponse(HttpServletResponse response, boolean success, String message) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonResponse = "{\"success\": " + success + ", \"message\": \"" + message + "\"}";
+        response.getWriter().write(jsonResponse);
+    }
+    
+    private void handleCheckEmailExists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email is required\"}");
+                return;
+            }
+            
+            // Check if email exists in users table
+            boolean exists = facade.isUserEmailExists(email.trim());
+            
+            response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    
+    private void handlePasswordReset(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String newPassword = request.getParameter("newPassword");
+            
+            if (email == null || email.trim().isEmpty() || newPassword == null || newPassword.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email and new password are required\"}");
+                return;
+            }
+            
+            // Update user password
+            boolean success = facade.updateUserPassword(email.trim(), newPassword.trim());
+            
+            if (success) {
+                eventManager.logEvent("User password reset successfully: " + email, "INFO");
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Password reset successfully! You can now login with your new password.\"}");
+            } else {
+                eventManager.logEvent("User password reset failed: " + email, "ERROR");
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to reset password. Please try again.\"}");
+            }
+            
+        } catch (Exception e) {
+            eventManager.logEvent("User password reset error: " + e.getMessage(), "ERROR");
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    
     @Override
     public String getServletInfo() {
         return "User Management Servlet";

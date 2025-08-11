@@ -17,7 +17,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: #667eea;
                 min-height: 100vh;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 display: flex;
@@ -30,7 +30,7 @@
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                 overflow: hidden;
-                max-width: 900px;
+                max-width: 1200px;
                 width: 100%;
                 margin: 20px;
             }
@@ -46,17 +46,19 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
+                order: 1;
             }
 
             .illustration-section {
                 flex: 1;
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                background: #f8f9fa;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 padding: 40px;
                 text-align: center;
+                order: 2;
             }
 
             .form-title {
@@ -133,7 +135,7 @@
 
             .btn-login {
                 width: 100%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #667eea 0%, #5a4f8f 100%);
                 color: white;
                 border: none;
                 padding: 12px 20px;
@@ -194,24 +196,49 @@
                 color: #721c24;
             }
 
-            .form-toggle {
-                text-align: center;
-                margin-top: 20px;
-            }
 
-            .form-toggle a {
-                color: #667eea;
-                text-decoration: none;
+            
+            .badge {
+                padding: 0.5em 0.75em;
+                font-size: 0.75em;
                 font-weight: 600;
-                cursor: pointer;
+                border-radius: 0.375rem;
             }
-
-            .form-toggle a:hover {
-                color: #764ba2;
+            
+            .bg-secondary {
+                background-color: #6c757d !important;
+                color: white;
             }
-
-            .hidden {
-                display: none;
+            
+            .bg-warning {
+                background-color: #ffc107 !important;
+                color: #212529;
+            }
+            
+            .bg-info {
+                background-color: #0dcaf0 !important;
+                color: white;
+            }
+            
+            .bg-success {
+                background-color: #198754 !important;
+                color: white;
+            }
+            
+            .bg-danger {
+                background-color: #dc3545 !important;
+                color: white;
+            }
+            
+            .spinner-border-sm {
+                width: 1rem;
+                height: 1rem;
+            }
+            
+            .form-text {
+                font-size: 0.875em;
+                color: #6c757d;
+                margin-top: 0.25rem;
             }
 
             @media (max-width: 768px) {
@@ -252,7 +279,7 @@
                         <% }%>
 
                         <h1 class="form-title">Log In</h1>
-                        <p class="form-subtitle">Welcome back to BookShop</p>
+                        <p class="form-subtitle">Welcome back to Pahana</p>
 
                         <form action="LoginServlet" method="post">
                             <input type="hidden" name="action" value="login">
@@ -270,69 +297,18 @@
                                         <i class="bi bi-eye-slash" id="password-toggle-icon"></i>
                                     </button>
                                 </div>
+                                <div class="text-end mt-2">
+                                    <a href="forgotpassword.jsp" class="text-decoration-none" style="color: #667eea; font-size: 0.9rem;">
+                                        <i class="bi bi-question-circle me-1"></i>Forgot Password?
+                                    </a>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn-login">Log In</button>
                         </form>
 
                         <div class="register-link">
-                            Don't have an account? <a href="#" onclick="showRegisterForm()">Register</a>
-                        </div>
-                    </div>
-
-                    <!-- Registration Form -->
-                    <div id="registerForm" class="hidden">
-                        <h1 class="form-title">Create Account</h1>
-                        <p class="form-subtitle">Join our community today</p>
-
-                        <form action="CustomerServlet" method="post">
-                            <input type="hidden" name="action" value="register">
-                            
-                            <div class="form-group">
-                                <label for="regName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="regName" name="name" placeholder="Enter your full name" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="regPhone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="regPhone" name="phone" placeholder="Enter your phone number" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="regAddress" class="form-label">Address</label>
-                                <textarea class="form-control" id="regAddress" name="address" rows="3" placeholder="Enter your address" required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="regUsername" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="regUsername" name="username" placeholder="Enter your username" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="regEmail" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="regEmail" name="email" placeholder="Enter your email" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="regPassword" class="form-label">Password</label>
-                                <div class="password-container">
-                                    <input type="password" class="form-control" id="regPassword" name="password" placeholder="Create a password" required>
-                                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('regPassword')">
-                                        <i class="bi bi-eye-slash" id="reg-password-toggle-icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="alert alert-info" style="font-size: 0.9rem; margin-bottom: 20px;">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <strong>Note:</strong> Account number will be automatically generated when you register.
-                            </div>
-
-                            <button type="submit" class="btn-login">Create Account</button>
-                        </form>
-
-                        <div class="form-toggle">
-                            <a href="#" onclick="showLoginForm()">Already have an account? Log in</a>
+                            Don't have an account? <a href="register.jsp">Register</a>
                         </div>
                     </div>
                 </div>
@@ -340,9 +316,9 @@
                 <!-- Illustration Section -->
                 <div class="illustration-section">
                     <div class="illustration-image">
-                        <img src="IMG/login.jpg" alt="BookShop Welcome">
+                        <img src="IMG/login.jpg" alt="Pahana Welcome">
                     </div>
-                    <h3 style="color: #333; margin-bottom: 10px;">Welcome to BookShop</h3>
+                    <h3 style="color: #333; margin-bottom: 10px;">Welcome to Pahana</h3>
                     <p style="color: #666; font-size: 0.9rem;">Discover your next favorite book from our vast collection of titles.</p>
                 </div>
             </div>
@@ -353,25 +329,9 @@
 
         <!-- Custom JavaScript -->
         <script>
-            function showLoginForm() {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
-            }
-
-            function showRegisterForm() {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-            }
-
             function togglePasswordVisibility(inputId) {
                 const input = document.getElementById(inputId);
-                let icon;
-                
-                if (inputId === 'regPassword') {
-                    icon = document.getElementById('reg-password-toggle-icon');
-                } else {
-                    icon = document.getElementById(inputId + '-toggle-icon');
-                }
+                const icon = document.getElementById(inputId + '-toggle-icon');
                 
                 if (input.type === 'password') {
                     input.type = 'text';

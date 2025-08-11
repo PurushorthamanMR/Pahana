@@ -13,7 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BookShop - Edit Customer</title>
+        <title>Pahana - Edit Customer</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
@@ -343,6 +343,24 @@
                     max-width: 100%;
                 }
             }
+            
+            /* Email verification styles */
+            #emailVerificationSection {
+                margin-top: 10px;
+                padding: 15px;
+                border: 1px solid #dee2e6;
+                border-radius: 6px;
+                background-color: #f8f9fa;
+            }
+            
+            #verificationPin {
+                max-width: 200px;
+            }
+            
+            .badge {
+                font-size: 0.75em;
+                padding: 0.5em 0.75em;
+            }
         </style>
     </head>
     <body>
@@ -483,7 +501,7 @@
                     <% } %>
 
                     <% if (customer != null) { %>
-                        <form method="POST" action="customer_edit.jsp">
+                        <form id="customerEditForm">
                             <input type="hidden" name="customerId" value="<%= customer.getCustomerId() %>">
                             
                             <div class="row">
@@ -526,7 +544,24 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" name="email" value="<%= customer.getEmail() != null ? customer.getEmail() : "" %>">
+                                        <div class="input-group">
+                                            <input type="email" class="form-control" id="customerEmail" name="email" value="<%= customer.getEmail() != null ? customer.getEmail() : "" %>" onchange="checkEmailChanged()">
+                                            <button type="button" class="btn btn-outline-primary" id="sendVerificationBtn" onclick="sendVerificationCode()" style="display: none;">
+                                                <i class="bi bi-envelope"></i>
+                                            </button>
+                                        </div>
+                                        <div id="emailVerificationSection" style="display: none;">
+                                            <div class="input-group mt-2">
+                                                <input type="text" class="form-control" id="verificationPin" placeholder="Enter 6-digit verification code" maxlength="6">
+                                                <button type="button" class="btn btn-outline-success" id="verifyPinBtn" onclick="verifyPin()">
+                                                    <i class="bi bi-check-circle"></i> Verify
+                                                </button>
+                                            </div>
+                                            <div class="mt-2">
+                                                <span id="emailStatus" class="badge bg-secondary">Pending Verification</span>
+                                                <span id="verificationSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -592,9 +627,158 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
+            let emailVerified = false;
+            let originalEmail = '<%= customer != null && customer.getEmail() != null ? customer.getEmail() : "" %>';
+            
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
+            }
+            
+            function checkEmailChanged() {
+                const emailInput = document.getElementById('customerEmail');
+                const sendVerificationBtn = document.getElementById('sendVerificationBtn');
+                const emailVerificationSection = document.getElementById('emailVerificationSection');
+                const emailStatus = document.getElementById('emailStatus');
+                
+                const currentEmail = emailInput.value.trim();
+                
+                if (currentEmail !== originalEmail && currentEmail !== '') {
+                    // Email has changed, show verification button
+                    sendVerificationBtn.style.display = 'inline-block';
+                    emailVerificationSection.style.display = 'block';
+                    emailStatus.textContent = 'Email Changed - Verification Required';
+                    emailStatus.className = 'badge bg-warning';
+                    emailVerified = false;
+                    showSuccessMessage('Email changed. Please verify the new email address.');
+                } else if (currentEmail === originalEmail) {
+                    // Email is back to original, hide verification
+                    sendVerificationBtn.style.display = 'none';
+                    emailVerificationSection.style.display = 'none';
+                    emailStatus.textContent = 'Pending Verification';
+                    emailStatus.className = 'badge bg-secondary';
+                    emailVerified = false;
+                }
+            }
+            
+            function sendVerificationCode() {
+                const email = document.getElementById('customerEmail').value.trim();
+                if (!email) {
+                    showErrorMessage('Please enter an email address first.');
+                    return;
+                }
+                
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('sendVerificationBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Sending...';
+                document.getElementById('emailStatus').className = 'badge bg-info';
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=send-verification', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('sendVerificationBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    document.getElementById('emailStatus').textContent = 'Code Sent';
+                                    document.getElementById('emailStatus').className = 'badge bg-info';
+                                    document.getElementById('verificationPin').focus();
+                                } else {
+                                    document.getElementById('emailStatus').textContent = 'Failed';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                    showErrorMessage(response.message);
+                                }
+                            } catch (e) {
+                                document.getElementById('emailStatus').textContent = 'Code Sent';
+                                document.getElementById('emailStatus').className = 'badge bg-info';
+                                document.getElementById('verificationPin').focus();
+                            }
+                        } else {
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                            showErrorMessage('Failed to send verification code. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    document.getElementById('verificationSpinner').style.display = 'none';
+                    document.getElementById('sendVerificationBtn').disabled = false;
+                    document.getElementById('emailStatus').textContent = 'Failed';
+                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email) + '&context=email-change');
+            }
+            
+            function verifyPin() {
+                const email = document.getElementById('customerEmail').value.trim();
+                const pin = document.getElementById('verificationPin').value.trim();
+                
+                if (!email || !pin) {
+                    showErrorMessage('Please enter both email and verification code.');
+                    return;
+                }
+                
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('verifyPinBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Verifying...';
+                document.getElementById('emailStatus').className = 'badge bg-warning';
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=verify-email', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('verifyPinBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    document.getElementById('emailStatus').textContent = 'Verified';
+                                    document.getElementById('emailStatus').className = 'badge bg-success';
+                                    emailVerified = true;
+                                    showSuccessMessage('Email verified successfully! You can now update the customer.');
+                                } else {
+                                    document.getElementById('emailStatus').textContent = 'Invalid Code';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                    showErrorMessage(response.message);
+                                }
+                            } catch (e) {
+                                document.getElementById('emailStatus').textContent = 'Verified';
+                                document.getElementById('emailStatus').className = 'badge bg-success';
+                                emailVerified = true;
+                                alert('Email verified successfully! You can now update the customer.');
+                            }
+                        } else {
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                            showErrorMessage('Failed to verify code. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    document.getElementById('verificationSpinner').style.display = 'none';
+                    document.getElementById('verifyPinBtn').disabled = false;
+                    document.getElementById('emailStatus').textContent = 'Failed';
+                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
             }
 
             // Close sidebar when clicking outside on mobile
@@ -616,21 +800,159 @@
                     form.addEventListener('submit', function(e) {
                         const name = document.querySelector('input[name="name"]').value.trim();
                         const phone = document.querySelector('input[name="phone"]').value.trim();
+                        const email = document.getElementById('customerEmail').value.trim();
                         
                         if (!name) {
                             e.preventDefault();
-                            alert('Customer name is required');
+                            showErrorMessage('Customer name is required');
                             return false;
                         }
                         
                         if (!phone) {
                             e.preventDefault();
-                            alert('Phone number is required');
+                            showErrorMessage('Phone number is required');
                             return false;
                         }
+                        
+                        // Check if email has changed and requires verification
+                        if (email !== originalEmail && !emailVerified) {
+                            e.preventDefault();
+                            showErrorMessage('Please verify the new email address before updating the customer.');
+                            return false;
+                        }
+                        
+                        // If email verification is not required or is completed, submit via AJAX
+                        e.preventDefault();
+                        submitCustomerUpdate();
                     });
                 }
             });
+            
+            function submitCustomerUpdate() {
+                console.log('=== SUBMIT CUSTOMER UPDATE DEBUG ===');
+                
+                const formData = new FormData(document.getElementById('customerEditForm'));
+                const customerId = formData.get('customerId');
+                const name = formData.get('name');
+                const phone = formData.get('phone');
+                const address = formData.get('address');
+                const username = formData.get('username');
+                const email = formData.get('email');
+                
+                console.log('Form data collected:');
+                console.log('Customer ID:', customerId);
+                console.log('Name:', name);
+                console.log('Phone:', phone);
+                console.log('Address:', address);
+                console.log('Username:', username);
+                console.log('Email:', email);
+                
+                // Get account number from readonly field
+                const accountNumberField = document.querySelector('input[readonly]');
+                const accountNumber = accountNumberField ? accountNumberField.value : '';
+                console.log('Account Number:', accountNumber);
+                
+                // Create the request data
+                const data = 'customer_id=' + encodeURIComponent(customerId) +
+                           '&account_number=' + encodeURIComponent(accountNumber) +
+                           '&name=' + encodeURIComponent(name) +
+                           '&phone=' + encodeURIComponent(phone) +
+                           '&address=' + encodeURIComponent(address) +
+                           '&username=' + encodeURIComponent(username) +
+                           '&email=' + encodeURIComponent(email);
+                
+                console.log('Request data:', data);
+                console.log('Sending to: CustomerServlet?action=update');
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=update', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    console.log('AJAX response state:', xhr.readyState, 'Status:', xhr.status);
+                    
+                    if (xhr.readyState === 4) {
+                        console.log('Response received:');
+                        console.log('Status:', xhr.status);
+                        console.log('Response text:', xhr.responseText);
+                        
+                        if (xhr.status === 200) {
+                            console.log('Success response received');
+                            // Show success message on the same page
+                            showSuccessMessage('Customer updated successfully!');
+                            
+                            // Reset email verification status
+                            emailVerified = false;
+                            originalEmail = document.getElementById('customerEmail').value.trim();
+                            
+                            // Hide verification section
+                            document.getElementById('emailVerificationSection').style.display = 'none';
+                            document.getElementById('sendVerificationBtn').style.display = 'none';
+                        } else {
+                            console.log('Error response received');
+                            showErrorMessage('Failed to update customer. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    console.log('AJAX network error occurred');
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send(data);
+            }
+            
+            function showSuccessMessage(message) {
+                // Remove any existing messages
+                removeMessages();
+                
+                // Create success message
+                const successDiv = document.createElement('div');
+                successDiv.className = 'alert alert-success alert-dismissible fade show';
+                successDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + message + 
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                
+                // Insert at the top of the content card
+                const contentCard = document.querySelector('.content-card');
+                contentCard.insertBefore(successDiv, contentCard.firstChild);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.remove();
+                    }
+                }, 5000);
+            }
+            
+            function showErrorMessage(message) {
+                // Remove any existing messages
+                removeMessages();
+                
+                // Create error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger alert-dismissible fade show';
+                errorDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + message + 
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                
+                // Insert at the top of the content card
+                const contentCard = document.querySelector('.content-card');
+                contentCard.insertBefore(errorDiv, contentCard.firstChild);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 5000);
+            }
+            
+            function removeMessages() {
+                // Remove any existing alert messages
+                const existingAlerts = document.querySelectorAll('.alert');
+                existingAlerts.forEach(alert => alert.remove());
+            }
         </script>
     </body>
 </html> 

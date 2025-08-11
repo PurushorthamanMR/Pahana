@@ -45,9 +45,34 @@ public class CustomerServlet extends HttpServlet {
             action = "list";
         }
 
-        // Handle customer registration (no authentication required)
+        // Handle customer registration and email verification (no authentication required)
         if ("register".equals(action)) {
             handleCustomerRegistration(request, response);
+            return;
+        }
+        
+        if ("send-verification".equals(action)) {
+            handleSendVerificationCode(request, response);
+            return;
+        }
+        
+        if ("verify-email".equals(action)) {
+            handleVerifyEmailCode(request, response);
+            return;
+        }
+        
+        if ("check-email-exists".equals(action)) {
+            handleCheckEmailExists(request, response);
+            return;
+        }
+        
+        if ("check-phone-exists".equals(action)) {
+            handleCheckPhoneExists(request, response);
+            return;
+        }
+        
+        if ("reset-password".equals(action)) {
+            handlePasswordReset(request, response);
             return;
         }
         
@@ -72,6 +97,15 @@ public class CustomerServlet extends HttpServlet {
                 break;
             case "list":
                 handleListCustomers(request, response, session);
+                break;
+            case "send-verification":
+                handleSendVerificationCode(request, response);
+                break;
+            case "verify-email":
+                handleVerifyEmailCode(request, response);
+                break;
+            case "check-email-exists":
+                handleCheckEmailExists(request, response);
                 break;
             default:
                 response.sendRedirect("customer.jsp?error=Invalid action.");
@@ -102,15 +136,21 @@ public class CustomerServlet extends HttpServlet {
             // Generate unique account number
             String accountNumber = facade.generateUniqueAccountNumber();
 
-            // Check if username already exists
-            if (facade.isUsernameExists(username.trim())) {
-                response.sendRedirect("login.jsp?error=Username already exists.");
+            // Check if username already exists in ANY table (customers or users)
+            if (facade.isUsernameExistsInAnyTable(username.trim())) {
+                response.sendRedirect("login.jsp?error=Username already exists in our system. Please use a different username.");
                 return;
             }
 
-            // Check if email already exists
-            if (facade.isEmailExists(email.trim())) {
-                response.sendRedirect("login.jsp?error=Email already exists.");
+            // Check if email already exists in ANY table (customers or users)
+            if (facade.isEmailExistsInAnyTable(email.trim())) {
+                response.sendRedirect("login.jsp?error=Email already exists in our system. Please use a different email address.");
+                return;
+            }
+
+            // Check if phone number already exists in customers table
+            if (facade.isPhoneNumberExists(phone.trim())) {
+                response.sendRedirect("login.jsp?error=Phone number already exists in our system. Please use a different phone number.");
                 return;
             }
 
@@ -175,15 +215,21 @@ public class CustomerServlet extends HttpServlet {
             // Generate unique account number
             String accountNumber = facade.generateUniqueAccountNumber();
 
-            // Check if username already exists
-            if (facade.isUsernameExists(username.trim())) {
-                response.sendRedirect("customer.jsp?error=Username already exists.");
+            // Check if username already exists in ANY table (customers or users)
+            if (facade.isUsernameExistsInAnyTable(username.trim())) {
+                response.sendRedirect("customer.jsp?error=Username already exists in our system. Please use a different username.");
                 return;
             }
 
-            // Check if email already exists
-            if (facade.isEmailExists(email.trim())) {
-                response.sendRedirect("customer.jsp?error=Email already exists.");
+            // Check if email already exists in ANY table (customers or users)
+            if (facade.isEmailExistsInAnyTable(email.trim())) {
+                response.sendRedirect("customer.jsp?error=Email already exists in our system. Please use a different email address.");
+                return;
+            }
+
+            // Check if phone number already exists in customers table
+            if (facade.isPhoneNumberExists(phone.trim())) {
+                response.sendRedirect("customer.jsp?error=Phone number already exists in our system. Please use a different phone number.");
                 return;
             }
 
@@ -223,15 +269,34 @@ public class CustomerServlet extends HttpServlet {
     private void handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
         try {
+            System.out.println("=== CUSTOMER UPDATE DEBUG ===");
+            System.out.println("Method called: handleUpdateCustomer");
+            
             int customerId = Integer.parseInt(request.getParameter("customer_id"));
             String accountNumber = request.getParameter("account_number");
             String name = request.getParameter("name");
             String address = request.getParameter("address");
             String phone = request.getParameter("phone");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            
+            System.out.println("Parameters received:");
+            System.out.println("Customer ID: " + customerId);
+            System.out.println("Account Number: " + accountNumber);
+            System.out.println("Name: " + name);
+            System.out.println("Address: " + address);
+            System.out.println("Phone: " + phone);
+            System.out.println("Username: " + username);
+            System.out.println("Email: " + email);
 
             Customer customer = facade.getCustomerById(customerId);
             if (customer == null) {
-                response.sendRedirect("customer.jsp?error=Customer not found.");
+                System.out.println("ERROR: Customer not found with ID: " + customerId);
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, false, "Customer not found.");
+                } else {
+                    response.sendRedirect("customer.jsp?error=Customer not found.");
+                }
                 return;
             }
 
@@ -239,20 +304,42 @@ public class CustomerServlet extends HttpServlet {
             customer.setName(name);
             customer.setAddress(address);
             customer.setPhone(phone);
+            customer.setUsername(username);
+            customer.setEmail(email);
+
+            System.out.println("Updating customer with new values:");
+            System.out.println("New email: " + email);
+            System.out.println("New username: " + username);
 
             boolean success = facade.updateCustomer(customer);
 
+            System.out.println("Update result: " + success);
+
             if (success) {
                 eventManager.logEvent("Customer updated successfully: " + accountNumber, "INFO");
-                response.sendRedirect("customer.jsp?message=Customer updated successfully.");
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, true, "Customer updated successfully.");
+                } else {
+                    response.sendRedirect("customer.jsp?message=Customer updated successfully.");
+                }
             } else {
                 eventManager.logEvent("Customer update failed: " + accountNumber, "ERROR");
-                response.sendRedirect("customer.jsp?error=Failed to update customer.");
+                if (isAjaxRequest(request)) {
+                    sendAjaxResponse(response, false, "Failed to update customer.");
+                } else {
+                    response.sendRedirect("customer.jsp?error=Failed to update customer.");
+                }
             }
 
         } catch (Exception e) {
+            System.out.println("ERROR in handleUpdateCustomer: " + e.getMessage());
+            e.printStackTrace();
             eventManager.logEvent("Customer update error: " + e.getMessage(), "ERROR");
-            response.sendRedirect("customer.jsp?error=Error updating customer: " + e.getMessage());
+            if (isAjaxRequest(request)) {
+                sendAjaxResponse(response, false, "Error updating customer: " + e.getMessage());
+            } else {
+                response.sendRedirect("customer.jsp?error=Error updating customer: " + e.getMessage());
+            }
         }
     }
 
@@ -375,6 +462,260 @@ public class CustomerServlet extends HttpServlet {
         processRequest(request, response);
     }
 
+    private void handleSendVerificationCode(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String context = request.getParameter("context"); // New parameter to distinguish context
+            
+            if (email == null || email.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email is required\"}");
+                return;
+            }
+            
+            // Create email service and send verification code
+            EmailService emailService = new EmailService();
+            String verificationCode = emailService.generateVerificationCode();
+            
+            // Store the code in session for verification (in production, use Redis or database)
+            HttpSession session = request.getSession();
+            session.setAttribute("verification_code_" + email, verificationCode);
+            session.setAttribute("verification_email", email);
+            
+            System.out.println("=== SEND VERIFICATION DEBUG ===");
+            System.out.println("Session ID: " + session.getId());
+            System.out.println("Email: " + email);
+            System.out.println("Context: " + context);
+            System.out.println("Verification code: " + verificationCode);
+            System.out.println("Session attributes set:");
+            System.out.println("  verification_code_" + email + " = " + verificationCode);
+            System.out.println("  verification_email = " + email);
+            System.out.println("===============================");
+            
+            // Send email based on context
+            boolean emailSent;
+            if ("forgot-password".equals(context)) {
+                emailSent = emailService.sendForgotPasswordVerificationEmail(email, verificationCode);
+            } else if ("email-change".equals(context)) {
+                emailSent = emailService.sendEmailChangeVerificationEmail(email, verificationCode);
+            } else {
+                emailSent = emailService.sendVerificationEmail(email, verificationCode);
+            }
+            
+            if (emailSent) {
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Verification code sent to " + email + "\"}");
+            } else {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to send verification email\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    
+    private void handleVerifyEmailCode(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String code = request.getParameter("code");
+            
+            if (email == null || code == null || email.trim().isEmpty() || code.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email and verification code are required\"}");
+                return;
+            }
+            
+            // Get stored verification code from session
+            HttpSession session = request.getSession();
+            String storedCode = (String) session.getAttribute("verification_code_" + email);
+            String storedEmail = (String) session.getAttribute("verification_email");
+            
+            System.out.println("=== VERIFICATION DEBUG ===");
+            System.out.println("Session ID: " + session.getId());
+            System.out.println("Email to verify: " + email);
+            System.out.println("Stored code: " + storedCode);
+            System.out.println("Stored email: " + storedEmail);
+            System.out.println("Code matches: " + (storedCode != null && storedCode.equals(code)));
+            System.out.println("Email matches: " + (storedEmail != null && storedEmail.equals(email)));
+            System.out.println("=========================");
+            
+            // Check if code matches and email is correct
+            boolean isValid = storedCode != null && storedCode.equals(code) && 
+                            storedEmail != null && storedEmail.equals(email);
+            
+            if (isValid) {
+                // Mark email as verified in session
+                session.setAttribute("email_verified_" + email, true);
+                // Remove the used code
+                session.removeAttribute("verification_code_" + email);
+                
+                System.out.println("=== EMAIL VERIFICATION SUCCESS ===");
+                System.out.println("Email verified: " + email);
+                System.out.println("Session attribute set: email_verified_" + email + " = true");
+                System.out.println("================================");
+                
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Email verified successfully\"}");
+            } else {
+                System.out.println("=== EMAIL VERIFICATION FAILED ===");
+                System.out.println("Email: " + email);
+                System.out.println("Stored code: " + storedCode);
+                System.out.println("Stored email: " + storedEmail);
+                System.out.println("================================");
+                
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Invalid verification code\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void handleCheckEmailExists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email is required\"}");
+                return;
+            }
+            
+            // Check if email exists in ANY table (customers or users)
+            boolean exists = facade.isEmailExistsForVerification(email.trim());
+            
+            response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void handleCheckPhoneExists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String phone = request.getParameter("phone");
+            
+            if (phone == null || phone.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Phone number is required\"}");
+                return;
+            }
+            
+            // Check if phone number exists in customers table
+            boolean exists = facade.isPhoneNumberExists(phone.trim());
+            
+            response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void handlePasswordReset(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        System.out.println("=== PASSWORD RESET METHOD CALLED ===");
+        System.out.println("Method: " + request.getMethod());
+        System.out.println("Request URI: " + request.getRequestURI());
+        System.out.println("Query string: " + request.getQueryString());
+        System.out.println("=====================================");
+        
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String email = request.getParameter("email");
+            String newPassword = request.getParameter("newPassword");
+            
+            if (email == null || newPassword == null || email.trim().isEmpty() || newPassword.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email and new password are required\"}");
+                return;
+            }
+            
+            // Get session to check if email was verified
+            HttpSession session = request.getSession();
+            Boolean emailVerified = (Boolean) session.getAttribute("email_verified_" + email);
+            
+            System.out.println("=== PASSWORD RESET VERIFICATION CHECK ===");
+            System.out.println("Session ID: " + session.getId());
+            System.out.println("Email requesting password reset: " + email);
+            System.out.println("Verification status: " + emailVerified);
+            System.out.println("=========================================");
+            
+            if (emailVerified == null || !emailVerified) {
+                System.out.println("ACCESS DENIED: Email " + email + " not verified!");
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Email must be verified before password reset\"}");
+                return;
+            }
+            
+            System.out.println("ACCESS GRANTED: Email " + email + " verified, proceeding with password reset");
+            
+            // Debug logging
+            System.out.println("=== SERVLET DEBUG ===");
+            System.out.println("Email received: " + email);
+            System.out.println("New password received: " + newPassword);
+            
+            // Check session verification status
+            System.out.println("Email verification status for " + email + ": " + emailVerified);
+            
+            // Check what emails are verified in session
+            System.out.println("=== SESSION VERIFICATION STATUS ===");
+            java.util.Enumeration<String> sessionKeys = session.getAttributeNames();
+            while (sessionKeys.hasMoreElements()) {
+                String key = sessionKeys.nextElement();
+                if (key.startsWith("email_verified_")) {
+                    System.out.println("Session key: " + key + " = " + session.getAttribute(key));
+                }
+            }
+            System.out.println("==================================");
+            System.out.println("====================");
+            
+            // Also check if this specific email is verified
+            System.out.println("=== SPECIFIC EMAIL VERIFICATION CHECK ===");
+            System.out.println("Looking for session attribute: email_verified_" + email);
+            System.out.println("Value found: " + session.getAttribute("email_verified_" + email));
+            System.out.println("==========================================");
+            
+            // Update the password in the database
+            boolean passwordUpdated = facade.updateCustomerPassword(email, newPassword);
+            
+            System.out.println("=== UPDATE RESULT ===");
+            System.out.println("Password update result: " + passwordUpdated);
+            System.out.println("=====================");
+            
+            if (passwordUpdated) {
+                // Log successful password reset
+                eventManager.logEvent("Password reset successful for email: " + email, "INFO");
+                // Clear the verification status
+                session.removeAttribute("email_verified_" + email);
+                response.getWriter().write("{\"status\":\"success\",\"message\":\"Password reset successfully\"}");
+            } else {
+                // Log failed password reset
+                eventManager.logEvent("Password reset failed for email: " + email, "ERROR");
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to update password in database\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String xRequestedWith = request.getHeader("X-Requested-With");
+        return "XMLHttpRequest".equals(xRequestedWith);
+    }
+    
+    private void sendAjaxResponse(HttpServletResponse response, boolean success, String message) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonResponse = "{\"success\": " + success + ", \"message\": \"" + message + "\"}";
+        response.getWriter().write(jsonResponse);
+    }
+    
     @Override
     public String getServletInfo() {
         return "Customer Management Servlet";

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/Pahana_BookStore"><Resource name="jdbc/pahana_BookStore" 
+<Context path="/Pahana_BookStore"><Resource name="jdbc/booking" 
               auth="Container" 
               type="javax.sql.DataSource"
               maxTotal="20" 

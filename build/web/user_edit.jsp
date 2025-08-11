@@ -12,7 +12,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BookShop - Edit User</title>
+        <title>Pahana - Edit User</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
@@ -290,6 +290,53 @@
                     align-self: flex-end;
                 }
             }
+            
+            /* Email verification styles */
+            #emailVerificationSection {
+                margin-top: 10px;
+                padding: 15px;
+                border: 1px solid #dee2e6;
+                border-radius: 6px;
+                background-color: #f8f9fa;
+            }
+            
+            #verificationPin {
+                max-width: 200px;
+            }
+            
+            .badge {
+                font-size: 0.75em;
+                padding: 0.5em 0.75em;
+            }
+            
+            /* Loading overlay styles */
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            
+            .loading-content {
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 90%;
+            }
+            
+            .loading-content .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
         </style>
     </head>
     <body>
@@ -323,7 +370,7 @@
             <div class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <a href="dashboard.jsp" class="logo">
-                        <i class="bi bi-book"></i> BookShop
+                        <i class="bi bi-book"></i> Pahana
                     </a>
                 </div>
                 
@@ -435,7 +482,7 @@
                         <span><i class="bi bi-person-edit me-2"></i>Edit User Information</span>
                     </h3>
                     
-                    <form action="UserServlet?action=update" method="post">
+                    <form id="userEditForm">
                         <input type="hidden" name="user_id" value="<%= userToEdit.getUserId() %>">
                         
                         <div class="row">
@@ -449,8 +496,25 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="email" name="email" 
-                                           value="<%= userToEdit.getEmail() %>" required>
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" id="userEmail" name="email" 
+                                               value="<%= userToEdit.getEmail() %>" onchange="checkEmailChanged()" required>
+                                        <button type="button" class="btn btn-outline-primary" id="sendVerificationBtn" onclick="sendVerificationCode()" style="display: none;">
+                                            <i class="bi bi-envelope"></i>
+                                        </button>
+                                    </div>
+                                    <div id="emailVerificationSection" style="display: none;">
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" id="verificationPin" placeholder="Enter 6-digit verification code" maxlength="6">
+                                            <button type="button" class="btn btn-outline-success" id="verifyPinBtn" onclick="verifyPin()">
+                                                <i class="bi bi-check-circle"></i> Verify
+                                            </button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <span id="emailStatus" class="badge bg-secondary">Pending Verification</span>
+                                            <span id="verificationSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -461,7 +525,7 @@
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="password" name="password" 
                                            placeholder="Leave blank to keep current password">
-                                    <small class="form-text text-muted">Leave blank to keep the current password</small>
+                                    <small class="form-text text-muted">Leave blank to keep the current password. If changed, the new password will be sent to the user's email.</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -497,14 +561,25 @@
                         </div>
                         
                         <div class="text-end">
-                            <a href="user.jsp" class="btn btn-secondary me-2">
+                            <a href="UserServlet?action=list" class="btn btn-secondary me-2">
                                 <i class="bi bi-arrow-left me-2"></i>Back to Users
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="updateUserBtn">
                                 <i class="bi bi-check-circle me-2"></i>Update User
                             </button>
                         </div>
                     </form>
+                    
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+                        <div class="loading-content">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="text-primary mb-2">Updating User...</h5>
+                            <p class="text-muted mb-0" id="loadingMessage">Please wait while we update the user information.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -513,6 +588,9 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
+            let emailVerified = false;
+            let originalEmail = '<%= userToEdit != null && userToEdit.getEmail() != null ? userToEdit.getEmail() : "" %>';
+            
             // Toggle sidebar on mobile
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
@@ -530,6 +608,352 @@
                     }
                 }
             });
+            
+            function checkEmailChanged() {
+                const emailInput = document.getElementById('userEmail');
+                const sendVerificationBtn = document.getElementById('sendVerificationBtn');
+                const emailVerificationSection = document.getElementById('emailVerificationSection');
+                const emailStatus = document.getElementById('emailStatus');
+                
+                const currentEmail = emailInput.value.trim();
+                
+                if (currentEmail !== originalEmail && currentEmail !== '') {
+                    // Email has changed, show verification button
+                    sendVerificationBtn.style.display = 'inline-block';
+                    emailVerificationSection.style.display = 'block';
+                    emailStatus.textContent = 'Email Changed - Verification Required';
+                    emailStatus.className = 'badge bg-warning';
+                    emailVerified = false;
+                    showSuccessMessage('Email changed. Please verify the new email address.');
+                } else if (currentEmail === originalEmail) {
+                    // Email is back to original, hide verification
+                    sendVerificationBtn.style.display = 'none';
+                    emailVerificationSection.style.display = 'none';
+                    emailStatus.textContent = 'Pending Verification';
+                    emailStatus.className = 'badge bg-secondary';
+                    emailVerified = false;
+                }
+            }
+            
+            function sendVerificationCode() {
+                const email = document.getElementById('userEmail').value.trim();
+                if (!email) {
+                    showErrorMessage('Please enter an email address first.');
+                    return;
+                }
+                
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('sendVerificationBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Sending...';
+                document.getElementById('emailStatus').className = 'badge bg-info';
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=send-verification', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('sendVerificationBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    document.getElementById('emailStatus').textContent = 'Code Sent';
+                                    document.getElementById('emailStatus').className = 'badge bg-info';
+                                    document.getElementById('verificationPin').focus();
+                                } else {
+                                    document.getElementById('emailStatus').textContent = 'Failed';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                    showErrorMessage(response.message);
+                                }
+                            } catch (e) {
+                                document.getElementById('emailStatus').textContent = 'Code Sent';
+                                document.getElementById('emailStatus').className = 'badge bg-info';
+                                document.getElementById('verificationPin').focus();
+                            }
+                        } else {
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                            showErrorMessage('Failed to send verification code. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    document.getElementById('verificationSpinner').style.display = 'none';
+                    document.getElementById('sendVerificationBtn').disabled = false;
+                    document.getElementById('emailStatus').textContent = 'Failed';
+                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email) + '&context=email-change');
+            }
+            
+            function verifyPin() {
+                const email = document.getElementById('userEmail').value.trim();
+                const pin = document.getElementById('verificationPin').value.trim();
+                
+                if (!email || !pin) {
+                    showErrorMessage('Please enter both email and verification code.');
+                    return;
+                }
+                
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('verifyPinBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Verifying...';
+                document.getElementById('emailStatus').className = 'badge bg-warning';
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=verify-email', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('verifyPinBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    document.getElementById('emailStatus').textContent = 'Verified';
+                                    document.getElementById('emailStatus').className = 'badge bg-success';
+                                    emailVerified = true;
+                                    showSuccessMessage('Email verified successfully! You can now update the user.');
+                                } else {
+                                    document.getElementById('emailStatus').textContent = 'Invalid Code';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                    showErrorMessage(response.message);
+                                }
+                            } catch (e) {
+                                document.getElementById('emailStatus').textContent = 'Verified';
+                                document.getElementById('emailStatus').className = 'badge bg-success';
+                                emailVerified = true;
+                                showSuccessMessage('Email verified successfully! You can now update the user.');
+                            }
+                        } else {
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                            showErrorMessage('Failed to verify code. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    document.getElementById('verificationSpinner').style.display = 'none';
+                    document.getElementById('verifyPinBtn').disabled = false;
+                    document.getElementById('emailStatus').textContent = 'Failed';
+                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
+            }
+            
+            // Form validation and submission
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('userEditForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        const username = document.querySelector('input[name="username"]').value.trim();
+                        const email = document.getElementById('userEmail').value.trim();
+                        const roleId = document.querySelector('select[name="role_id"]').value;
+                        
+                        if (!username) {
+                            showErrorMessage('Username is required.');
+                            return false;
+                        }
+                        
+                        if (!email) {
+                            showErrorMessage('Email is required.');
+                            return false;
+                        }
+                        
+                        if (!roleId) {
+                            showErrorMessage('User role is required.');
+                            return false;
+                        }
+                        
+                        // Check if email has changed and requires verification
+                        if (email !== originalEmail && !emailVerified) {
+                            showErrorMessage('Please verify the new email address before updating the user.');
+                            return false;
+                        }
+                        
+                        // If email verification is not required or is completed, submit via AJAX
+                        submitUserUpdate();
+                    });
+                }
+            });
+            
+            function submitUserUpdate() {
+                console.log('=== SUBMIT USER UPDATE DEBUG ===');
+                
+                const formData = new FormData(document.getElementById('userEditForm'));
+                const userId = formData.get('user_id');
+                const username = formData.get('username');
+                const email = formData.get('email');
+                const password = formData.get('password');
+                const roleId = formData.get('role_id');
+                
+                console.log('Form data collected:');
+                console.log('User ID:', userId);
+                console.log('Username:', username);
+                console.log('Email:', email);
+                console.log('Password length:', password ? password.length : 0);
+                console.log('Role ID:', roleId);
+                
+                // Show loading overlay with appropriate message
+                if (password && password.trim() !== '') {
+                    showLoadingOverlay('Updating user information and sending new password to email...');
+                } else {
+                    showLoadingOverlay('Updating user information...');
+                }
+                
+                // Create the request data
+                const data = 'user_id=' + encodeURIComponent(userId) +
+                           '&username=' + encodeURIComponent(username) +
+                           '&email=' + encodeURIComponent(email) +
+                           '&password=' + encodeURIComponent(password || '') +
+                           '&role_id=' + encodeURIComponent(roleId);
+                
+                console.log('Request data:', data);
+                console.log('Sending to: UserServlet?action=update');
+                
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=update', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    console.log('AJAX response state:', xhr.readyState, 'Status:', xhr.status);
+                    
+                    if (xhr.readyState === 4) {
+                        console.log('Response received:');
+                        console.log('Status:', xhr.status);
+                        console.log('Response text:', xhr.responseText);
+                        
+                        // Hide loading overlay
+                        hideLoadingOverlay();
+                        
+                        if (xhr.status === 200) {
+                            console.log('Success response received');
+                            // Show success message on the same page
+                            showSuccessMessage('User updated successfully!');
+                            
+                            // Reset email verification status
+                            emailVerified = false;
+                            originalEmail = document.getElementById('userEmail').value.trim();
+                            
+                            // Hide verification section
+                            document.getElementById('emailVerificationSection').style.display = 'none';
+                            document.getElementById('sendVerificationBtn').style.display = 'none';
+                        } else {
+                            console.log('Error response received');
+                            showErrorMessage('Failed to update user. Please try again.');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    console.log('AJAX network error occurred');
+                    hideLoadingOverlay();
+                    showErrorMessage('Network error occurred. Please try again.');
+                };
+                
+                xhr.send(data);
+            }
+            
+            function showSuccessMessage(message) {
+                // Remove any existing messages
+                removeMessages();
+                
+                // Create success message
+                const successDiv = document.createElement('div');
+                successDiv.className = 'alert alert-success alert-dismissible fade show';
+                successDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + message + 
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                
+                // Insert at the top of the content card
+                const contentCard = document.querySelector('.content-card');
+                contentCard.insertBefore(successDiv, contentCard.firstChild);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.remove();
+                    }
+                }, 5000);
+            }
+            
+            function showErrorMessage(message) {
+                // Remove any existing messages
+                removeMessages();
+                
+                // Create error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger alert-dismissible fade show';
+                errorDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + message + 
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                
+                // Insert at the top of the content card
+                contentCard.insertBefore(errorDiv, contentCard.firstChild);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 5000);
+            }
+            
+            function removeMessages() {
+                // Remove any existing alert messages
+                const existingAlerts = document.querySelectorAll('.alert');
+                existingAlerts.forEach(alert => alert.remove());
+            }
+            
+            function showLoadingOverlay(message) {
+                const overlay = document.getElementById('loadingOverlay');
+                const loadingMessage = document.getElementById('loadingMessage');
+                
+                if (loadingMessage) {
+                    loadingMessage.textContent = message || 'Please wait while we update the user information.';
+                }
+                
+                overlay.style.display = 'flex';
+                
+                // Disable the update button
+                const updateBtn = document.getElementById('updateUserBtn');
+                if (updateBtn) {
+                    updateBtn.disabled = true;
+                }
+            }
+            
+            function hideLoadingOverlay() {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = 'none';
+                
+                // Re-enable the update button
+                const updateBtn = document.getElementById('updateUserBtn');
+                if (updateBtn) {
+                    updateBtn.disabled = false;
+                }
+            }
+            
+            function updateLoadingMessage(message) {
+                const loadingMessage = document.getElementById('loadingMessage');
+                if (loadingMessage) {
+                    loadingMessage.textContent = message;
+                }
+            }
         </script>
     </body>
 </html> 

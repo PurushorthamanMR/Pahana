@@ -88,6 +88,9 @@ public class TransactionServlet extends HttpServlet {
             case "create":
                 handleCreateTransaction(request, response, session);
                 break;
+            case "send-bill-email":
+                handleSendBillEmail(request, response, session);
+                break;
             default:
                 response.sendRedirect("transaction.jsp?error=Invalid action.");
         }
@@ -97,8 +100,8 @@ public class TransactionServlet extends HttpServlet {
         if ("ADMIN".equals(currentUserRole)) {
             return true; // Admin has access to everything
         } else if ("MANAGER".equals(currentUserRole) || "CASHIER".equals(currentUserRole)) {
-            // Manager and Cashier can view and create transactions
-            return "view".equals(action) || "list".equals(action) || "create".equals(action);
+            // Manager and Cashier can view, create transactions, and send bill emails
+            return "view".equals(action) || "list".equals(action) || "create".equals(action) || "send-bill-email".equals(action);
         } else if ("CUSTOMER".equals(currentUserRole)) {
             // Customer can only view their own transactions
             return "view".equals(action) || "list".equals(action);
@@ -189,6 +192,7 @@ public class TransactionServlet extends HttpServlet {
                 responseData.append("\"transactionId\":").append(transaction.getTransactionId()).append(",");
                 responseData.append("\"transaction\":{");
                 responseData.append("\"transactionId\":").append(transaction.getTransactionId()).append(",");
+                responseData.append("\"customerId\":").append(customer.getCustomerId()).append(",");
                 responseData.append("\"customerName\":\"").append(customer.getName()).append("\",");
                 responseData.append("\"items\":[");
                 
@@ -358,6 +362,82 @@ public class TransactionServlet extends HttpServlet {
         processRequest(request, response);
     }
 
+    private void handleSendBillEmail(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        try {
+            // Read JSON data from request body
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String jsonData = sb.toString();
+            
+            System.out.println("=== SEND BILL EMAIL DEBUG ===");
+            System.out.println("Received JSON data: " + jsonData);
+            
+            // Parse JSON data - only need customerId and transactionId
+            int customerId = extractIntValue(jsonData, "customerId");
+            int transactionId = extractIntValue(jsonData, "transactionId");
+            
+            System.out.println("Parsed data:");
+            System.out.println("Customer ID: " + customerId);
+            System.out.println("Transaction ID: " + transactionId);
+            
+            // Get transaction details for the email using foreign key
+            Transaction transaction = transactionDAO.getTransactionById(transactionId);
+            if (transaction == null) {
+                sendJsonResponse(response, false, "Transaction not found.");
+                return;
+            }
+            
+            System.out.println("Transaction found: " + transaction.getTransactionId());
+            
+            // Get customer details from database using foreign key relationship
+            Customer customer = customerDAO.getCustomerById(customerId);
+            if (customer == null) {
+                sendJsonResponse(response, false, "Customer not found.");
+                return;
+            }
+            
+            System.out.println("Customer found: " + customer.getName() + " (Email: " + customer.getEmail() + ")");
+            
+            // Check if customer has email
+            if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
+                sendJsonResponse(response, false, "Customer does not have an email address.");
+                return;
+            }
+            
+            // Send bill email using EmailService
+            EmailService emailService = new EmailService();
+            boolean emailSent = emailService.sendBillEmail(customer.getEmail(), transaction, customer);
+            
+            if (emailSent) {
+                System.out.println("✓ Bill email sent successfully to: " + customer.getEmail());
+                eventManager.logEvent("Bill email sent successfully to: " + customer.getEmail(), "INFO");
+                sendJsonResponse(response, true, "Bill has been sent to " + customer.getName() + "'s email address (" + customer.getEmail() + ").");
+            } else {
+                System.out.println("✗ Failed to send bill email to: " + customer.getEmail());
+                eventManager.logEvent("Failed to send bill email to: " + customer.getEmail(), "ERROR");
+                sendJsonResponse(response, false, "Failed to send bill email. Please try again.");
+            }
+            
+        } catch (Exception e) {
+            System.out.println("ERROR in handleSendBillEmail: " + e.getMessage());
+            e.printStackTrace();
+            eventManager.logEvent("Error sending bill email: " + e.getMessage(), "ERROR");
+            sendJsonResponse(response, false, "Error sending bill email: " + e.getMessage());
+        }
+    }
+    
+    private void sendJsonResponse(HttpServletResponse response, boolean success, String message) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String jsonResponse = "{\"success\": " + success + ", \"message\": \"" + message + "\"}";
+        response.getWriter().write(jsonResponse);
+    }
+    
     @Override
     public String getServletInfo() {
         return "Transaction Management Servlet";
