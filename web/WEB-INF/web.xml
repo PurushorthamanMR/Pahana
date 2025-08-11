@@ -107,6 +107,8 @@
         <url-pattern>/ProfileServlet</url-pattern>
     </servlet-mapping>
     
+
+    
     <!-- Chart Servlet -->
     <servlet>
         <servlet-name>ChartServlet</servlet-name>

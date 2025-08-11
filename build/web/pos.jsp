@@ -13,7 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BookShop - Point of Sale</title>
+        <title>Pahana - Point of Sale</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
@@ -658,6 +658,35 @@
                     display: block;
                 }
             }
+            
+            /* Email Loading Overlay Styles */
+            .email-loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            
+            .email-loading-content {
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 90%;
+            }
+            
+            .email-loading-content .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
         </style>
     </head>
     <body>
@@ -874,9 +903,10 @@
                                 </div>
                                 <div class="customer-list" id="customerList">
                                     <% for (Customer customer : customers) { %>
-                                        <div class="customer-item" onclick="selectCustomer(<%= customer.getCustomerId() %>, '<%= customer.getName().replace("'", "\\'") %>')">
+                                        <div class="customer-item" onclick="selectCustomer(<%= customer.getCustomerId() %>, '<%= customer.getName().replace("'", "\\'") %>', '<%= customer.getEmail() != null ? customer.getEmail().replace("'", "\\'") : "" %>')">
                                             <strong><%= customer.getName() %></strong><br>
-                                            <small class="text-muted">Account: <%= customer.getAccountNumber() %></small>
+                                            <small class="text-muted">Account: <%= customer.getAccountNumber() %></small><br>
+                                            <small class="text-muted">Email: <%= customer.getEmail() != null ? customer.getEmail() : "No email" %></small>
                                         </div>
                                     <% } %>
                                 </div>
@@ -920,10 +950,24 @@
                             <button type="button" class="btn btn-primary me-2" onclick="printBill()">
                                 <i class="bi bi-printer me-2"></i>Print Bill
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success me-2" onclick="sendBillToEmail()" id="sendEmailBtn">
+                                <i class="bi bi-envelope me-2"></i>Send to Email
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="refreshPage()">Close</button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Email Loading Overlay -->
+        <div id="emailLoadingOverlay" class="email-loading-overlay" style="display: none;">
+            <div class="email-loading-content">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-primary mb-2">Sending Bill to Email...</h5>
+                <p class="text-muted mb-0" id="emailLoadingMessage">Please wait while we send the bill to the customer's email.</p>
             </div>
         </div>
 
@@ -938,6 +982,7 @@
             let selectedCustomer = null;
             let currentBook = null;
             let transactionId = null;
+            let billCustomer = null; // Separate variable for bill customer data
 
             // Toggle sidebar on mobile
             function toggleSidebar() {
@@ -1157,8 +1202,14 @@
             }
 
             // Select customer
-            function selectCustomer(customerId, customerName) {
-                selectedCustomer = { id: customerId, name: customerName };
+            function selectCustomer(customerId, customerName, customerEmail) {
+                selectedCustomer = { 
+                    id: customerId, 
+                    name: customerName, 
+                    email: customerEmail 
+                };
+                
+                console.log('Customer selected:', selectedCustomer);
                 
                 // Update UI
                 document.querySelectorAll('.customer-item').forEach(item => {
@@ -1197,6 +1248,9 @@
 
             // Process transaction
             function processTransaction() {
+                console.log('=== PROCESS TRANSACTION DEBUG ===');
+                console.log('selectedCustomer at start:', selectedCustomer);
+                
                 if (!selectedCustomer) {
                     alert('Please select a customer');
                     return;
@@ -1272,7 +1326,12 @@
 
             // Show bill
             function showBill(transaction) {
+                console.log('=== SHOW BILL DEBUG ===');
                 console.log('showBill called with transaction:', transaction);
+                console.log('Transaction customerId:', transaction.customerId);
+                console.log('Transaction customerName:', transaction.customerName);
+                console.log('Current selectedCustomer before update:', selectedCustomer);
+                
                 const billContent = document.getElementById('billContent');
                 const billModal = document.getElementById('billModal');
                 
@@ -1314,7 +1373,7 @@
                 });
                 
                 const billHTML = '<div class="bill-header">' +
-                    '<h4>BookShop</h4>' +
+                    '<h4>Pahana</h4>' +
                     '<p class="mb-1">Transaction Receipt</p>' +
                     '<p class="mb-1">Date: ' + currentDate + '</p>' +
                     '<p class="mb-1">Time: ' + currentTime + '</p>' +
@@ -1334,6 +1393,28 @@
                 
                 console.log('Generated bill HTML:', billHTML);
                 billContent.innerHTML = billHTML;
+                
+                // Update the billCustomer variable with the transaction customer info
+                // This ensures the email functionality works properly
+                if (transaction.customerId && transaction.customerName) {
+                    // Store the current selectedCustomer email before updating
+                    const currentEmail = selectedCustomer ? selectedCustomer.email : null;
+                    
+                    billCustomer = {
+                        id: transaction.customerId,
+                        name: transaction.customerName,
+                        email: currentEmail // Preserve the email from customer selection
+                    };
+                    console.log('Updated billCustomer for bill:', billCustomer);
+                    console.log('Customer ID:', billCustomer.id);
+                    console.log('Customer Name:', billCustomer.name);
+                    console.log('Customer Email:', billCustomer.email);
+                } else {
+                    console.error('Missing customerId or customerName in transaction:', {
+                        customerId: transaction.customerId,
+                        customerName: transaction.customerName
+                    });
+                }
                 
                 const modal = new bootstrap.Modal(document.getElementById('billModal'));
                 console.log('Showing bill modal');
@@ -1408,6 +1489,123 @@
             // Initialize POS
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('POS initialized with enhanced functionality');
+            });
+            
+            // Send bill to customer email
+            function sendBillToEmail() {
+                console.log('=== SEND BILL EMAIL DEBUG ===');
+                console.log('selectedCustomer:', selectedCustomer);
+                console.log('billCustomer:', billCustomer);
+                console.log('transactionId:', transactionId);
+                
+                // Use billCustomer if available, otherwise fall back to selectedCustomer
+                let customerToUse = billCustomer || selectedCustomer;
+                
+                if (!customerToUse || !customerToUse.id) {
+                    console.error('No customer data available for email');
+                    showToast('No customer data available for email', 'error');
+                    return;
+                }
+                
+                if (!transactionId) {
+                    console.error('No transaction ID found');
+                    showToast('No transaction found', 'error');
+                    return;
+                }
+                
+                // Show loading overlay
+                showEmailLoadingOverlay();
+                
+                // Prepare email data - only send customerId and transactionId
+                // The servlet will fetch the customer details from database using foreign key
+                const emailData = {
+                    customerId: customerToUse.id,
+                    transactionId: transactionId
+                };
+                
+                console.log('Sending bill to email:', emailData);
+                console.log('Using customer data:', customerToUse);
+                
+                // Send email request
+                fetch('TransactionServlet?action=send-bill-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emailData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Email response:', data);
+                    hideEmailLoadingOverlay();
+                    
+                    if (data.success) {
+                        showToast('Bill sent to customer email successfully!', 'success');
+                        // Update button to show success
+                        const sendEmailBtn = document.getElementById('sendEmailBtn');
+                        sendEmailBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Email Sent';
+                        sendEmailBtn.className = 'btn btn-success me-2';
+                        sendEmailBtn.disabled = true;
+                    } else {
+                        showToast('Failed to send email: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Email error:', error);
+                    hideEmailLoadingOverlay();
+                    showToast('Error sending email. Please try again.', 'error');
+                });
+            }
+            
+            // Show email loading overlay
+            function showEmailLoadingOverlay() {
+                const overlay = document.getElementById('emailLoadingOverlay');
+                overlay.style.display = 'flex';
+                
+                // Disable the send email button
+                const sendEmailBtn = document.getElementById('sendEmailBtn');
+                if (sendEmailBtn) {
+                    sendEmailBtn.disabled = true;
+                }
+            }
+            
+            // Hide email loading overlay
+            function hideEmailLoadingOverlay() {
+                const overlay = document.getElementById('emailLoadingOverlay');
+                overlay.style.display = 'none';
+                
+                // Re-enable the send email button
+                const sendEmailBtn = document.getElementById('sendEmailBtn');
+                if (sendEmailBtn) {
+                    sendEmailBtn.disabled = false;
+                }
+            }
+            
+            // Refresh page function
+            function refreshPage() {
+                // Close the modal first
+                const modal = bootstrap.Modal.getInstance(document.getElementById('billModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Wait a bit for modal to close, then refresh
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
+            }
+            
+            // Add event listener to bill modal close events
+            document.addEventListener('DOMContentLoaded', function() {
+                const billModal = document.getElementById('billModal');
+                if (billModal) {
+                    billModal.addEventListener('hidden.bs.modal', function() {
+                        // Refresh page when modal is closed
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 100);
+                    });
+                }
             });
         </script>
     </body>

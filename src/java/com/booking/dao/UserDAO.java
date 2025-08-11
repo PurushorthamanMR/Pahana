@@ -187,4 +187,58 @@ public class UserDAO {
         }
         return null;
     }
+    
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, email);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking if email exists: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    public boolean updatePassword(String email, String newPassword) {
+        String sql = "UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE email = ?";
+        
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, email);
+            
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating user password: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean isUsernameExists(String username) {
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+        
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking if username exists: " + e.getMessage());
+        }
+        return false;
+    }
 } 

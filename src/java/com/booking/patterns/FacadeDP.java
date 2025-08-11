@@ -90,8 +90,54 @@ public class FacadeDP {
         return customerDAO.isUsernameExists(username);
     }
     
+    public boolean isUserUsernameExists(String username) {
+        return userDAO.isUsernameExists(username);
+    }
+    
     public boolean isEmailExists(String email) {
         return customerDAO.isEmailExists(email);
+    }
+    
+    public boolean isPhoneNumberExists(String phone) {
+        return customerDAO.isPhoneNumberExists(phone);
+    }
+    
+    public boolean isEmailExistsInAnyTable(String email) {
+        // Check if email exists in customers table
+        boolean existsInCustomers = customerDAO.isEmailExists(email);
+        // Check if email exists in users table
+        boolean existsInUsers = userDAO.isEmailExists(email);
+        
+        // Return true if email exists in either table
+        return existsInCustomers || existsInUsers;
+    }
+    
+    public boolean isEmailExistsForVerification(String email) {
+        // This method is specifically for verification checks
+        // Returns true if email exists in ANY table (customers or users)
+        return isEmailExistsInAnyTable(email);
+    }
+    
+    public boolean isUsernameExistsInAnyTable(String username) {
+        // Check if username exists in customers table
+        boolean existsInCustomers = customerDAO.isUsernameExists(username);
+        // Check if username exists in users table
+        boolean existsInUsers = userDAO.isUsernameExists(username);
+        
+        // Return true if username exists in either table
+        return existsInCustomers || existsInUsers;
+    }
+    
+    public boolean updateCustomerPassword(String email, String newPassword) {
+        return customerDAO.updateCustomerPassword(email, newPassword);
+    }
+    
+    public boolean isUserEmailExists(String email) {
+        return userDAO.isEmailExists(email);
+    }
+    
+    public boolean updateUserPassword(String email, String newPassword) {
+        return userDAO.updatePassword(email, newPassword);
     }
     
     public int getCustomerTransactionCount(int customerId) {

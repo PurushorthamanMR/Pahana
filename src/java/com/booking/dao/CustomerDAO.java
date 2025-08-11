@@ -177,7 +177,7 @@ public class CustomerDAO {
     }
     
     public boolean updateCustomer(Customer customer) {
-        String sql = "UPDATE customers SET account_number = ?, name = ?, address = ?, phone = ? WHERE customer_id = ?";
+        String sql = "UPDATE customers SET account_number = ?, name = ?, address = ?, phone = ?, username = ?, email = ?, password = ? WHERE customer_id = ?";
         
         try (Connection conn = SingletonDP.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -186,11 +186,94 @@ public class CustomerDAO {
             pstmt.setString(2, customer.getName());
             pstmt.setString(3, customer.getAddress());
             pstmt.setString(4, customer.getPhone());
-            pstmt.setInt(5, customer.getCustomerId());
+            pstmt.setString(5, customer.getUsername());
+            pstmt.setString(6, customer.getEmail());
+            pstmt.setString(7, customer.getPassword());
+            pstmt.setInt(8, customer.getCustomerId());
             
-            return pstmt.executeUpdate() > 0;
+            System.out.println("=== CUSTOMER UPDATE DEBUG ===");
+            System.out.println("Customer ID: " + customer.getCustomerId());
+            System.out.println("Name: " + customer.getName());
+            System.out.println("Username: " + customer.getUsername());
+            System.out.println("Email: " + customer.getEmail());
+            System.out.println("Password: " + customer.getPassword());
+            System.out.println("SQL: " + sql);
+            System.out.println("=============================");
+            
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+            System.out.println("=============================");
+            
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.err.println("Error updating customer: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean updateCustomerPassword(String email, String newPassword) {
+        // First, let's check if the email exists
+        String checkSql = "SELECT COUNT(*) FROM customers WHERE email = ?";
+        String updateSql = "UPDATE customers SET password = ? WHERE email = ?";
+        
+        try (Connection conn = SingletonDP.getInstance().getConnection()) {
+            
+            System.out.println("=== FORGOT PASSWORD DEBUG START ===");
+            System.out.println("Attempting to update password for email: " + email);
+            System.out.println("New password: " + newPassword);
+            
+            // Check if email exists
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, email);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                        int count = rs.getInt(1);
+                        System.out.println("Email check: " + email + " exists: " + (count > 0));
+                        System.out.println("Count: " + count);
+                        
+                        if (count == 0) {
+                            System.out.println("ERROR: Email not found in database!");
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            // Let's also check what emails are actually in the database
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT email FROM customers WHERE email LIKE '%@%'")) {
+                System.out.println("=== DATABASE EMAILS ===");
+                while (rs.next()) {
+                    System.out.println("DB Email: '" + rs.getString("email") + "'");
+                }
+                System.out.println("=====================");
+            }
+            
+            // Now try to update
+            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                pstmt.setString(1, newPassword);
+                pstmt.setString(2, email);
+                
+                System.out.println("Executing SQL: " + updateSql);
+                System.out.println("Parameters - Email: " + email + ", New Password: " + newPassword);
+                
+                int rowsAffected = pstmt.executeUpdate();
+                System.out.println("Rows affected: " + rowsAffected);
+                
+                if (rowsAffected > 0) {
+                    System.out.println("SUCCESS: Password updated successfully!");
+                } else {
+                    System.out.println("WARNING: No rows were affected by the update");
+                }
+                
+                System.out.println("=== FORGOT PASSWORD DEBUG END ===");
+                return rowsAffected > 0;
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("ERROR in updateCustomerPassword: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -325,6 +408,25 @@ public class CustomerDAO {
             }
         } catch (SQLException e) {
             System.err.println("Error checking email existence: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    public boolean isPhoneNumberExists(String phone) {
+        String sql = "SELECT COUNT(*) FROM customers WHERE phone = ?";
+        
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, phone);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking phone number existence: " + e.getMessage());
         }
         return false;
     }

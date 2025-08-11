@@ -12,7 +12,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BookShop - User Management</title>
+        <title>Pahana - User Management</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
@@ -538,7 +538,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                        <button class="btn btn-outline-primary" type="button" id="sendVerificationBtn" onclick="sendVerificationCode()">
+                                            <i class="bi bi-envelope"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -584,6 +589,30 @@
                             </div>
                         </div>
                         
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="verificationPin" class="form-label">Verification Pin</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="verificationPin" name="verificationPin" placeholder="Enter 6-digit code" maxlength="6" disabled>
+                                        <button class="btn btn-outline-success" type="button" id="verifyPinBtn" onclick="verifyPin()" disabled>
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                    </div>
+                                    <small class="form-text text-muted">Click the envelope button next to email to receive verification code</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email Status</label>
+                                    <div class="d-flex align-items-center">
+                                        <span id="emailStatus" class="badge bg-secondary">Not Verified</span>
+                                        <div id="verificationSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Add User
@@ -605,22 +634,15 @@
                     </h3>
                     
                     <%
-                        // Auto-load user data if not already loaded
+                        // Check if user data is loaded
                         if (request.getAttribute("users") == null) {
-                            // Preserve any message or error parameters
-                            String redirectMessage = request.getParameter("message");
-                            String redirectError = request.getParameter("error");
-                            String redirectUrl = "UserServlet?action=list";
-                            
-                            if (redirectMessage != null && !redirectMessage.isEmpty()) {
-                                redirectUrl += "&message=" + java.net.URLEncoder.encode(redirectMessage, "UTF-8");
-                            }
-                            if (redirectError != null && !redirectError.isEmpty()) {
-                                redirectUrl += "&error=" + java.net.URLEncoder.encode(redirectError, "UTF-8");
-                            }
-                            
-                            response.sendRedirect(redirectUrl);
-                            return;
+                            // Show message to refresh instead of redirecting
+                    %>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Click the "Refresh" button to load the user list.
+                    </div>
+                    <%
                         }
                     %>
                     
@@ -808,7 +830,223 @@
                     }
                 }, 3000);
             }
-
+            
+            // Email verification functions
+            let emailVerified = false;
+            
+            function sendVerificationCode() {
+                const email = document.getElementById('email').value.trim();
+                if (!email) {
+                    showAlert('Please enter an email address first.', 'error');
+                    return;
+                }
+                
+                // Show spinner and disable button
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('sendVerificationBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Checking email...';
+                document.getElementById('emailStatus').className = 'badge bg-warning';
+                
+                // First check if email exists in ANY table (customers or users)
+                const checkEmailXhr = new XMLHttpRequest();
+                checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
+                checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                checkEmailXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                checkEmailXhr.onreadystatechange = function() {
+                    if (checkEmailXhr.readyState === 4) {
+                        if (checkEmailXhr.status === 200) {
+                            try {
+                                const response = JSON.parse(checkEmailXhr.responseText);
+                                if (response.status === 'success' && response.exists) {
+                                    // Email already exists in either table - BLOCK verification
+                                    document.getElementById('verificationSpinner').style.display = 'none';
+                                    document.getElementById('sendVerificationBtn').disabled = false;
+                                    document.getElementById('emailStatus').textContent = 'Email Exists';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                    showAlert('This email address is already registered in our system. Please use a different email address.', 'error');
+                                    return;
+                                } else {
+                                    // Email is unique - proceed with verification
+                                    sendVerificationEmail(email);
+                                }
+                            } catch (e) {
+                                console.log('Error parsing email check response:', e);
+                                // Fallback: proceed with verification
+                                sendVerificationEmail(email);
+                            }
+                        } else {
+                            // Fallback: proceed with verification
+                            sendVerificationEmail(email);
+                        }
+                    }
+                };
+                
+                checkEmailXhr.onerror = function() {
+                    // Fallback: proceed with verification
+                    sendVerificationEmail(email);
+                };
+                
+                checkEmailXhr.send('email=' + encodeURIComponent(email));
+            }
+            
+            function sendVerificationEmail(email) {
+                // Show spinner and disable button
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('sendVerificationBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Sending...';
+                document.getElementById('emailStatus').className = 'badge bg-warning';
+                
+                // Send AJAX request for verification code
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=send-verification', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('sendVerificationBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    showAlert(response.message, 'success');
+                                    document.getElementById('emailStatus').textContent = 'Code Sent';
+                                    document.getElementById('emailStatus').className = 'badge bg-info';
+                                    
+                                    // Enable verification pin input and button
+                                    document.getElementById('verificationPin').disabled = false;
+                                    document.getElementById('verifyPinBtn').disabled = false;
+                                    document.getElementById('verificationPin').focus();
+                                } else {
+                                    showAlert(response.message, 'error');
+                                    document.getElementById('emailStatus').textContent = 'Failed';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                }
+                            } catch (e) {
+                                showAlert('Verification code sent successfully!', 'success');
+                                document.getElementById('emailStatus').textContent = 'Code Sent';
+                                document.getElementById('emailStatus').className = 'badge bg-info';
+                                
+                                // Enable verification pin input and button
+                                document.getElementById('verificationPin').disabled = false;
+                                document.getElementById('verifyPinBtn').disabled = false;
+                                document.getElementById('verificationPin').focus();
+                            }
+                        } else {
+                            showAlert('Failed to send verification code. Please try again.', 'error');
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    document.getElementById('verificationSpinner').style.display = 'none';
+                    document.getElementById('sendVerificationBtn').disabled = false;
+                    showAlert('Network error occurred. Please try again.', 'error');
+                    document.getElementById('emailStatus').textContent = 'Failed';
+                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email));
+            }
+            
+            function verifyPin() {
+                const email = document.getElementById('email').value.trim();
+                const pin = document.getElementById('verificationPin').value.trim();
+                
+                if (!pin) {
+                    showAlert('Please enter the verification code.', 'error');
+                    return;
+                }
+                
+                // Show spinner and disable button
+                document.getElementById('verificationSpinner').style.display = 'inline-block';
+                document.getElementById('verifyPinBtn').disabled = true;
+                document.getElementById('emailStatus').textContent = 'Verifying...';
+                document.getElementById('emailStatus').className = 'badge bg-warning';
+                
+                // Send AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=verify-email', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('verificationSpinner').style.display = 'none';
+                        document.getElementById('verifyPinBtn').disabled = false;
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    showAlert(response.message, 'success');
+                                    document.getElementById('emailStatus').textContent = 'Verified';
+                                    document.getElementById('emailStatus').className = 'badge bg-success';
+                                    emailVerified = true;
+                                    
+                                    // Disable verification inputs
+                                    document.getElementById('verificationPin').disabled = true;
+                                    document.getElementById('verifyPinBtn').disabled = true;
+                                    document.getElementById('sendVerificationBtn').disabled = true;
+                                    
+                                    // Enable the Add User button
+                                    document.getElementById('addUserBtn').disabled = false;
+                                } else {
+                                    showAlert(response.message, 'error');
+                                    document.getElementById('emailStatus').textContent = 'Invalid Code';
+                                    document.getElementById('emailStatus').className = 'badge bg-danger';
+                                }
+                            } catch (e) {
+                                showAlert('Email verified successfully!', 'success');
+                                document.getElementById('emailStatus').textContent = 'Verified';
+                                document.getElementById('emailStatus').className = 'badge bg-success';
+                                emailVerified = true;
+                                
+                                // Disable verification inputs
+                                document.getElementById('verificationPin').disabled = true;
+                                document.getElementById('verifyPinBtn').disabled = true;
+                                document.getElementById('sendVerificationBtn').disabled = true;
+                                
+                                // Enable the Add User button
+                                document.getElementById('addUserBtn').disabled = false;
+                            }
+                        } else {
+                            showAlert('Failed to verify code. Please try again.', 'error');
+                            document.getElementById('emailStatus').textContent = 'Failed';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                        }
+                    }
+                };
+                
+                xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
+            }
+            
+            // Form validation - disable Add User button until email is verified
+            document.addEventListener('DOMContentLoaded', function() {
+                const addUserBtn = document.querySelector('button[type="submit"]');
+                if (addUserBtn) {
+                    addUserBtn.id = 'addUserBtn';
+                    addUserBtn.disabled = true;
+                    addUserBtn.title = 'Please verify your email first';
+                }
+                
+                // Add form validation
+                const form = document.querySelector('form[action="UserServlet"]');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        if (!emailVerified) {
+                            e.preventDefault();
+                            showAlert('Please verify your email address before adding the user.', 'error');
+                            return false;
+                        }
+                    });
+                }
+            });
 
         </script>
     </body>
