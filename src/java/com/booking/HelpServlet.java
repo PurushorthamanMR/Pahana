@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import com.booking.models.UserRole;
+import java.util.ArrayList;
 
 /**
  *
@@ -90,11 +92,27 @@ public class HelpServlet extends HttpServlet {
             // Manager can manage help content (create, update, delete, view, list)
             return "create".equals(action) || "update".equals(action) || 
                    "delete".equals(action) || "view".equals(action) || "list".equals(action);
-        } else if ("CASHIER".equals(currentUserRole) || "CUSTOMER".equals(currentUserRole)) {
-            // Cashier and Customer can only view help content
+        } else if ("CASHIER".equals(currentUserRole)) {
+            // Cashier can only view help content
+            return "view".equals(action) || "list".equals(action);
+        } else if ("CUSTOMER".equals(currentUserRole)) {
+            // Customer can only view help content
             return "view".equals(action) || "list".equals(action);
         }
         return false;
+    }
+    
+    /**
+     * Check if user can create help sections for specific roles
+     */
+    private boolean canCreateForRole(String currentUserRole, int targetRoleId) {
+        if ("ADMIN".equals(currentUserRole)) {
+            return true; // Admin can create for all roles
+        } else if ("MANAGER".equals(currentUserRole)) {
+            // Manager can only create for CUSTOMER role (role_id = 4)
+            return targetRoleId == 4;
+        }
+        return false; // Other roles cannot create help sections
     }
 
     private void handleCreateHelpSection(HttpServletRequest request, HttpServletResponse response, HttpSession session)
@@ -102,6 +120,8 @@ public class HelpServlet extends HttpServlet {
         try {
             String title = request.getParameter("title");
             String content = request.getParameter("content");
+            String roleIdStr = request.getParameter("roleId");
+            String currentUserRole = (String) session.getAttribute("role");
 
             if (title == null || content == null || title.trim().isEmpty() || content.trim().isEmpty()) {
                 response.sendRedirect("help.jsp?error=Title and content are required.");
@@ -111,6 +131,26 @@ public class HelpServlet extends HttpServlet {
             HelpSection helpSection = new HelpSection();
             helpSection.setTitle(title.trim());
             helpSection.setContent(content.trim());
+            
+            // Handle role assignment with restrictions
+            if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
+                try {
+                    int roleId = Integer.parseInt(roleIdStr.trim());
+                    
+                    // Check if current user can create help sections for this role
+                    if (!canCreateForRole(currentUserRole, roleId)) {
+                        response.sendRedirect("help.jsp?error=You don't have permission to create help sections for this role.");
+                        return;
+                    }
+                    
+                    UserRole role = new UserRole();
+                    role.setRoleId(roleId);
+                    helpSection.setRole(role);
+                } catch (NumberFormatException e) {
+                    // Invalid role ID, continue without role assignment
+                    System.err.println("Invalid role ID: " + roleIdStr);
+                }
+            }
 
             boolean success = facade.createHelpSection(helpSection);
 
@@ -134,6 +174,7 @@ public class HelpServlet extends HttpServlet {
             int helpId = Integer.parseInt(request.getParameter("help_id"));
             String title = request.getParameter("title");
             String content = request.getParameter("content");
+            String roleIdStr = request.getParameter("roleId");
 
             if (title == null || content == null || title.trim().isEmpty() || content.trim().isEmpty()) {
                 response.sendRedirect("help.jsp?error=Title and content are required.");
@@ -144,6 +185,19 @@ public class HelpServlet extends HttpServlet {
             helpSection.setHelpId(helpId);
             helpSection.setTitle(title.trim());
             helpSection.setContent(content.trim());
+            
+            // Handle role assignment
+            if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
+                try {
+                    int roleId = Integer.parseInt(roleIdStr.trim());
+                    UserRole role = new UserRole();
+                    role.setRoleId(roleId);
+                    helpSection.setRole(role);
+                } catch (NumberFormatException e) {
+                    // Invalid role ID, continue without role assignment
+                    System.err.println("Invalid role ID: " + roleIdStr);
+                }
+            }
 
             boolean success = facade.updateHelpSection(helpSection);
 
@@ -204,7 +258,27 @@ public class HelpServlet extends HttpServlet {
     private void handleListHelpSections(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
         try {
-            List<HelpSection> helpSections = facade.getAllHelpSections();
+            String currentUserRole = (String) session.getAttribute("role");
+            List<HelpSection> helpSections;
+            
+            // Filter help sections based on user role
+            if ("ADMIN".equals(currentUserRole)) {
+                // Admin sees all help sections
+                helpSections = facade.getAllHelpSections();
+            } else if ("MANAGER".equals(currentUserRole)) {
+                // Manager sees only MANAGER role help sections
+                helpSections = facade.getHelpSectionsByRole(2); // role_id = 2 for MANAGER
+            } else if ("CASHIER".equals(currentUserRole)) {
+                // Cashier sees only CASHIER role help sections
+                helpSections = facade.getHelpSectionsByRole(3); // role_id = 3 for CASHIER
+            } else if ("CUSTOMER".equals(currentUserRole)) {
+                // Customer sees only CUSTOMER role help sections
+                helpSections = facade.getHelpSectionsByRole(4); // role_id = 4 for CUSTOMER
+            } else {
+                // Default: show no help sections
+                helpSections = new ArrayList<>();
+            }
+            
             request.setAttribute("helpSections", helpSections);
             request.getRequestDispatcher("help.jsp").forward(request, response);
 

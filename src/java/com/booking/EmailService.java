@@ -12,6 +12,7 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.Random;
 
@@ -21,8 +22,9 @@ import java.util.Random;
  */
 public class EmailService {
 
-    private static final String FROM_EMAIL = "mrprusothaman@gmail.com";
-    private static final String FROM_PASSWORD = "irdh txga chtl aqkd"; // Gmail App Password
+    private static final String FROM_EMAIL = "pahanabookstore@gmail.com";
+    private static final String FROM_PASSWORD = "tsnh erce gbxn ztlh"; // Gmail App Password
+    private static final String FROM_NAME = "Pahana Book Store";
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final int SMTP_PORT = 587;
 
@@ -73,7 +75,7 @@ public class EmailService {
      * Send verification email to the specified email address.
      * Falls back to mock (console print) if jakarta.mail/SMTP fails.
      */
-    public boolean sendVerificationEmail(String toEmail, String verificationCode) {
+    public boolean sendVerificationEmail(String toEmail, String verificationCode) throws MessagingException, UnsupportedEncodingException {
         return sendVerificationEmail(toEmail, verificationCode, "Pahana Email Verification");
     }
     
@@ -89,7 +91,7 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Verification Code - Pahana");
 
@@ -99,7 +101,7 @@ public class EmailService {
             Transport.send(message);
             System.out.println("✓ Verification email sent to: " + toEmail + " (jakarta.mail/Angus)");
             return true;
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             System.err.println("✗ SMTP send failed: " + e.getMessage());
             e.printStackTrace();
             System.out.println("↻ Falling back to mock email service");
@@ -121,6 +123,48 @@ public class EmailService {
      */
     public boolean sendEmailChangeVerificationEmail(String toEmail, String verificationCode) {
         return sendVerificationEmail(toEmail, verificationCode, "Pahana Email Changed");
+    }
+    
+    /**
+     * Send a generic email with custom subject and HTML content.
+     * Falls back to mock (console print) if jakarta.mail/SMTP fails.
+     */
+    public boolean sendEmail(String toEmail, String subject, String htmlContent) {
+        if (session == null) {
+            System.out.println("⚠ Real email session not available. Using mock service.");
+            return sendMockGenericEmail(toEmail, subject, htmlContent);
+        }
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject(subject);
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+
+            Transport.send(message);
+            System.out.println("✓ Generic email sent to: " + toEmail + " (jakarta.mail/Angus)");
+            return true;
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            System.err.println("✗ SMTP send failed: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("↻ Falling back to mock email service");
+            return sendMockGenericEmail(toEmail, subject, htmlContent);
+        }
+    }
+    
+    /**
+     * Send mock generic email (prints to console)
+     */
+    private boolean sendMockGenericEmail(String toEmail, String subject, String htmlContent) {
+        System.out.println("=== MOCK GENERIC EMAIL ===");
+        System.out.println("To: " + toEmail);
+        System.out.println("Subject: " + subject);
+        System.out.println("Content: " + htmlContent);
+        System.out.println("================================");
+        System.out.println("Note: This is a mock email. To send real emails, ensure angus-mail and jakarta.activation are in WEB-INF/lib and rebuild.");
+        System.out.println("================================================");
+        return true;
     }
 
     /**
@@ -178,7 +222,8 @@ public class EmailService {
     public String getEmailConfig() {
         StringBuilder config = new StringBuilder();
         config.append("Email Service Configuration:\n");
-        config.append("From: ").append(FROM_EMAIL).append("\n");
+        config.append("From Name: ").append(FROM_NAME).append("\n");
+        config.append("From Email: ").append(FROM_EMAIL).append("\n");
         config.append("SMTP: ").append(SMTP_HOST).append(":").append(SMTP_PORT).append("\n");
         config.append("API: jakarta.mail (implementation: Angus Mail)\n");
         config.append("TLS: STARTTLS, protocols TLSv1.2+\n");
@@ -198,7 +243,7 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("New Password - Pahana");
 
@@ -208,7 +253,7 @@ public class EmailService {
             Transport.send(message);
             System.out.println("✓ Password email sent to: " + toEmail + " (jakarta.mail/Angus)");
             return true;
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             System.err.println("✗ SMTP send failed: " + e.getMessage());
             e.printStackTrace();
             System.out.println("↻ Falling back to mock email service");
@@ -276,7 +321,7 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Transaction Receipt - Pahana");
 
@@ -286,7 +331,7 @@ public class EmailService {
             Transport.send(message);
             System.out.println("✓ Bill email sent to: " + toEmail + " (jakarta.mail/Angus)");
             return true;
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             System.err.println("✗ SMTP send failed: " + e.getMessage());
             e.printStackTrace();
             System.out.println("↻ Falling back to mock email service");
@@ -343,7 +388,7 @@ public class EmailService {
                                     
                                     String title = titleResult != null ? titleResult.toString() : "Unknown Book";
                                     String quantity = quantityResult != null ? quantityResult.toString() : "0";
-                                    String price = priceResult != null ? "$" + priceResult.toString() : "$0.00";
+                                    String price = priceResult != null ? priceResult.toString() : "0.00";
                                     
                                     // Truncate title if too long for display
                                     if (title.length() > 28) {
@@ -447,7 +492,7 @@ public class EmailService {
                                     
                                     String title = titleResult != null ? titleResult.toString() : "Unknown Book";
                                     String quantity = quantityResult != null ? quantityResult.toString() : "0";
-                                    String price = priceResult != null ? "$" + priceResult.toString() : "$0.00";
+                                    String price = priceResult != null ? priceResult.toString() : "0.00";
                                     
                                     itemsBuilder.append("<tr>");
                                     itemsBuilder.append("<td style='padding: 8px; border-bottom: 1px solid #dee2e6;'>").append(title).append("</td>");
@@ -519,7 +564,7 @@ public class EmailService {
                 "<p><strong>Customer Name:</strong> " + customerName + "</p>" +
                 "<p><strong>Customer Email:</strong> " + customerEmail + "</p>" +
                 "<p><strong>Transaction Date:</strong> " + transactionDate + "</p>" +
-                "<p><strong>Total Amount:</strong> $" + totalAmount + "</p>" +
+                "<p><strong>Total Amount:</strong> " + totalAmount + "</p>" +
                 "</div>" +
                 itemsHtml +
                 "<p>If you have any questions about this transaction, please contact our customer service.</p>" +

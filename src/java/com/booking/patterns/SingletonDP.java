@@ -35,7 +35,7 @@ public class SingletonDP {
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
-            dataSource = (DataSource) envContext.lookup("jdbc/booking");
+            dataSource = (DataSource) envContext.lookup("jdbc/pahana");
             System.out.println("Singleton: DataSource initialized successfully");
         } catch (NamingException e) {
             System.err.println("Singleton: Error initializing DataSource: " + e.getMessage());
@@ -47,7 +47,7 @@ public class SingletonDP {
             return dataSource.getConnection();
         } else {
             // Fallback to direct connection
-            String url = "jdbc:mysql://localhost:3306/booking?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+            String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
             String username = "root";
             String password = "password";
             return DriverManager.getConnection(url, username, password);

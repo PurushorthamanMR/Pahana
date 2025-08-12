@@ -12,6 +12,9 @@ public class HelpSection {
     private int helpId;
     private String title;
     private String content;
+    private UserRole role;
+    private String createdAt;
+    private String updatedAt;
     
     public HelpSection() {}
     
@@ -19,6 +22,13 @@ public class HelpSection {
         this.helpId = helpId;
         this.title = title;
         this.content = content;
+    }
+    
+    public HelpSection(int helpId, String title, String content, UserRole role) {
+        this.helpId = helpId;
+        this.title = title;
+        this.content = content;
+        this.role = role;
     }
     
     // Getters and Setters
@@ -46,8 +56,32 @@ public class HelpSection {
         this.content = content;
     }
     
+    public UserRole getRole() {
+        return role;
+    }
+    
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+    
+    public String getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    
     @Override
     public String toString() {
-        return "HelpSection{" + "helpId=" + helpId + ", title=" + title + '}';
+        return "HelpSection{" + "helpId=" + helpId + ", title=" + title + ", role=" + role + '}';
     }
 } 

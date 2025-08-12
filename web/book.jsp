@@ -316,6 +316,19 @@
                     
                     <!-- Books Table -->
                     <div class="table-responsive">
+                        <!-- Search Bar -->
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="bookSearch" placeholder="Search books by ID, title, category, price, or stock...">
+                                <button class="btn btn-outline-secondary" type="button" onclick="clearBookSearch()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
@@ -513,6 +526,91 @@
                 document.getElementById('confirmDeleteBookBtn').href = 'BookServlet?action=delete&id=' + bookId;
                 new bootstrap.Modal(document.getElementById('deleteBookModal')).show();
             }
+
+            // Search books function
+            function searchBooks(searchTerm) {
+                const tableRows = document.querySelectorAll('tbody tr');
+                let visibleCount = 0;
+                
+                tableRows.forEach(row => {
+                    const bookId = row.cells[0].textContent.toLowerCase();
+                    const bookTitle = row.cells[1].textContent.toLowerCase();
+                    const bookCategory = row.cells[2].textContent.toLowerCase();
+                    const bookPrice = row.cells[3].textContent.toLowerCase();
+                    const bookStock = row.cells[4].textContent.toLowerCase();
+                    
+                    const matchesSearch = bookId.includes(searchTerm) || 
+                                        bookTitle.includes(searchTerm) || 
+                                        bookCategory.includes(searchTerm) || 
+                                        bookPrice.includes(searchTerm) || 
+                                        bookStock.includes(searchTerm);
+                    
+                    if (matchesSearch) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Show "no results" message if no books match search
+                if (visibleCount === 0) {
+                    // Remove existing "no results" row if it exists
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                    
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResultsRow';
+                    noResultsRow.innerHTML = `
+                        <td colspan="7" class="text-center text-muted">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <p>No books found matching "${searchTerm}"</p>
+                        </td>
+                    `;
+                    document.querySelector('tbody').appendChild(noResultsRow);
+                } else {
+                    // Remove "no results" row if it exists and we have results
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                }
+            }
+
+            // Clear book search
+            function clearBookSearch() {
+                document.getElementById('bookSearch').value = '';
+                // Show all books
+                const tableRows = document.querySelectorAll('tbody tr');
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+                
+                // Remove "no results" row if it exists
+                const existingNoResults = document.querySelector('#noResultsRow');
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+            }
+
+            // Initialize search functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const bookSearchInput = document.getElementById('bookSearch');
+                if (bookSearchInput) {
+                    bookSearchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase().trim();
+                        if (searchTerm === '') {
+                            // If search is empty, show all books
+                            clearBookSearch();
+                        } else {
+                            // Apply search filter
+                            searchBooks(searchTerm);
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 </html> 
