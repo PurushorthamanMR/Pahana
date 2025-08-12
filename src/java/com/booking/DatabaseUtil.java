@@ -91,14 +91,14 @@ public class DatabaseUtil {
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource) envContext.lookup("jdbc/booking");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/pahana");
             Connection conn = ds.getConnection();
             System.out.println("JNDI connection successful");
             return conn;
         } catch (SQLException | NamingException e) {
             // Fallback to direct connection if JNDI fails
             System.out.println("JNDI connection failed, using direct connection: " + e.getMessage());
-            String url = "jdbc:mysql://localhost:3306/booking?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+            String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
             String username = "root";
             String password = "password";
             Connection conn = DriverManager.getConnection(url, username, password);
@@ -337,7 +337,11 @@ public class DatabaseUtil {
         String createTableSQL = "CREATE TABLE help_sections ("
                 + "help_id INT PRIMARY KEY AUTO_INCREMENT,"
                 + "title VARCHAR(150) NOT NULL,"
-                + "content TEXT NOT NULL"
+                + "content TEXT NOT NULL,"
+                + "role_id INT,"
+                + "created_at DATETIME DEFAULT CURRENT_TIMESTAMP,"
+                + "updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,"
+                + "FOREIGN KEY (role_id) REFERENCES user_roles(role_id)"
                 + ")";
 
         System.out.println("Creating help_sections table...");
@@ -403,21 +407,21 @@ public class DatabaseUtil {
     private static void insertAdminUser(Connection connection) throws SQLException {
         System.out.println("Inserting admin user...");
         
-        // Check if admin user already exists
+        // Check if Legal user already exists
         String checkSQL = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (java.sql.PreparedStatement checkStmt = connection.prepareStatement(checkSQL)) {
-            checkStmt.setString(1, "admin");
+            checkStmt.setString(1, "Legal");
             java.sql.ResultSet rs = checkStmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
             
             if (count == 0) {
-                // Insert admin user if it doesn't exist
+                // Insert Legal user if it doesn't exist
                 String insertSQL = "INSERT INTO users (username, password, email, role_id) VALUES (?, ?, ?, ?)";
                 try (java.sql.PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
-                    insertStmt.setString(1, "admin");
-                    insertStmt.setString(2, "admin123");
-                    insertStmt.setString(3, "admin@gmail.com");
+                    insertStmt.setString(1, "Legal");
+                    insertStmt.setString(2, "Legal123");
+                    insertStmt.setString(3, "mrprusothaman@gmail.com");
                     insertStmt.setInt(4, 1); // role_id = 1 for ADMIN
                     insertStmt.executeUpdate();
                     System.out.println("Admin user created successfully!");

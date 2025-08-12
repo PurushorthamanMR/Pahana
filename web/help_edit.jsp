@@ -426,6 +426,34 @@
                         </div>
                         
                         <div class="form-group">
+                            <label for="roleId" class="form-label">User Role</label>
+                            <select class="form-control" id="roleId" name="roleId">
+                                <option value="">Select a role (optional)</option>
+                                <% 
+                                String currentRole = (String) session.getAttribute("role");
+                                if ("ADMIN".equals(currentRole)) {
+                                    // Admin can edit for all roles
+                                %>
+                                    <option value="1" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 1) ? "selected" : "" %>>ADMIN</option>
+                                    <option value="2" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 2) ? "selected" : "" %>>MANAGER</option>
+                                    <option value="3" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 3) ? "selected" : "" %>>CASHIER</option>
+                                    <option value="4" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 4) ? "selected" : "" %>>CUSTOMER</option>
+                                <% } else if ("MANAGER".equals(currentRole)) {
+                                    // Manager can only edit for CUSTOMER role
+                                %>
+                                    <option value="4" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 4) ? "selected" : "" %>>CUSTOMER</option>
+                                <% } %>
+                            </select>
+                            <small class="form-text text-muted">
+                                <% if ("ADMIN".equals(currentRole)) { %>
+                                    Select a role to make this help section role-specific, or leave empty for universal access
+                                <% } else if ("MANAGER".equals(currentRole)) { %>
+                                    You can only edit help sections for CUSTOMER users
+                                <% } %>
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save me-2"></i>Update Help Section
                             </button>

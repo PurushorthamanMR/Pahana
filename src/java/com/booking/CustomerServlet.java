@@ -7,8 +7,10 @@ package com.booking;
 import com.booking.models.Customer;
 import com.booking.models.User;
 import com.booking.models.UserRole;
+import com.booking.models.HelpSection;
 import com.booking.patterns.FacadeDP;
 import com.booking.patterns.ObserverDP;
+import com.booking.EmailService;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -178,6 +180,14 @@ public class CustomerServlet extends HttpServlet {
             boolean success = facade.createCustomer(customer);
 
             if (success) {
+                // Send CUSTOMER role help sections via email
+                try {
+                    sendCustomerHelpSectionsEmail(customer);
+                } catch (Exception emailException) {
+                    // Log email error but don't fail customer registration
+                    System.err.println("Error sending help sections email: " + emailException.getMessage());
+                }
+                
                 eventManager.logEvent("Customer registered successfully: " + accountNumber, "INFO");
                 response.sendRedirect("login.jsp?message=Registration successful! You can now login with your username and password.");
             } else {
@@ -253,6 +263,14 @@ public class CustomerServlet extends HttpServlet {
             boolean success = facade.createCustomer(customer);
 
             if (success) {
+                // Send CUSTOMER help sections via email
+                try {
+                    sendCustomerHelpSectionsEmail(customer);
+                } catch (Exception emailException) {
+                    // Log email error but don't fail customer creation
+                    System.err.println("Error sending help sections email: " + emailException.getMessage());
+                }
+                
                 eventManager.logEvent("Customer created successfully: " + accountNumber, "INFO");
                 response.sendRedirect("customer.jsp?message=Customer created successfully.");
             } else {
@@ -714,6 +732,73 @@ public class CustomerServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String jsonResponse = "{\"success\": " + success + ", \"message\": \"" + message + "\"}";
         response.getWriter().write(jsonResponse);
+    }
+    
+    /**
+     * Send CUSTOMER role-based help sections to newly created customer
+     */
+    private void sendCustomerHelpSectionsEmail(Customer customer) {
+        try {
+            // Get CUSTOMER role help sections (role_id = 4)
+            List<HelpSection> customerHelpSections = facade.getHelpSectionsByRole(4);
+            
+            if (customerHelpSections != null && !customerHelpSections.isEmpty()) {
+                // Create email service instance
+                EmailService emailService = new EmailService();
+                
+                // Build email content with help sections
+                String subject = "Welcome to Pahana BookStore - Help & Guidelines";
+                String emailContent = buildCustomerHelpEmailContent(customer, customerHelpSections);
+                
+                // Send email
+                emailService.sendEmail(customer.getEmail(), subject, emailContent);
+                
+                // Log successful email
+                eventManager.logEvent("Help sections email sent to new customer: " + customer.getEmail(), "INFO");
+            } else {
+                // Log that no help sections found
+                eventManager.logEvent("No CUSTOMER help sections found for email to: " + customer.getEmail(), "INFO");
+            }
+            
+        } catch (Exception e) {
+            // Log email error
+            eventManager.logEvent("Error sending help sections email to customer: " + customer.getEmail() + " - " + e.getMessage(), "ERROR");
+            throw e; // Re-throw to be caught by caller
+        }
+    }
+    
+    /**
+     * Build email content with customer help sections
+     */
+    private String buildCustomerHelpEmailContent(Customer customer, List<HelpSection> helpSections) {
+        StringBuilder content = new StringBuilder();
+        
+        content.append("<html><body>");
+        content.append("<h2>Welcome to Pahana BookStore!</h2>");
+        content.append("<p>Dear ").append(customer.getName()).append(",</p>");
+        content.append("<p>Welcome to Pahana BookStore! Your account has been successfully created.</p>");
+        content.append("<p><strong>Account Details:</strong></p>");
+        content.append("<ul>");
+        content.append("<li><strong>Account Number:</strong> ").append(customer.getAccountNumber()).append("</li>");
+        content.append("<li><strong>Username:</strong> ").append(customer.getUsername()).append("</li>");
+        content.append("<li><strong>Email:</strong> ").append(customer.getEmail()).append("</li>");
+        content.append("</ul>");
+        
+        content.append("<h3>Help & Guidelines</h3>");
+        content.append("<p>Here are some helpful resources to get you started:</p>");
+        
+        for (HelpSection helpSection : helpSections) {
+            content.append("<div style='margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;'>");
+            content.append("<h4 style='color: #2a5298; margin-top: 0;'>").append(helpSection.getTitle()).append("</h4>");
+            content.append("<p>").append(helpSection.getContent()).append("</p>");
+            content.append("</div>");
+        }
+        
+        content.append("<p>If you have any questions, please don't hesitate to contact our support team.</p>");
+        content.append("<p>Best regards,<br>Pahana BookStore Team</p>");
+        content.append("</body></html>");
+        
+        return content.toString();
     }
     
     @Override

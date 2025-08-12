@@ -321,6 +321,19 @@
                     
                     <!-- Book Categories Table -->
                     <div class="table-responsive">
+                        <!-- Search Bar -->
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="categorySearch" placeholder="Search categories by ID or name...">
+                                <button class="btn btn-outline-secondary" type="button" onclick="clearCategorySearch()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
@@ -488,6 +501,85 @@
                 document.getElementById('confirmDeleteBtn').href = 'BookCategoryServlet?action=delete&id=' + categoryId;
                 new bootstrap.Modal(document.getElementById('deleteCategoryModal')).show();
             }
+
+            // Search categories function
+            function searchCategories(searchTerm) {
+                const tableRows = document.querySelectorAll('tbody tr');
+                let visibleCount = 0;
+                
+                tableRows.forEach(row => {
+                    const categoryId = row.cells[0].textContent.toLowerCase();
+                    const categoryName = row.cells[1].textContent.toLowerCase();
+                    
+                    const matchesSearch = categoryId.includes(searchTerm) || 
+                                        categoryName.includes(searchTerm);
+                    
+                    if (matchesSearch) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Show "no results" message if no categories match search
+                if (visibleCount === 0) {
+                    // Remove existing "no results" row if it exists
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                    
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResultsRow';
+                    noResultsRow.innerHTML = `
+                        <td colspan="3" class="text-center text-muted">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <p>No categories found matching "${searchTerm}"</p>
+                        </td>
+                    `;
+                    document.querySelector('tbody').appendChild(noResultsRow);
+                } else {
+                    // Remove "no results" row if it exists and we have results
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                }
+            }
+
+            // Clear category search
+            function clearCategorySearch() {
+                document.getElementById('categorySearch').value = '';
+                // Show all categories
+                const tableRows = document.querySelectorAll('tbody tr');
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+                
+                // Remove "no results" row if it exists
+                const existingNoResults = document.querySelector('#noResultsRow');
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+            }
+
+            // Initialize search functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const categorySearchInput = document.getElementById('categorySearch');
+                if (categorySearchInput) {
+                    categorySearchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase().trim();
+                        if (searchTerm === '') {
+                            // If search is empty, show all categories
+                            clearCategorySearch();
+                        } else {
+                            // Apply search filter
+                            searchCategories(searchTerm);
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 </html> 

@@ -334,6 +334,16 @@
                         com.booking.patterns.FacadeDP facade = new com.booking.patterns.FacadeDP();
                         List<HelpSection> helpSections = facade.getAllHelpSections();
                         
+                        // Filter help sections based on user role
+                        if ("MANAGER".equals(role)) {
+                            helpSections = facade.getHelpSectionsByRole(2); // Only MANAGER role
+                        } else if ("CASHIER".equals(role)) {
+                            helpSections = facade.getHelpSectionsByRole(3); // Only CASHIER role
+                        } else if ("CUSTOMER".equals(role)) {
+                            helpSections = facade.getHelpSectionsByRole(4); // Only CUSTOMER role
+                        }
+                        // ADMIN sees all help sections (no filtering needed)
+                        
                         if (helpSections != null && !helpSections.isEmpty()) {
                     %>
                     <div class="help-sections-list mb-4">
@@ -344,6 +354,13 @@
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title"><%= section.getTitle() %></h5>
+                                        <% if (section.getRole() != null) { %>
+                                        <div class="mb-2">
+                                            <span class="badge bg-primary">
+                                                <i class="bi bi-person-badge me-1"></i><%= section.getRole().getRoleName() %>
+                                            </span>
+                                        </div>
+                                        <% } %>
                                         <p class="card-text">
                                             <%= section.getContent().length() > 100 ? 
                                                 section.getContent().substring(0, 100) + "..." : 
@@ -354,7 +371,8 @@
                                                class="btn btn-sm btn-primary">
                                                 <i class="bi bi-eye me-1"></i>View
                                             </a>
-                                            <% if ("ADMIN".equals(role) || "MANAGER".equals(role)) { %>
+                                            <% if ("ADMIN".equals(role) || 
+                                                    ("MANAGER".equals(role) && section.getRole() != null && section.getRole().getRoleId() == 4)) { %>
                                             <a href="help_edit.jsp?help_id=<%= section.getHelpId() %>" 
                                                class="btn btn-sm btn-warning">
                                                 <i class="bi bi-pencil me-1"></i>Edit

@@ -241,6 +241,10 @@ public class FacadeDP {
         return helpSectionDAO.getHelpSectionById(helpId);
     }
     
+    public List<HelpSection> getHelpSectionsByRole(int roleId) {
+        return helpSectionDAO.getHelpSectionsByRole(roleId);
+    }
+    
     public boolean createHelpSection(HelpSection helpSection) {
         return helpSectionDAO.createHelpSection(helpSection);
     }

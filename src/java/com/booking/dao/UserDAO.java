@@ -125,17 +125,26 @@ public class UserDAO {
     }
     
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, password = ?, email = ?, role_id = ? WHERE user_id = ?";
-        
+        boolean shouldUpdatePassword = user.getPassword() != null && !user.getPassword().trim().isEmpty();
+        String sql;
+        if (shouldUpdatePassword) {
+            sql = "UPDATE users SET username = ?, password = ?, email = ?, role_id = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?";
+        } else {
+            sql = "UPDATE users SET username = ?, email = ?, role_id = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?";
+        }
+
         try (Connection conn = SingletonDP.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setInt(4, user.getRole().getRoleId());
-            pstmt.setInt(5, user.getUserId());
-            
+
+            int parameterIndex = 1;
+            pstmt.setString(parameterIndex++, user.getUsername());
+            if (shouldUpdatePassword) {
+                pstmt.setString(parameterIndex++, user.getPassword());
+            }
+            pstmt.setString(parameterIndex++, user.getEmail());
+            pstmt.setInt(parameterIndex++, user.getRole().getRoleId());
+            pstmt.setInt(parameterIndex, user.getUserId());
+
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error updating user: " + e.getMessage());

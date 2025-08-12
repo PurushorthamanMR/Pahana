@@ -380,6 +380,27 @@
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
+                max-height: 700px;
+                overflow-y: auto;
+                padding-right: 5px;
+            }
+
+            .category-list::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .category-list::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+
+            .category-list::-webkit-scrollbar-thumb {
+                background: #667eea;
+                border-radius: 3px;
+            }
+
+            .category-list::-webkit-scrollbar-thumb:hover {
+                background: #5a6fd8;
             }
 
             .category-item {
@@ -407,7 +428,7 @@
 
             /* Book Table Styles */
             .table-responsive {
-                max-height: 400px;
+                max-height: 600px;
                 overflow-y: auto;
             }
 
@@ -433,11 +454,74 @@
                 font-size: 0.875rem;
             }
 
+            /* Search Bar Styles */
+            .book-search-container {
+                margin-bottom: 1.5rem;
+            }
+
+            .book-search-container .input-group {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .book-search-container .input-group-text {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 0.75rem 1rem;
+            }
+
+            .book-search-container .form-control {
+                border: 2px solid #e9ecef;
+                border-left: none;
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+
+            .book-search-container .form-control:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            }
+
+            .book-search-container .btn-outline-secondary {
+                border: 2px solid #e9ecef;
+                border-left: none;
+                padding: 0.75rem 1rem;
+                color: #6c757d;
+                background: white;
+            }
+
+            .book-search-container .btn-outline-secondary:hover {
+                background: #f8f9fa;
+                color: #495057;
+                border-color: #667eea;
+            }
+
             /* Cart Styles */
             .cart-items {
                 flex: 1;
                 overflow-y: auto;
                 margin-bottom: 1rem;
+                max-height: 400px;
+            }
+
+            .cart-items::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .cart-items::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+
+            .cart-items::-webkit-scrollbar-thumb {
+                background: #667eea;
+                border-radius: 3px;
+            }
+
+            .cart-items::-webkit-scrollbar-thumb:hover {
+                background: #5a6fd8;
             }
 
             .cart-item {
@@ -775,6 +859,19 @@
                             <span id="categoryTitle" class="ms-2 text-muted">(All Categories)</span>
                         </h3>
                         
+                        <!-- Search Bar -->
+                        <div class="book-search-container">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="bookSearch" placeholder="Search books by title, ID, or category...">
+                                <button class="btn btn-outline-secondary" type="button" onclick="clearBookSearch()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
                         <div class="table-responsive" id="bookTable">
                             <table class="table table-hover">
                                 <thead class="table-dark">
@@ -917,7 +1014,7 @@
                                     <!-- Order summary will be populated here -->
                                 </div>
                                 <div class="mt-3">
-                                    <strong>Total: $<span id="modalTotal">0.00</span></strong>
+                                    <strong>Total: <span id="modalTotal">0.00</span></strong>
                                 </div>
                             </div>
                         </div>
@@ -1050,6 +1147,70 @@
                 }
             }
 
+            // Search books function
+            function searchBooks(searchTerm) {
+                const bookRows = document.querySelectorAll('#bookTableBody tr');
+                let visibleCount = 0;
+                
+                bookRows.forEach(row => {
+                    // Skip rows that are already hidden by category filter
+                    if (row.style.display === 'none') {
+                        return;
+                    }
+                    
+                    const bookId = row.cells[0].textContent.toLowerCase();
+                    const bookTitle = row.cells[1].textContent.toLowerCase();
+                    const bookPrice = row.cells[2].textContent.toLowerCase();
+                    const bookStock = row.cells[3].textContent.toLowerCase();
+                    const bookCategory = row.cells[4].textContent.toLowerCase();
+                    
+                    const matchesSearch = bookId.includes(searchTerm) || 
+                                       bookTitle.includes(searchTerm) || 
+                                       bookPrice.includes(searchTerm) || 
+                                       bookStock.includes(searchTerm) || 
+                                       bookCategory.includes(searchTerm);
+                    
+                    if (matchesSearch) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Show "no results" message if no books match search
+                if (visibleCount === 0) {
+                    // Remove existing "no results" row if it exists
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                    
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResultsRow';
+                    noResultsRow.innerHTML = `
+                        <td colspan="6" class="text-center text-muted">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <p>No books found matching "${searchTerm}"</p>
+                        </td>
+                    `;
+                    document.getElementById('bookTableBody').appendChild(noResultsRow);
+                } else {
+                    // Remove "no results" row if it exists and we have results
+                    const existingNoResults = document.querySelector('#noResultsRow');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                }
+            }
+
+            // Clear book search
+            function clearBookSearch() {
+                document.getElementById('bookSearch').value = '';
+                // Re-apply category filter to show all books in current category
+                filterBooksByCategory(selectedCategoryId);
+            }
+
             // Show quantity modal
             function showQuantityModal(book) {
                 currentBook = book;
@@ -1125,7 +1286,8 @@
                     cartItems.innerHTML = '';
                     let total = 0;
                     
-                    cart.forEach(item => {
+                    // Display cart items in reverse order (newest first)
+                    cart.slice().reverse().forEach(item => {
                         const itemTotal = item.price * item.quantity;
                         total += itemTotal;
                         
@@ -1489,6 +1651,21 @@
             // Initialize POS
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('POS initialized with enhanced functionality');
+                
+                // Add event listener for book search
+                const bookSearchInput = document.getElementById('bookSearch');
+                if (bookSearchInput) {
+                    bookSearchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase().trim();
+                        if (searchTerm === '') {
+                            // If search is empty, re-apply category filter
+                            filterBooksByCategory(selectedCategoryId);
+                        } else {
+                            // Apply search filter
+                            searchBooks(searchTerm);
+                        }
+                    });
+                }
             });
             
             // Send bill to customer email

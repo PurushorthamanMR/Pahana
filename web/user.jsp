@@ -98,6 +98,35 @@
                 width: 20px;
             }
 
+            /* Loading Overlay Styles */
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+
+            .loading-content {
+                text-align: center;
+                background: rgba(42, 82, 152, 0.9);
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 90%;
+            }
+
+            .loading-content .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
+
             .sidebar-footer {
                 padding: 1rem 1.5rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -449,6 +478,16 @@
         </style>
     </head>
     <body>
+        <!-- Loading Screen Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-white mb-2">Creating User Account</h5>
+                <p class="text-white-50 mb-0">Please wait while we set up your account and send welcome email...</p>
+            </div>
+        </div>
         <%
             // Check if user is logged in
             String username = (String) session.getAttribute("username");
@@ -525,7 +564,7 @@
                         <span><i class="bi bi-person-plus me-2"></i>Add New User</span>
                     </h3>
                     
-                    <form action="UserServlet" method="post">
+                    <form action="UserServlet" method="post" id="addUserForm">
                         <input type="hidden" name="action" value="create">
                         
                         <div class="row">
@@ -614,7 +653,7 @@
                         </div>
                         
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="addUserBtn">
                                 <i class="bi bi-plus-circle me-2"></i>Add User
                             </button>
                         </div>
@@ -1028,15 +1067,14 @@
             
             // Form validation - disable Add User button until email is verified
             document.addEventListener('DOMContentLoaded', function() {
-                const addUserBtn = document.querySelector('button[type="submit"]');
+                const addUserBtn = document.getElementById('addUserBtn');
                 if (addUserBtn) {
-                    addUserBtn.id = 'addUserBtn';
                     addUserBtn.disabled = true;
                     addUserBtn.title = 'Please verify your email first';
                 }
                 
                 // Add form validation
-                const form = document.querySelector('form[action="UserServlet"]');
+                const form = document.getElementById('addUserForm');
                 if (form) {
                     form.addEventListener('submit', function(e) {
                         if (!emailVerified) {
@@ -1044,9 +1082,27 @@
                             showAlert('Please verify your email address before adding the user.', 'error');
                             return false;
                         }
+                        
+                        // Show loading screen
+                        showLoadingScreen();
                     });
                 }
             });
+            
+            // Function to show loading screen
+            function showLoadingScreen() {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                // Disable the form to prevent multiple submissions
+                document.getElementById('addUserForm').style.pointerEvents = 'none';
+                document.getElementById('addUserBtn').disabled = true;
+            }
+            
+            // Function to hide loading screen (can be called from other parts if needed)
+            function hideLoadingScreen() {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('addUserForm').style.pointerEvents = 'auto';
+                document.getElementById('addUserBtn').disabled = false;
+            }
 
         </script>
     </body>

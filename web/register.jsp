@@ -148,8 +148,8 @@
             }
 
             .btn-register:hover {
+                background: #0056b3;
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
             }
 
             .btn-register:disabled {
@@ -247,6 +247,35 @@
                 margin-top: 0.25rem;
             }
 
+            /* Loading Overlay Styles */
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+
+            .loading-content {
+                text-align: center;
+                background: rgba(102, 126, 234, 0.9);
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 90%;
+            }
+
+            .loading-content .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
+
             @media (max-width: 768px) {
                 .register-content {
                     flex-direction: column;
@@ -264,6 +293,16 @@
         </style>
     </head>
     <body>
+        <!-- Loading Screen Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-white mb-2">Creating Your Account</h5>
+                <p class="text-white-50 mb-0">Please wait while we set up your account and send welcome email...</p>
+            </div>
+        </div>
         <div class="register-container">
             <div class="register-content">
                 <!-- Form Section -->
@@ -271,7 +310,7 @@
                     <h1 class="form-title">Create Account</h1>
                     <p class="form-subtitle">Join our community today</p>
 
-                    <form action="CustomerServlet" method="post">
+                    <form action="CustomerServlet" method="post" id="registerForm">
                         <input type="hidden" name="action" value="register">
                         
                         <div class="row">
@@ -351,8 +390,6 @@
                                 </div>
                             </div>
                         </div>
-
-
 
                         <button type="submit" class="btn-register" id="createAccountBtn" disabled>
                             <i class="bi bi-plus-circle me-2"></i>Create Account
@@ -615,7 +652,7 @@
                 }
                 
                 // Add form validation
-                const form = document.querySelector('form[action="CustomerServlet"]');
+                const form = document.getElementById('registerForm');
                 if (form) {
                     form.addEventListener('submit', function(e) {
                         if (!emailVerified) {
@@ -634,6 +671,8 @@
                                     return false;
                                 } else {
                                     // Phone number is unique, allow form submission
+                                    // Show loading screen before submitting
+                                    showLoadingScreen();
                                     form.submit();
                                 }
                             });
@@ -688,6 +727,14 @@
                         }
                     });
                 }
+            }
+            
+            function showLoadingScreen() {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+            }
+
+            function hideLoadingScreen() {
+                document.getElementById('loadingOverlay').style.display = 'none';
             }
             
 
