@@ -141,9 +141,32 @@
                 color: var(--primary-color) !important;
             }
 
-            .nav-link.active {
-                color: var(--primary-color) !important;
-            }
+                         .nav-link.active {
+                 color: var(--primary-color) !important;
+             }
+             
+             /* Login Navigation Link Styling */
+             .login-nav-link {
+                 background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                 color: white !important;
+                 padding: 8px 20px !important;
+                 border-radius: 25px !important;
+                 margin: 0 10px !important;
+                 transition: all 0.3s ease !important;
+                 box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3) !important;
+             }
+             
+             .login-nav-link:hover {
+                 background: linear-gradient(135deg, var(--secondary-color), var(--accent-color)) !important;
+                 color: white !important;
+                 transform: translateY(-2px) !important;
+                 box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4) !important;
+             }
+             
+             .login-nav-link i {
+                 font-size: 0.9em;
+                 margin-right: 5px;
+             }
 
             .btn-primary-custom {
                 background: var(--primary-color);
@@ -441,11 +464,42 @@
                 background: #c82333;
             }
 
-            /* Blog Section */
-            .blog-section {
-                padding: 80px 0;
-                background: var(--light-gray);
-            }
+                         /* Service Section */
+             .service-card {
+                 background: white;
+                 border-radius: 15px;
+                 box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                 transition: transform 0.3s ease, box-shadow 0.3s ease;
+                 height: 100%;
+                 border: 1px solid var(--border-color);
+             }
+             
+             .service-card:hover {
+                 transform: translateY(-10px);
+                 box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+             }
+             
+             .service-icon {
+                 color: var(--primary-color);
+                 margin-bottom: 20px;
+             }
+             
+             .service-card h4 {
+                 color: var(--text-dark);
+                 font-weight: 600;
+                 margin-bottom: 15px;
+             }
+             
+             .service-card p {
+                 color: var(--text-light);
+                 line-height: 1.6;
+             }
+             
+             /* Blog Section */
+             .blog-section {
+                 padding: 80px 0;
+                 background: var(--light-gray);
+             }
 
             .blog-card {
                 background: white;
@@ -630,6 +684,55 @@
                 opacity: 0.7;
                 cursor: not-allowed;
             }
+            
+            /* Logout Message Styles */
+            .alert-success.position-fixed {
+                animation: slideInRight 0.5s ease-out;
+                border: none;
+                border-radius: 10px;
+                font-weight: 500;
+                box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+                z-index: 99999 !important;
+                background: #d4edda !important;
+                color: #155724 !important;
+                border-left: 4px solid #28a745 !important;
+                min-width: 350px;
+                max-width: 400px;
+            }
+            
+            .alert-success.position-fixed .btn-close {
+                padding: 0.5rem;
+                margin: 0;
+                color: #155724;
+                opacity: 0.7;
+            }
+            
+            .alert-success.position-fixed .btn-close:hover {
+                opacity: 1;
+            }
+            
+            /* Ensure text is always visible in logout message */
+            .alert-success.position-fixed span {
+                color: #155724 !important;
+                text-shadow: none !important;
+                font-weight: 600 !important;
+                font-size: 1rem !important;
+            }
+            
+            .alert-success.position-fixed * {
+                color: inherit !important;
+            }
+            
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
         </style>
     </head>
     <body>
@@ -681,25 +784,32 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#home">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#about">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#service">Service</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#contact">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="login.jsp">Login</a>
-                        </li>
-                    </ul>
-                </div>
+                                 <div class="collapse navbar-collapse" id="navbarNav">
+                     <ul class="navbar-nav me-auto">
+                         <li class="nav-item">
+                             <a class="nav-link active" href="#home">Home</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link" href="#categories">Categories</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link" href="#about">About</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link" href="#service">Service</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link" href="#contact">Contact</a>
+                         </li>
+                     </ul>
+                     <ul class="navbar-nav">
+                         <li class="nav-item">
+                             <a class="nav-link login-nav-link" href="login.jsp">
+                                 <i class="fas fa-sign-in-alt me-1"></i>Login
+                             </a>
+                         </li>
+                     </ul>
+                 </div>
             </div>
         </nav>
 
@@ -723,8 +833,8 @@
             </div>
         </section>
 
-        <!-- Categories Section -->
-        <section id="service" class="py-5 bg-light">
+                 <!-- Categories Section -->
+         <section id="categories" class="py-5 bg-light">
             <div class="container-fluid px-4">
                 <h2 class="section-title">Categories</h2>
                 <div class="row g-4">
@@ -903,7 +1013,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$40.50</div>
+                                                                 <div class="fw-bold text-primary">LKR 1100</div>
                             </div>
                         </div>
                     </div>
@@ -921,7 +1031,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$25.33</div>
+                                                                 <div class="fw-bold text-primary">LKR 1500</div>
                             </div>
                         </div>
                     </div>
@@ -939,7 +1049,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$70.53</div>
+                                                                 <div class="fw-bold text-primary">LKR 2100</div>
                             </div>
                         </div>
                     </div>
@@ -957,7 +1067,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$60.79</div>
+                                                                 <div class="fw-bold text-primary">LKR 1200</div>
                             </div>
                         </div>
                     </div>
@@ -975,7 +1085,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$30.56</div>
+                                                                 <div class="fw-bold text-primary">LKR 2100</div>
                             </div>
                         </div>
                     </div>
@@ -993,7 +1103,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="fw-bold text-primary">$45.99</div>
+                                                                 <div class="fw-bold text-primary">LKR 3700</div>
                             </div>
                         </div>
                     </div>
@@ -1001,23 +1111,86 @@
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="py-5 bg-light">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <h2 class="section-title text-start">About Pahana BookStore</h2>
-                        <p class="lead">We are passionate about bringing the world's best literature to our readers. Since our establishment, we've been committed to providing quality books across all genres.</p>
-                        <p>Our mission is to inspire, educate, and entertain through the power of books. We believe that every book has the potential to change a life, and we're here to help you discover your next favorite read.</p>
-                        <a href="#service" class="btn-primary-custom" onclick="shopNowComingSoon(); return false;">Learn More</a>
-                    </div>
-                    <div class="col-lg-6 text-center">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Bookstore Interior" class="img-fluid rounded">
-                    </div>
-                </div>
-            </div>
-        </section>
+                 <!-- About Section -->
+         <section id="about" class="py-5 bg-light">
+             <div class="container">
+                 <div class="row align-items-center">
+                     <div class="col-lg-6">
+                         <h2 class="section-title text-start">About Pahana BookStore</h2>
+                         <p class="lead">We are passionate about bringing the world's best literature to our readers. Since our establishment, we've been committed to providing quality books across all genres.</p>
+                         <p>Our mission is to inspire, educate, and entertain through the power of books. We believe that every book has the potential to change a life, and we're here to help you discover your next favorite read.</p>
+                         <a href="#service" class="btn-primary-custom" onclick="shopNowComingSoon(); return false;">Learn More</a>
+                     </div>
+                                          <div class="col-lg-6 text-center">
+                          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                               alt="Bookstore Interior" class="img-fluid rounded" style="max-width: 400px; height: auto;">
+                      </div>
+                 </div>
+             </div>
+         </section>
+
+         <!-- Service Section -->
+         <section id="service" class="py-5">
+             <div class="container">
+                 <h2 class="section-title">Our Services</h2>
+                 <div class="row g-4">
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-shipping-fast fa-3x text-primary"></i>
+                             </div>
+                             <h4>Fast Delivery</h4>
+                             <p class="text-muted">Get your books delivered to your doorstep within 24-48 hours across Sri Lanka.</p>
+                         </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-undo fa-3x text-primary"></i>
+                             </div>
+                             <h4>Easy Returns</h4>
+                             <p class="text-muted">Not satisfied with your purchase? Return it within 7 days for a full refund.</p>
+                         </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-headset fa-3x text-primary"></i>
+                             </div>
+                             <h4>24/7 Support</h4>
+                             <p class="text-muted">Our customer support team is available round the clock to assist you.</p>
+                         </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-gift fa-3x text-primary"></i>
+                             </div>
+                             <h4>Gift Wrapping</h4>
+                             <p class="text-muted">Beautiful gift wrapping service available for all your book purchases.</p>
+                         </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-bookmark fa-3x text-primary"></i>
+                             </div>
+                             <h4>Book Recommendations</h4>
+                             <p class="text-muted">Personalized book recommendations based on your reading preferences.</p>
+                         </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6">
+                         <div class="service-card text-center p-4">
+                             <div class="service-icon mb-3">
+                                 <i class="fas fa-users fa-3x text-primary"></i>
+                             </div>
+                             <h4>Book Clubs</h4>
+                             <p class="text-muted">Join our online book clubs and discuss your favorite reads with fellow book lovers.</p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="py-5">
@@ -1158,7 +1331,7 @@
         </div>
 
         <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
         
         <!-- Smooth Scrolling for Navigation -->
         <script>
@@ -1395,6 +1568,50 @@
 
             // Add loading animation to category cards and intercept footer links
             document.addEventListener('DOMContentLoaded', function() {
+                // Check for logout message in URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const message = urlParams.get('message');
+                console.log('URL search params:', window.location.search);
+                console.log('Message parameter:', message);
+                console.log('Message type:', typeof message);
+                console.log('Message length:', message ? message.length : 'null');
+                
+                if (message) {
+                    console.log('Creating logout message alert with message:', message);
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 99999 !important;';
+                    alertDiv.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span style="color: #155724 !important; text-shadow: none !important; font-weight: 600 !important;">${message}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(alertDiv);
+                    console.log('Alert div created and added to body');
+                    console.log('Alert div HTML:', alertDiv.outerHTML);
+                    
+                    // Auto-hide after 5 seconds
+                    setTimeout(() => {
+                        if (alertDiv.parentNode) {
+                            alertDiv.remove();
+                            console.log('Alert auto-removed');
+                        }
+                    }, 5000);
+                    
+                    // Re-apply text color after a short delay
+                    setTimeout(() => {
+                        const textSpan = alertDiv.querySelector('span');
+                        if (textSpan) {
+                            textSpan.style.color = '#155724 !important';
+                            textSpan.style.textShadow = 'none !important';
+                            textSpan.style.fontWeight = '600 !important';
+                            console.log('Text styles re-applied to span');
+                        }
+                    }, 100);
+                } else {
+                    console.log('No message parameter found in URL');
+                }
+                
                 // Hover animation for category cards
                 const categoryCards = document.querySelectorAll('.category-card');
                 categoryCards.forEach(card => {
@@ -1536,7 +1753,8 @@
                 }
             });
 
-            function showStoreSubscriptionAlert(message, type) {
+
+             function showStoreSubscriptionAlert(message, type) {
                 console.log('Showing store subscription alert:', message, type);
                 const alertDiv = document.getElementById('storeSubscriptionAlert');
                 
@@ -1573,6 +1791,71 @@
                     }
                 }, 5000);
             }
+
+            // Active Navigation Functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get all navigation links and sections
+                const navLinks = document.querySelectorAll('.navbar-nav .nav-link[href^="#"]');
+                const sections = document.querySelectorAll('section[id]');
+                
+                // Function to update active navigation link
+                function updateActiveNavLink() {
+                    const scrollPosition = window.scrollY + 100; // Offset for better detection
+                    
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.offsetHeight;
+                        const sectionId = section.getAttribute('id');
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                            // Remove active class from all nav links
+                            navLinks.forEach(link => link.classList.remove('active'));
+                            
+                            // Add active class to corresponding nav link
+                            const activeLink = document.querySelector(`.navbar-nav .nav-link[href="#${sectionId}"]`);
+                            if (activeLink) {
+                                activeLink.classList.add('active');
+                            }
+                        }
+                    });
+                }
+                
+                // Function to handle smooth scrolling for navigation links
+                function handleNavLinkClick(e) {
+                    const href = this.getAttribute('href');
+                    
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        const targetSection = document.getElementById(targetId);
+                        
+                        if (targetSection) {
+                            // Remove active class from all links
+                            navLinks.forEach(link => link.classList.remove('active'));
+                            
+                            // Add active class to clicked link
+                            this.classList.add('active');
+                            
+                            // Smooth scroll to target section
+                            targetSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                }
+                
+                // Add click event listeners to navigation links
+                navLinks.forEach(link => {
+                    link.addEventListener('click', handleNavLinkClick);
+                });
+                
+                // Update active link on scroll
+                window.addEventListener('scroll', updateActiveNavLink);
+                
+                // Initial call to set active link based on current scroll position
+                updateActiveNavLink();
+            });
         </script>
     </body>
 </html>
