@@ -45,8 +45,8 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
         }
         
-        // Redirect to login page
-        response.sendRedirect("login.jsp?message=You have been logged out successfully.");
+        // Redirect to index page
+        response.sendRedirect("index.jsp?message=You have been logged out successfully.");
     }
 
     @Override
