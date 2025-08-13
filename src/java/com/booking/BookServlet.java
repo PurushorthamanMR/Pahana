@@ -142,20 +142,19 @@ public class BookServlet extends HttpServlet {
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
             
-            // Create book object
-            Book book = new Book();
-            book.setTitle(title.trim());
-            book.setDescription(description != null ? description.trim() : "");
-            book.setPricePerUnit(price);
-            book.setStockQuantity(stock);
-            
             // Set category
             BookCategory category = new BookCategory();
             category.setCategoryId(categoryId);
-            book.setCategory(category);
             
-            // Set created by
-            book.setCreatedBy(currentUser);
+            // Create book object using Builder Pattern
+            Book book = new com.booking.patterns.BuilderDP.BookBuilder()
+                .title(title.trim())
+                .description(description != null ? description.trim() : "")
+                .pricePerUnit(price)
+                .stockQuantity(stock)
+                .category(category)
+                .createdBy(currentUser)
+                .build();
 
             boolean success = bookDAO.createBook(book);
             

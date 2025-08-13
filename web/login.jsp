@@ -30,19 +30,19 @@
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                 overflow: hidden;
-                max-width: 1200px;
+                max-width: 1000px;
                 width: 100%;
                 margin: 20px;
             }
 
             .login-content {
                 display: flex;
-                min-height: 500px;
+                min-height: 450px;
             }
 
             .form-section {
                 flex: 1;
-                padding: 40px;
+                padding: 35px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -56,43 +56,44 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: 40px;
+                padding: 35px;
                 text-align: center;
                 order: 2;
             }
 
             .form-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
                 font-weight: 700;
                 color: #333;
-                margin-bottom: 10px;
+                margin-bottom: 8px;
                 text-align: center;
             }
 
             .form-subtitle {
                 color: #666;
-                font-size: 1rem;
-                margin-bottom: 30px;
+                font-size: 0.95rem;
+                margin-bottom: 25px;
                 text-align: center;
             }
 
             .form-group {
-                margin-bottom: 20px;
+                margin-bottom: 18px;
             }
 
             .form-label {
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
                 display: block;
+                font-size: 0.9rem;
             }
 
             .form-control {
                 width: 100%;
-                padding: 12px 15px;
+                padding: 10px 14px;
                 border: 2px solid #ddd;
                 border-radius: 8px;
-                font-size: 1rem;
+                font-size: 0.9rem;
                 transition: border-color 0.3s ease;
                 background: #f8f9fa;
             }
@@ -123,7 +124,7 @@
                 border: none;
                 color: #666;
                 cursor: pointer;
-                font-size: 1.1rem;
+                font-size: 1rem;
                 padding: 5px;
                 border-radius: 4px;
                 transition: color 0.3s ease;
@@ -138,24 +139,25 @@
                 background: linear-gradient(135deg, #667eea 0%, #5a4f8f 100%);
                 color: white;
                 border: none;
-                padding: 12px 20px;
+                padding: 10px 18px;
                 border-radius: 8px;
-                font-size: 1rem;
+                font-size: 0.9rem;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                margin-top: 10px;
+                margin-top: 8px;
             }
 
             .btn-login:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
             }
 
             .register-link {
                 text-align: center;
-                margin-top: 20px;
+                margin-top: 18px;
                 color: #666;
+                font-size: 0.9rem;
             }
 
             .register-link a {
@@ -169,8 +171,8 @@
             }
 
             .illustration-image {
-                max-width: 300px;
-                margin-bottom: 20px;
+                max-width: 280px;
+                margin-bottom: 18px;
             }
 
             .illustration-image img {
@@ -182,8 +184,9 @@
             .alert {
                 border-radius: 8px;
                 border: none;
-                padding: 12px 15px;
-                margin-bottom: 20px;
+                padding: 10px 14px;
+                margin-bottom: 18px;
+                font-size: 0.9rem;
             }
 
             .alert-success {
@@ -196,63 +199,73 @@
                 color: #721c24;
             }
 
-
-            
-            .badge {
-                padding: 0.5em 0.75em;
-                font-size: 0.75em;
-                font-weight: 600;
-                border-radius: 0.375rem;
-            }
-            
-            .bg-secondary {
-                background-color: #6c757d !important;
-                color: white;
-            }
-            
-            .bg-warning {
-                background-color: #ffc107 !important;
-                color: #212529;
-            }
-            
-            .bg-info {
-                background-color: #0dcaf0 !important;
-                color: white;
-            }
-            
-            .bg-success {
-                background-color: #198754 !important;
-                color: white;
-            }
-            
-            .bg-danger {
-                background-color: #dc3545 !important;
-                color: white;
-            }
-            
-            .spinner-border-sm {
-                width: 1rem;
-                height: 1rem;
-            }
-            
-            .form-text {
-                font-size: 0.875em;
-                color: #6c757d;
-                margin-top: 0.25rem;
+            /* Responsive Design for 1920x1200 and other resolutions */
+            @media (max-width: 1200px) {
+                .login-container {
+                    max-width: 900px;
+                }
+                
+                .form-title {
+                    font-size: 1.7rem;
+                }
+                
+                .form-subtitle {
+                    font-size: 0.9rem;
+                }
             }
 
             @media (max-width: 768px) {
                 .login-content {
                     flex-direction: column;
-                }
-                
-                .illustration-section {
-                    order: -1;
-                    padding: 20px;
+                    min-height: auto;
                 }
                 
                 .form-section {
-                    padding: 30px 20px;
+                    order: 2;
+                    padding: 30px 25px;
+                }
+                
+                .illustration-section {
+                    order: 1;
+                    padding: 25px;
+                }
+                
+                .form-title {
+                    font-size: 1.6rem;
+                }
+                
+                .form-subtitle {
+                    font-size: 0.85rem;
+                }
+                
+                .illustration-image {
+                    max-width: 200px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .login-container {
+                    margin: 10px;
+                    border-radius: 10px;
+                }
+                
+                .form-section,
+                .illustration-section {
+                    padding: 20px;
+                }
+                
+                .form-title {
+                    font-size: 1.5rem;
+                }
+                
+                .form-control {
+                    padding: 8px 12px;
+                    font-size: 0.85rem;
+                }
+                
+                .btn-login {
+                    padding: 8px 16px;
+                    font-size: 0.85rem;
                 }
             }
         </style>

@@ -30,19 +30,19 @@
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                 overflow: hidden;
-                max-width: 1200px;
+                max-width: 1000px;
                 width: 100%;
                 margin: 20px;
             }
 
             .register-content {
                 display: flex;
-                min-height: 500px;
+                min-height: 450px;
             }
 
             .form-section {
                 flex: 1;
-                padding: 40px;
+                padding: 35px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -56,43 +56,44 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: 40px;
+                padding: 35px;
                 text-align: center;
                 order: 2;
             }
 
             .form-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
                 font-weight: 700;
                 color: #333;
-                margin-bottom: 10px;
+                margin-bottom: 8px;
                 text-align: center;
             }
 
             .form-subtitle {
                 color: #666;
-                font-size: 1rem;
-                margin-bottom: 30px;
+                font-size: 0.95rem;
+                margin-bottom: 25px;
                 text-align: center;
             }
 
             .form-group {
-                margin-bottom: 20px;
+                margin-bottom: 18px;
             }
 
             .form-label {
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
                 display: block;
+                font-size: 0.9rem;
             }
 
             .form-control {
                 width: 100%;
-                padding: 12px 15px;
+                padding: 10px 14px;
                 border: 2px solid #ddd;
                 border-radius: 8px;
-                font-size: 1rem;
+                font-size: 0.9rem;
                 transition: border-color 0.3s ease;
                 background: #f8f9fa;
             }

@@ -32,7 +32,7 @@
 
             /* Sidebar Styles */
             .sidebar {
-                width: 280px;
+                width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -43,13 +43,13 @@
             }
 
             .sidebar-header {
-                padding: 2rem 1.5rem;
+                padding: 1.25rem 1rem;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -61,23 +61,24 @@
             }
 
             .nav-menu {
-                padding: 1rem 0;
+                padding: 0.6rem 0;
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.5rem 1rem;
+                margin: 0.3rem 0.6rem;
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.7rem;
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px;
                 transition: all 0.3s ease;
                 font-weight: 500;
+                font-size: 0.85rem;
             }
 
             .nav-link:hover {
@@ -89,17 +90,17 @@
             .nav-link.active {
                 background: rgba(255,255,255,0.2);
                 color: white;
-                border-left: 4px solid #ffd700;
+                border-left: 3px solid #ffd700;
             }
 
             .nav-link i {
-                margin-right: 0.75rem;
-                font-size: 1.1rem;
-                width: 20px;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+                width: 16px;
             }
 
             .sidebar-footer {
-                padding: 1rem 1.5rem;
+                padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
                 margin-top: auto;
             }
@@ -107,8 +108,8 @@
             /* Main Content Styles */
             .main-content {
                 flex: 1;
-                margin-left: 280px;
-                padding: 2rem;
+                margin-left: 260px;
+                padding: 1.5rem;
                 background-color: #f8f9fa;
                 min-height: 100vh;
             }
@@ -117,13 +118,13 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 2rem;
-                padding-bottom: 1rem;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.8rem;
                 border-bottom: 2px solid #e9ecef;
             }
 
             .content-title {
-                font-size: 2rem;
+                font-size: 1.6rem;
                 font-weight: 700;
                 color: #333;
                 margin: 0;
@@ -132,12 +133,12 @@
             .user-info {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem;
             }
 
             .user-avatar {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 display: flex;
@@ -145,6 +146,7 @@
                 justify-content: center;
                 color: white;
                 font-weight: 600;
+                font-size: 0.9rem;
             }
 
             .user-details {
@@ -155,10 +157,11 @@
                 font-weight: 600;
                 color: #333;
                 margin: 0;
+                font-size: 0.9rem;
             }
 
             .user-role {
-                font-size: 0.875rem;
+                font-size: 0.8rem;
                 color: #6c757d;
                 margin: 0;
             }
@@ -166,40 +169,42 @@
             /* Card Styles */
             .content-card {
                 background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 2rem;
-                margin-bottom: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
 
             .card-title {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1.5rem;
-                padding-bottom: 1rem;
+                margin-bottom: 1.25rem;
+                padding-bottom: 0.8rem;
                 border-bottom: 1px solid #e9ecef;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 font-weight: 600;
                 color: #333;
             }
 
             /* Form Styles */
             .form-group {
-                margin-bottom: 1.5rem;
+                margin-bottom: 1.25rem;
             }
 
             .form-label {
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.4rem;
+                font-size: 0.9rem;
             }
 
             .form-control {
                 border: 2px solid #e9ecef;
-                border-radius: 6px;
-                padding: 0.75rem;
+                border-radius: 5px;
+                padding: 0.6rem;
                 transition: border-color 0.3s ease;
+                font-size: 0.9rem;
             }
 
             .form-control:focus {
@@ -209,12 +214,13 @@
 
             /* Button Styles */
             .btn {
-                padding: 0.75rem 1.5rem;
-                border-radius: 6px;
+                padding: 0.6rem 1.25rem;
+                border-radius: 5px;
                 font-weight: 500;
                 transition: all 0.3s ease;
                 border: none;
                 cursor: pointer;
+                font-size: 0.85rem;
             }
 
             .btn-primary {
@@ -249,10 +255,11 @@
 
             /* Alert Styles */
             .alert {
-                border-radius: 8px;
+                border-radius: 6px;
                 border: none;
-                padding: 1rem;
-                margin-bottom: 1.5rem;
+                padding: 0.8rem;
+                margin-bottom: 1.25rem;
+                font-size: 0.9rem;
             }
 
             .alert-success {
@@ -282,7 +289,7 @@
 
                 .content-header {
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.8rem;
                     align-items: flex-start;
                 }
 
@@ -293,20 +300,20 @@
             
             /* Email verification styles */
             #emailVerificationSection {
-                margin-top: 10px;
-                padding: 15px;
+                margin-top: 8px;
+                padding: 12px;
                 border: 1px solid #dee2e6;
-                border-radius: 6px;
+                border-radius: 5px;
                 background-color: #f8f9fa;
             }
             
             #verificationPin {
-                max-width: 200px;
+                max-width: 180px;
             }
             
             .badge {
-                font-size: 0.75em;
-                padding: 0.5em 0.75em;
+                font-size: 0.7em;
+                padding: 0.4em 0.6em;
             }
             
             /* Loading overlay styles */
@@ -325,17 +332,73 @@
             
             .loading-content {
                 background: white;
-                padding: 2rem;
-                border-radius: 10px;
+                padding: 1.5rem;
+                border-radius: 8px;
                 text-align: center;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                max-width: 400px;
+                box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+                max-width: 350px;
                 width: 90%;
             }
             
             .loading-content .spinner-border {
-                width: 3rem;
-                height: 3rem;
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            /* High-resolution desktop optimizations */
+            @media (min-width: 1920px) and (max-height: 1200px) {
+                .sidebar {
+                    width: 220px;
+                }
+                
+                .main-content {
+                    margin-left: 240px;
+                    padding: 1.25rem;
+                }
+                
+                .content-card {
+                    padding: 1.25rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .card-title {
+                    font-size: 1.2rem;
+                    margin-bottom: 1rem;
+                    padding-bottom: 0.6rem;
+                }
+                
+                .content-header {
+                    margin-bottom: 1.25rem;
+                    padding-bottom: 0.6rem;
+                }
+                
+                .content-title {
+                    font-size: 1.4rem;
+                }
+                
+                .form-group {
+                    margin-bottom: 1rem;
+                }
+                
+                .form-control {
+                    padding: 0.5rem;
+                    font-size: 0.85rem;
+                }
+                
+                .btn {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.8rem;
+                }
+                
+                .loading-content {
+                    padding: 1.25rem;
+                    max-width: 300px;
+                }
+                
+                .loading-content .spinner-border {
+                    width: 2rem;
+                    height: 2rem;
+                }
             }
         </style>
     </head>

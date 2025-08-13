@@ -32,7 +32,7 @@
 
             /* Sidebar Styles */
             .sidebar {
-                width: 280px;
+                width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -43,13 +43,13 @@
             }
 
             .sidebar-header {
-                padding: 2rem 1.5rem;
+                padding: 1.25rem 1rem;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -61,23 +61,24 @@
             }
 
             .nav-menu {
-                padding: 1rem 0;
+                padding: 0.6rem 0;
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.5rem 1rem;
+                margin: 0.3rem 0.6rem;
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.7rem;
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px;
                 transition: all 0.3s ease;
                 font-weight: 500;
+                font-size: 0.85rem;
             }
 
             .nav-link:hover {
@@ -89,13 +90,13 @@
             .nav-link.active {
                 background: rgba(255,255,255,0.2);
                 color: white;
-                border-left: 4px solid #ffd700;
+                border-left: 3px solid #ffd700;
             }
 
             .nav-link i {
-                margin-right: 0.75rem;
-                font-size: 1.1rem;
-                width: 20px;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+                width: 16px;
             }
 
             /* Loading Overlay Styles */

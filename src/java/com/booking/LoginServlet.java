@@ -115,6 +115,13 @@ public class LoginServlet extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
+            // Try external authentication first using Adapter Pattern
+            boolean externalAuthSuccess = tryExternalAuthentication(username, password);
+            
+            if (externalAuthSuccess) {
+                eventManager.logEvent("External authentication successful for: " + username, "INFO");
+            }
+
             // First try to authenticate as a regular user (ADMIN, MANAGER, CASHIER)
             User user = authContext.getUser(username, password);
 
@@ -185,6 +192,38 @@ public class LoginServlet extends HttpServlet {
             eventManager.logEvent("Login error: " + e.getMessage(), "ERROR");
             response.sendRedirect("login.jsp?error=Login error: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Try external authentication using Adapter Pattern
+     */
+    private boolean tryExternalAuthentication(String username, String password) {
+        try {
+            // Try LDAP authentication first
+            com.booking.patterns.AdapterDP.ExternalAuthAdapter ldapAdapter = 
+                new com.booking.patterns.AdapterDP.ExternalAuthAdapter(
+                    new com.booking.patterns.AdapterDP.LDAPAuthService()
+                );
+            
+            if (ldapAdapter.authenticate(username, password)) {
+                return true;
+            }
+            
+            // Try OAuth authentication
+            com.booking.patterns.AdapterDP.ExternalAuthAdapter oauthAdapter = 
+                new com.booking.patterns.AdapterDP.ExternalAuthAdapter(
+                    new com.booking.patterns.AdapterDP.OAuthAuthService()
+                );
+            
+            if (oauthAdapter.authenticate(username, password)) {
+                return true;
+            }
+            
+        } catch (Exception e) {
+            eventManager.logEvent("External authentication error: " + e.getMessage(), "ERROR");
+        }
+        
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

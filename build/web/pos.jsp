@@ -24,6 +24,7 @@
                 background-color: #f8f9fa;
                 margin: 0;
                 padding: 0;
+                font-size: 0.85rem; /* Decreased base font size for laptop screens */
             }
 
             .main-container {
@@ -33,7 +34,7 @@
 
             /* Sidebar Styles */
             .sidebar {
-                width: 280px;
+                width: 240px; /* Decreased from 260px for laptop screens */
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -44,13 +45,13 @@
             }
 
             .sidebar-header {
-                padding: 2rem 1.5rem;
+                padding: 1.25rem 1rem; /* Decreased padding */
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.4rem; /* Decreased from 1.6rem */
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -62,23 +63,24 @@
             }
 
             .nav-menu {
-                padding: 1rem 0;
+                padding: 0.6rem 0; /* Decreased padding */
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.5rem 1rem;
+                margin: 0.3rem 0.6rem; /* Decreased margins */
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.7rem; /* Decreased padding */
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px; /* Decreased border radius */
                 transition: all 0.3s ease;
                 font-weight: 500;
+                font-size: 0.8rem; /* Decreased from 0.9rem */
             }
 
             .nav-link:hover {
@@ -90,17 +92,17 @@
             .nav-link.active {
                 background: rgba(255,255,255,0.2);
                 color: white;
-                border-left: 4px solid #ffd700;
+                border-left: 3px solid #ffd700; /* Decreased border width */
             }
 
             .nav-link i {
-                margin-right: 0.75rem;
-                font-size: 1.1rem;
-                width: 20px;
+                margin-right: 0.5rem; /* Decreased margin */
+                font-size: 0.9rem; /* Decreased from 1rem */
+                width: 16px; /* Decreased width */
             }
 
             .sidebar-footer {
-                padding: 1rem 1.5rem;
+                padding: 0.8rem 1.25rem; /* Decreased padding */
                 border-top: 1px solid rgba(255,255,255,0.1);
                 margin-top: auto;
             }
@@ -110,13 +112,14 @@
                 background: rgba(255,255,255,0.1);
                 border: 1px solid rgba(255,255,255,0.2);
                 color: white;
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
+                padding: 0.6rem 0.8rem; /* Decreased padding */
+                border-radius: 6px; /* Decreased border radius */
                 text-decoration: none;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 transition: all 0.3s ease;
+                font-size: 0.8rem; /* Added font size */
             }
 
             .logout-btn:hover {
@@ -298,32 +301,33 @@
             /* Main Content Styles */
             .main-content {
                 flex: 1;
-                margin-left: 280px;
+                margin-left: 240px; /* Updated to match new sidebar width */
                 padding: 0;
                 background-color: #f8f9fa;
             }
 
             .header {
                 background: white;
-                padding: 1rem 2rem;
+                padding: 0.6rem 1.5rem; /* Further decreased padding for 1920x1200 */
                 border-bottom: 1px solid #e9ecef;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                min-height: 50px; /* Optimized height for 1920x1200 */
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem; /* Decreased gap */
             }
 
             .menu-toggle {
                 display: none;
                 background: none;
                 border: none;
-                font-size: 1.5rem;
+                font-size: 1.3rem; /* Decreased font size */
                 color: #333;
                 cursor: pointer;
             }
@@ -331,47 +335,50 @@
             .user-info {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem; /* Decreased gap */
                 color: #666;
+                font-size: 0.85rem; /* Added font size */
             }
 
             .user-avatar {
-                width: 40px;
-                height: 40px;
+                width: 35px; /* Decreased size */
+                height: 35px; /* Decreased size */
                 background: #667eea;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: white;
+                font-size: 0.9rem; /* Added font size */
             }
 
             /* POS Container Styles */
             .pos-container {
                 display: grid;
                 grid-template-columns: 1fr 2fr 1fr;
-                gap: 2rem;
-                padding: 2rem;
-                height: calc(100vh - 80px);
+                gap: 1.5rem; /* Decreased gap */
+                padding: 1.5rem; /* Decreased padding */
+                height: calc(100vh - 60px); /* Optimized for 1920x1200 - reduced header height */
+                min-height: calc(100vh - 60px); /* Ensure minimum height */
             }
 
             .category-section, .books-section, .cart-section {
                 background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                border-radius: 10px; /* Decreased border radius */
+                padding: 1.25rem; /* Decreased padding */
+                box-shadow: 0 3px 5px rgba(0,0,0,0.1); /* Decreased shadow */
                 display: flex;
                 flex-direction: column;
             }
 
             .section-title {
-                font-size: 1.3rem;
+                font-size: 1.1rem; /* Decreased from 1.3rem */
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1.25rem; /* Decreased margin */
                 display: flex;
                 align-items: center;
-                padding-bottom: 0.5rem;
+                padding-bottom: 0.4rem; /* Decreased padding */
                 border-bottom: 2px solid #e9ecef;
             }
 
@@ -379,14 +386,15 @@
             .category-list {
                 display: flex;
                 flex-direction: column;
-                gap: 0.5rem;
-                max-height: 700px;
+                gap: 0.4rem; /* Decreased gap */
+                max-height: calc(100vh - 200px); /* Optimized for 1920x1200 - dynamic height */
+                min-height: 500px; /* Minimum height for smaller screens */
                 overflow-y: auto;
                 padding-right: 5px;
             }
 
             .category-list::-webkit-scrollbar {
-                width: 6px;
+                width: 5px; /* Decreased scrollbar width */
             }
 
             .category-list::-webkit-scrollbar-track {
@@ -404,20 +412,21 @@
             }
 
             .category-item {
-                padding: 0.75rem 1rem;
+                padding: 0.6rem 0.8rem; /* Decreased padding */
                 background: #f8f9fa;
                 border: 2px solid #e9ecef;
-                border-radius: 8px;
+                border-radius: 6px; /* Decreased border radius */
                 cursor: pointer;
                 transition: all 0.3s ease;
                 font-weight: 500;
                 color: #495057;
+                font-size: 0.8rem; /* Added font size */
             }
 
             .category-item:hover {
                 background: #e9ecef;
                 border-color: #667eea;
-                transform: translateX(5px);
+                transform: translateX(3px); /* Decreased transform */
             }
 
             .category-item.active {
@@ -428,7 +437,8 @@
 
             /* Book Table Styles */
             .table-responsive {
-                max-height: 600px;
+                max-height: calc(100vh - 300px); /* Optimized for 1920x1200 - dynamic height */
+                min-height: 450px; /* Minimum height for smaller screens */
                 overflow-y: auto;
             }
 
@@ -438,6 +448,8 @@
                 background-color: #343a40;
                 color: white;
                 z-index: 10;
+                font-size: 0.8rem; /* Added font size */
+                padding: 0.5rem 0.75rem; /* Decreased padding */
             }
 
             .table tbody tr:hover {
@@ -447,21 +459,23 @@
 
             .table td {
                 vertical-align: middle;
+                font-size: 0.8rem; /* Added font size */
+                padding: 0.5rem 0.75rem; /* Decreased padding */
             }
 
             .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.875rem;
+                padding: 0.2rem 0.4rem; /* Decreased padding */
+                font-size: 0.75rem; /* Decreased font size */
             }
 
             /* Search Bar Styles */
             .book-search-container {
-                margin-bottom: 1.5rem;
+                margin-bottom: 1.25rem; /* Decreased margin */
             }
 
             .book-search-container .input-group {
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                border-radius: 8px;
+                border-radius: 6px; /* Decreased border radius */
                 overflow: hidden;
             }
 
@@ -469,14 +483,15 @@
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
                 border: none;
-                padding: 0.75rem 1rem;
+                padding: 0.6rem 0.8rem; /* Decreased padding */
+                font-size: 0.8rem; /* Added font size */
             }
 
             .book-search-container .form-control {
                 border: 2px solid #e9ecef;
                 border-left: none;
-                padding: 0.75rem 1rem;
-                font-size: 0.95rem;
+                padding: 0.6rem 0.8rem; /* Decreased padding */
+                font-size: 0.8rem; /* Decreased font size */
             }
 
             .book-search-container .form-control:focus {
@@ -487,27 +502,23 @@
             .book-search-container .btn-outline-secondary {
                 border: 2px solid #e9ecef;
                 border-left: none;
-                padding: 0.75rem 1rem;
+                padding: 0.6rem 0.8rem; /* Decreased padding */
                 color: #6c757d;
                 background: white;
-            }
-
-            .book-search-container .btn-outline-secondary:hover {
-                background: #f8f9fa;
-                color: #495057;
-                border-color: #667eea;
+                font-size: 0.8rem; /* Added font size */
             }
 
             /* Cart Styles */
             .cart-items {
                 flex: 1;
                 overflow-y: auto;
-                margin-bottom: 1rem;
-                max-height: 400px;
+                margin-bottom: 0.8rem; /* Decreased margin */
+                max-height: calc(100vh - 350px); /* Optimized for 1920x1200 - dynamic height */
+                min-height: 300px; /* Minimum height for smaller screens */
             }
 
             .cart-items::-webkit-scrollbar {
-                width: 6px;
+                width: 5px; /* Decreased scrollbar width */
             }
 
             .cart-items::-webkit-scrollbar-track {
@@ -528,8 +539,9 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.75rem 0;
+                padding: 0.6rem 0; /* Decreased padding */
                 border-bottom: 1px solid #e9ecef;
+                font-size: 0.8rem; /* Added font size */
             }
 
             .cart-item:last-child {
@@ -543,33 +555,33 @@
             .cart-item-title {
                 font-weight: 600;
                 color: #333;
-                font-size: 0.9rem;
+                font-size: 0.8rem; /* Decreased font size */
             }
 
             .cart-item-price {
                 color: #28a745;
                 font-weight: 600;
-                font-size: 0.9rem;
+                font-size: 0.8rem; /* Decreased font size */
             }
 
             .cart-item-quantity {
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.4rem; /* Decreased gap */
             }
 
             .quantity-btn {
                 background: #667eea;
                 color: white;
                 border: none;
-                border-radius: 4px;
-                width: 25px;
-                height: 25px;
+                border-radius: 3px; /* Decreased border radius */
+                width: 22px; /* Decreased width */
+                height: 22px; /* Decreased height */
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                font-size: 0.8rem;
+                font-size: 0.7rem; /* Decreased font size */
             }
 
             .quantity-btn:hover {
@@ -578,12 +590,12 @@
 
             .cart-total {
                 border-top: 2px solid #e9ecef;
-                padding-top: 1rem;
+                padding-top: 0.8rem; /* Decreased padding */
                 margin-top: auto;
             }
 
             .total-amount {
-                font-size: 1.3rem;
+                font-size: 1.1rem; /* Decreased from 1.3rem */
                 font-weight: 700;
                 color: #333;
                 text-align: right;
@@ -594,17 +606,18 @@
                 background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
                 color: white;
                 border: none;
-                padding: 1rem;
-                border-radius: 8px;
+                padding: 0.8rem; /* Decreased padding */
+                border-radius: 6px; /* Decreased border radius */
                 font-weight: 600;
-                margin-top: 1rem;
+                margin-top: 0.8rem; /* Decreased margin */
                 cursor: pointer;
                 transition: all 0.3s ease;
+                font-size: 0.85rem; /* Added font size */
             }
 
             .checkout-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+                transform: translateY(-1px); /* Decreased transform */
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); /* Decreased shadow */
             }
 
             .checkout-btn:disabled {
@@ -713,6 +726,98 @@
             }
 
             /* Responsive Design */
+            @media (min-width: 1366px) and (max-width: 1920px) {
+                /* Laptop screen optimizations */
+                body {
+                    font-size: 0.8rem; /* Even smaller for laptop screens */
+                }
+                
+                .sidebar {
+                    width: 220px; /* Smaller sidebar for laptop */
+                }
+                
+                .main-content {
+                    margin-left: 220px;
+                }
+                
+                .pos-container {
+                    gap: 1.25rem; /* Smaller gaps */
+                    padding: 1.25rem;
+                    height: calc(100vh - 55px); /* Optimized height for laptop screens */
+                }
+                
+                .category-section, .books-section, .cart-section {
+                    padding: 1rem; /* Smaller padding */
+                }
+                
+                .section-title {
+                    font-size: 1rem; /* Smaller titles */
+                    margin-bottom: 1rem;
+                }
+                
+                .category-item {
+                    padding: 0.5rem 0.7rem; /* Smaller category items */
+                    font-size: 0.75rem;
+                }
+                
+                .table th, .table td {
+                    font-size: 0.75rem; /* Smaller table text */
+                    padding: 0.4rem 0.6rem;
+                }
+                
+                .btn-sm {
+                    padding: 0.15rem 0.3rem;
+                    font-size: 0.7rem;
+                }
+                
+                .search-bar input,
+                .search-bar button {
+                    font-size: 0.75rem;
+                    padding: 0.5rem 0.7rem;
+                }
+                
+                .cart-item {
+                    padding: 0.5rem 0;
+                    font-size: 0.75rem;
+                }
+                
+                .quantity-btn {
+                    width: 20px;
+                    height: 20px;
+                    font-size: 0.65rem;
+                }
+                
+                .total-amount {
+                    font-size: 1rem;
+                }
+                
+                .checkout-btn {
+                    padding: 0.7rem;
+                    font-size: 0.8rem;
+                }
+            }
+
+            /* Specific optimization for 1920x1200 resolution */
+            @media (min-width: 1920px) and (max-height: 1200px) {
+                .pos-container {
+                    height: calc(100vh - 50px); /* Optimized for 1920x1200 */
+                    gap: 1.25rem;
+                    padding: 1.25rem;
+                }
+                
+                .category-list {
+                    max-height: calc(100vh - 180px); /* Optimized height for 1920x1200 */
+                }
+                
+                .table-responsive {
+                    max-height: calc(100vh - 280px); /* Optimized height for 1920x1200 */
+                }
+                
+                .cart-items {
+                    max-height: calc(100vh - 320px); /* Optimized height for 1920x1200 */
+                }
+            }
+
             @media (max-width: 1200px) {
                 .pos-container {
                     grid-template-columns: 1fr 1.5fr 1fr;

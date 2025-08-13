@@ -33,7 +33,7 @@
 
             /* Sidebar Styles */
             .sidebar {
-                width: 280px;
+                width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -46,13 +46,13 @@
             }
 
             .sidebar-header {
-                padding: 2rem 1.5rem;
+                padding: 1.25rem 1rem;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -64,22 +64,23 @@
             }
 
             .nav-menu {
-                padding: 1rem 0;
+                padding: 0.6rem 0;
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.5rem 1rem;
+                margin: 0.3rem 0.6rem;
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.7rem;
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px;
                 transition: all 0.3s ease;
+                font-size: 0.85rem;
             }
 
             .nav-link:hover {
@@ -94,14 +95,14 @@
             }
 
             .nav-link i {
-                margin-right: 0.75rem;
-                width: 20px;
+                margin-right: 0.5rem;
+                width: 16px;
                 text-align: center;
             }
 
             /* Sidebar Footer Styles */
             .sidebar-footer {
-                padding: 1rem 1.5rem;
+                padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
                 margin-top: auto;
             }
@@ -111,13 +112,14 @@
                 background: rgba(255,255,255,0.1);
                 border: 1px solid rgba(255,255,255,0.2);
                 color: white;
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
+                padding: 0.6rem 0.8rem;
+                border-radius: 6px;
                 text-decoration: none;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 transition: all 0.3s ease;
+                font-size: 0.85rem;
             }
 
             .logout-btn:hover {
@@ -129,8 +131,8 @@
             /* Main Content Styles */
             .main-content {
                 flex: 1;
-                margin-left: 280px;
-                padding: 2rem;
+                margin-left: 260px;
+                padding: 1.5rem;
                 background-color: #f8f9fa;
                 min-height: 100vh;
             }
@@ -139,22 +141,22 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 2rem;
-                padding: 1rem 0;
+                margin-bottom: 1.5rem;
+                padding: 0.8rem 0;
                 border-bottom: 1px solid #dee2e6;
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem;
             }
 
             .menu-toggle {
                 display: none;
                 background: none;
                 border: none;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 color: #495057;
                 cursor: pointer;
             }
@@ -162,86 +164,90 @@
             .user-info {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem;
                 color: #6c757d;
+                font-size: 0.9rem;
             }
 
             .user-avatar {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
                 background-color: #e9ecef;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: #6c757d;
+                font-size: 0.9rem;
             }
 
             /* Content Card Styles */
             .content-card {
                 background: white;
-                border-radius: 12px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                padding: 2rem;
-                margin-bottom: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
 
             .card-title {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1.5rem;
-                padding-bottom: 1rem;
+                margin-bottom: 1.25rem;
+                padding-bottom: 0.8rem;
                 border-bottom: 2px solid #e9ecef;
                 color: #2c3e50;
             }
 
             .card-title span {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 font-weight: 600;
             }
 
             /* Transaction Details */
             .transaction-details {
                 background-color: #f8f9fa;
-                border-radius: 8px;
-                padding: 2rem;
-                margin-bottom: 2rem;
+                border-radius: 6px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
 
             .transaction-info {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.25rem;
+                margin-bottom: 1.5rem;
             }
 
             .info-item {
                 background: white;
                 padding: 1rem;
-                border-radius: 8px;
-                border-left: 4px solid #007bff;
+                border-radius: 6px;
+                border-left: 3px solid #007bff;
             }
 
             .info-label {
                 font-weight: 600;
                 color: #495057;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.4rem;
+                font-size: 0.9rem;
             }
 
             .info-value {
                 color: #2c3e50;
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
 
             /* Button Styles */
             .btn {
-                padding: 0.75rem 1.5rem;
-                border-radius: 8px;
+                padding: 0.6rem 1.25rem;
+                border-radius: 6px;
                 font-weight: 600;
                 transition: all 0.3s ease;
                 border: none;
                 cursor: pointer;
+                font-size: 0.85rem;
             }
 
             .btn-primary {
@@ -266,10 +272,11 @@
 
             /* Alert Styles */
             .alert {
-                border-radius: 8px;
-                padding: 1rem;
+                border-radius: 6px;
+                padding: 0.8rem;
                 margin-bottom: 1rem;
                 border: none;
+                font-size: 0.9rem;
             }
 
             .alert-success {
@@ -303,8 +310,48 @@
 
                 .card-title {
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.8rem;
                     align-items: flex-start;
+                }
+            }
+
+            /* High-resolution desktop optimizations */
+            @media (min-width: 1920px) and (max-height: 1200px) {
+                .sidebar {
+                    width: 220px;
+                }
+                
+                .main-content {
+                    margin-left: 240px;
+                    padding: 1.25rem;
+                }
+                
+                .content-card {
+                    padding: 1.25rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .card-title span {
+                    font-size: 1.2rem;
+                }
+                
+                .transaction-details {
+                    padding: 1.25rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .transaction-info {
+                    gap: 1rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .info-item {
+                    padding: 0.8rem;
+                }
+                
+                .header {
+                    margin-bottom: 1.25rem;
+                    padding: 0.6rem 0;
                 }
             }
         </style>

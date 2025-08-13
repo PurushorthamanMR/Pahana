@@ -243,22 +243,23 @@ public class CustomerServlet extends HttpServlet {
                 return;
             }
 
-            Customer customer = new Customer();
-            customer.setAccountNumber(accountNumber);
-            customer.setName(name);
-            customer.setAddress(address);
-            customer.setPhone(phone);
-            customer.setUsername(username);
-            customer.setEmail(email);
-            customer.setPassword(password);
-            
             // Set role to CUSTOMER (role_id = 4)
             UserRole role = new UserRole();
             role.setRoleId(4);
             role.setRoleName("CUSTOMER");
-            customer.setRole(role);
             
-            customer.setCreatedBy((User) session.getAttribute("user"));
+            // Create customer using Builder Pattern
+            Customer customer = new com.booking.patterns.BuilderDP.CustomerBuilder()
+                .accountNumber(accountNumber)
+                .name(name)
+                .address(address)
+                .phone(phone)
+                .username(username)
+                .email(email)
+                .password(password)
+                .role(role)
+                .createdBy((User) session.getAttribute("user"))
+                .build();
 
             boolean success = facade.createCustomer(customer);
 

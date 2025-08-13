@@ -23,13 +23,17 @@ public class FacadeDP {
     private final HelpSectionDAO helpSectionDAO;
     
     public FacadeDP() {
-        this.userDAO = new UserDAO();
-        this.customerDAO = new CustomerDAO();
-        this.bookDAO = new BookDAO();
-        this.transactionDAO = new TransactionDAO();
-        this.userRoleDAO = new UserRoleDAO();
-        this.bookCategoryDAO = new BookCategoryDAO();
-        this.helpSectionDAO = new HelpSectionDAO();
+        // Use Abstract Factory to create DAOs
+        com.booking.patterns.AbstractFactoryDP.DAOFactory daoFactory = 
+            com.booking.patterns.AbstractFactoryDP.DAOFactoryCreator.createFactory("mysql");
+        
+        this.userDAO = daoFactory.createUserDAO();
+        this.customerDAO = daoFactory.createCustomerDAO();
+        this.bookDAO = daoFactory.createBookDAO();
+        this.transactionDAO = daoFactory.createTransactionDAO();
+        this.userRoleDAO = daoFactory.createUserRoleDAO();
+        this.bookCategoryDAO = daoFactory.createBookCategoryDAO();
+        this.helpSectionDAO = daoFactory.createHelpSectionDAO();
     }
     
     // Authentication Facade
