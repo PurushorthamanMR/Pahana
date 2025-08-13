@@ -31,7 +31,7 @@
 
             /* Sidebar Styles */
             .sidebar {
-                width: 280px;
+                width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -42,13 +42,13 @@
             }
 
             .sidebar-header {
-                padding: 2rem 1.5rem;
+                padding: 1.25rem 1rem;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -60,23 +60,24 @@
             }
 
             .nav-menu {
-                padding: 1rem 0;
+                padding: 0.6rem 0;
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.5rem 1rem;
+                margin: 0.3rem 0.6rem;
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.75rem 1rem;
+                padding: 0.5rem 0.7rem;
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 6px;
                 transition: all 0.3s ease;
                 font-weight: 500;
+                font-size: 0.85rem;
             }
 
             .nav-link:hover {
@@ -88,19 +89,17 @@
             .nav-link.active {
                 background: rgba(255,255,255,0.2);
                 color: white;
-                border-left: 4px solid #ffd700;
+                border-left: 3px solid #ffd700;
             }
 
-
-
             .nav-link i {
-                margin-right: 0.75rem;
-                font-size: 1.1rem;
-                width: 20px;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+                width: 16px;
             }
 
             .sidebar-footer {
-                padding: 1rem 1.5rem;
+                padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
                 margin-top: auto;
             }
@@ -110,13 +109,14 @@
                 background: rgba(255,255,255,0.1);
                 border: 1px solid rgba(255,255,255,0.2);
                 color: white;
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
+                padding: 0.6rem 0.8rem;
+                border-radius: 6px;
                 text-decoration: none;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 transition: all 0.3s ease;
+                font-size: 0.85rem;
             }
 
             .logout-btn:hover {
@@ -128,16 +128,16 @@
             /* Main Content Styles */
             .main-content {
                 flex: 1;
-                margin-left: 280px;
-                padding: 2rem;
+                margin-left: 260px;
+                padding: 1.5rem;
             }
 
             .header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 2rem;
-                padding: 1rem 0;
+                margin-bottom: 1.5rem;
+                padding: 0.8rem 0;
             }
 
             .header-left {
@@ -148,21 +148,22 @@
             .menu-toggle {
                 background: none;
                 border: none;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 color: #333;
-                margin-right: 1rem;
+                margin-right: 0.8rem;
                 cursor: pointer;
             }
 
             .user-info {
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem;
+                font-size: 0.9rem;
             }
 
             .user-avatar {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 display: flex;
@@ -170,22 +171,23 @@
                 justify-content: center;
                 color: white;
                 font-weight: 600;
+                font-size: 0.9rem;
             }
 
             /* Dashboard Cards */
             .stats-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.25rem;
+                margin-bottom: 1.5rem;
             }
 
             .stat-card {
                 background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                border-left: 4px solid #667eea;
+                border-radius: 10px;
+                padding: 1.25rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border-left: 3px solid #667eea;
             }
 
             .stat-card.success {
@@ -208,39 +210,39 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1rem;
+                margin-bottom: 0.8rem;
             }
 
             .stat-title {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
                 color: #6c757d;
                 font-weight: 600;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
+                letter-spacing: 0.4px;
             }
 
             .stat-icon {
-                width: 40px;
-                height: 40px;
-                border-radius: 8px;
+                width: 36px;
+                height: 36px;
+                border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 color: white;
             }
 
             .stat-value {
-                font-size: 2rem;
+                font-size: 1.75rem;
                 font-weight: 700;
                 color: #333;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.4rem;
             }
 
             .stat-change {
                 display: flex;
                 align-items: center;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
                 font-weight: 600;
             }
 
@@ -256,36 +258,36 @@
             .charts-section {
                 display: grid;
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
-                margin-bottom: 2rem;
+                gap: 1.25rem;
+                margin-bottom: 1.5rem;
             }
 
             .chart-card {
                 background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                border-radius: 10px;
+                padding: 1.25rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             }
 
             .chart-title {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 1rem;
+                margin-bottom: 0.8rem;
             }
 
             /* Chart Styles */
             .chart-container {
                 position: relative;
-                margin: 1rem 0;
+                margin: 0.8rem 0;
             }
             
             .chart-card {
                 background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 2rem;
+                border-radius: 10px;
+                padding: 1.25rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                margin-bottom: 1.5rem;
             }
 
             /* Responsive Design */
@@ -305,6 +307,39 @@
 
                 .charts-section {
                     grid-template-columns: 1fr;
+                }
+            }
+
+            /* High-resolution desktop optimizations */
+            @media (min-width: 1920px) and (max-height: 1200px) {
+                .sidebar {
+                    width: 220px;
+                }
+                
+                .main-content {
+                    margin-left: 240px;
+                    padding: 1.25rem;
+                }
+                
+                .stats-grid {
+                    gap: 1rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .stat-card {
+                    padding: 1rem;
+                }
+                
+                .stat-value {
+                    font-size: 1.6rem;
+                }
+                
+                .chart-card {
+                    padding: 1rem;
+                }
+                
+                .chart-title {
+                    font-size: 1rem;
                 }
             }
         </style>

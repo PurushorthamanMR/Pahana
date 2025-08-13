@@ -407,21 +407,21 @@ public class DatabaseUtil {
     private static void insertAdminUser(Connection connection) throws SQLException {
         System.out.println("Inserting admin user...");
         
-        // Check if Legal user already exists
+        // Check if Pahana user already exists
         String checkSQL = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (java.sql.PreparedStatement checkStmt = connection.prepareStatement(checkSQL)) {
-            checkStmt.setString(1, "Legal");
+            checkStmt.setString(1, "Pahana");
             java.sql.ResultSet rs = checkStmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
             
             if (count == 0) {
-                // Insert Legal user if it doesn't exist
+                // Insert Pahana user if it doesn't exist
                 String insertSQL = "INSERT INTO users (username, password, email, role_id) VALUES (?, ?, ?, ?)";
                 try (java.sql.PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
-                    insertStmt.setString(1, "Legal");
-                    insertStmt.setString(2, "Legal123");
-                    insertStmt.setString(3, "mrprusothaman@gmail.com");
+                    insertStmt.setString(1, "Pahana");
+                    insertStmt.setString(2, "123");
+                    insertStmt.setString(3, "pahanabookstore@gmail.com");
                     insertStmt.setInt(4, 1); // role_id = 1 for ADMIN
                     insertStmt.executeUpdate();
                     System.out.println("Admin user created successfully!");

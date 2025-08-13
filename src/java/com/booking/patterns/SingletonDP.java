@@ -33,12 +33,18 @@ public class SingletonDP {
     
     private void initializeDataSource() {
         try {
+            // Try to initialize DataSource via JNDI (only works in servlet container)
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup("jdbc/pahana");
-            System.out.println("Singleton: DataSource initialized successfully");
+            System.out.println("Singleton: DataSource initialized successfully via JNDI");
         } catch (NamingException e) {
-            System.err.println("Singleton: Error initializing DataSource: " + e.getMessage());
+            System.out.println("Singleton: JNDI DataSource not available (running in standalone mode)");
+            System.out.println("Singleton: Will use direct database connection as fallback");
+            // In standalone mode, we don't have JNDI, so dataSource remains null
+            // The getConnection method will handle the fallback
+        } catch (Exception e) {
+            System.err.println("Singleton: Unexpected error during DataSource initialization: " + e.getMessage());
         }
     }
     
@@ -46,11 +52,20 @@ public class SingletonDP {
         if (dataSource != null) {
             return dataSource.getConnection();
         } else {
-            // Fallback to direct connection
-            String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-            String username = "root";
-            String password = "password";
-            return DriverManager.getConnection(url, username, password);
+            // Fallback to direct connection for standalone execution
+            try {
+                String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+                String username = "root";
+                String password = "password";
+                System.out.println("Singleton: Creating direct database connection...");
+                Connection conn = DriverManager.getConnection(url, username, password);
+                System.out.println("Singleton: Direct database connection successful");
+                return conn;
+            } catch (SQLException e) {
+                System.err.println("Singleton: Failed to create direct database connection: " + e.getMessage());
+                System.err.println("Singleton: Please ensure MySQL is running and credentials are correct");
+                throw e;
+            }
         }
     }
 } 

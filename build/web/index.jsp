@@ -29,30 +29,7 @@
                 color: var(--text-dark);
             }
 
-            /* Header Styles */
-            .top-bar {
-                background: var(--primary-color);
-                color: white;
-                padding: 8px 0;
-                font-size: 14px;
-            }
 
-            .top-bar .contact-info {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .top-bar .social-links a {
-                color: white;
-                margin-left: 15px;
-                font-size: 16px;
-                transition: opacity 0.3s ease;
-            }
-
-            .top-bar .social-links a:hover {
-                opacity: 0.8;
-            }
 
             .search-container {
                 position: relative;
@@ -168,6 +145,373 @@
                  margin-right: 5px;
              }
 
+            /* Modern Navigation Bar Styles */
+            .modern-navbar {
+                background: #1a1a1a;
+                padding: 0;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                width: 100%;
+            }
+
+            .nav-container {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 0 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 60px;
+            }
+
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .nav-brand .brand-logo {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: #ffffff;
+                text-decoration: none;
+                letter-spacing: 0.5px;
+                transition: color 0.3s ease;
+                white-space: nowrap;
+            }
+
+            .nav-brand .brand-logo:hover {
+                color: var(--primary-color);
+            }
+
+            .nav-brand .search-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                background: #333333;
+                border-radius: 20px;
+                padding: 3px;
+                border: 1px solid #444444;
+            }
+
+            .nav-brand .search-input {
+                background: transparent;
+                border: none;
+                color: #ffffff;
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                width: 280px;
+                outline: none;
+                transition: all 0.3s ease;
+            }
+
+            .nav-brand .search-input::placeholder {
+                color: #aaaaaa;
+                font-size: 0.85rem;
+            }
+
+            .nav-brand .search-input:focus {
+                background: #444444;
+                border-color: var(--primary-color);
+            }
+
+            .nav-brand .search-btn {
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 18px;
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            }
+
+            .nav-brand .search-btn:hover {
+                background: var(--secondary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+                color: #ffffff;
+            }
+
+            .nav-brand .search-btn:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 8px rgba(118, 75, 162, 0.3);
+            }
+
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                gap: 0;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .nav-item {
+                color: #cccccc;
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                position: relative;
+                margin: 0 4px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .nav-item:hover {
+                color: #ffffff;
+                background: #333333;
+                transform: translateY(-1px);
+            }
+
+            .nav-item.active {
+                color: #ffffff;
+                background: #4a4a4a;
+                box-shadow: 0 3px 12px rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-item.login-btn {
+                background: #000000;
+                color: #ffffff;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-weight: 600;
+                box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+                transition: all 0.3s ease;
+            }
+
+            .nav-item.login-btn:hover {
+                background: #333333;
+                transform: translateY(-1px);
+                box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4);
+            }
+
+            .nav-item.login-btn i {
+                font-size: 0.85em;
+            }
+
+            .nav-toggle {
+                display: none;
+                flex-direction: column;
+                cursor: pointer;
+                gap: 4px;
+                z-index: 1002;
+            }
+
+            .nav-toggle span {
+                width: 25px;
+                height: 3px;
+                background: #ffffff;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+
+            /* Mobile Navigation Backdrop */
+            .mobile-nav-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+            }
+
+            .mobile-nav-backdrop.active {
+                display: block;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 1024px) {
+                .nav-container {
+                    padding: 0 1.5rem;
+                }
+                
+                .nav-brand .search-input {
+                    width: 250px;
+                }
+                
+                .nav-menu {
+                    gap: 0;
+                }
+                
+                .nav-item {
+                    padding: 9px 18px;
+                    margin: 0 3px;
+                    font-size: 0.85rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .nav-menu {
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: #1a1a1a;
+                    flex-direction: column;
+                    padding: 1rem 0;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                    z-index: 1001;
+                }
+
+                .nav-menu.active {
+                    display: flex;
+                }
+
+                .nav-item {
+                    margin: 5px 0;
+                    width: 100%;
+                    text-align: center;
+                    justify-content: center;
+                    padding: 12px 20px;
+                    font-size: 0.95rem;
+                }
+
+                .nav-toggle {
+                    display: flex;
+                }
+
+                .nav-container {
+                    padding: 0 1rem;
+                    height: 70px;
+                }
+
+                .nav-brand {
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: flex-start;
+                    flex: 1;
+                }
+
+                .nav-brand .search-container {
+                    width: 100%;
+                    max-width: 350px;
+                }
+
+                .nav-brand .search-input {
+                    width: 100%;
+                    flex: 1;
+                    font-size: 0.95rem;
+                    padding: 10px 18px;
+                }
+
+                .nav-brand .search-btn {
+                    font-size: 0.9rem;
+                    padding: 10px 18px;
+                }
+
+                .nav-actions {
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: stretch;
+                    min-width: 120px;
+                }
+
+                .nav-item.find-store-btn,
+                .nav-item.login-btn {
+                    width: 100%;
+                    text-align: center;
+                    justify-content: center;
+                    padding: 10px 16px;
+                    font-size: 0.9rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .nav-container {
+                    padding: 0 0.5rem;
+                    height: 80px;
+                }
+                
+                .nav-item {
+                    padding: 10px 16px;
+                    font-size: 0.9rem;
+                }
+                
+                .brand-logo {
+                    font-size: 1.4rem;
+                }
+
+                .nav-brand .search-container {
+                    max-width: 280px;
+                }
+
+                .nav-brand .search-input {
+                    font-size: 0.9rem;
+                    padding: 8px 16px;
+                }
+
+                .nav-brand .search-btn {
+                    padding: 8px 16px;
+                    font-size: 0.85rem;
+                }
+
+                .nav-actions {
+                    min-width: 100px;
+                }
+
+                .nav-item.find-store-btn,
+                .nav-item.login-btn {
+                    font-size: 0.85rem;
+                    padding: 8px 12px;
+                }
+            }
+
+            @media (max-width: 360px) {
+                .nav-container {
+                    padding: 0 0.25rem;
+                    height: 100px;
+                }
+                
+                .brand-logo {
+                    font-size: 1.3rem;
+                }
+                
+                .nav-brand .search-container {
+                    max-width: 240px;
+                }
+                
+                .nav-brand .search-input {
+                    font-size: 0.8rem;
+                    padding: 6px 12px;
+                }
+                
+                .nav-brand .search-btn {
+                    font-size: 0.8rem;
+                    padding: 6px 10px;
+                }
+                
+                .nav-actions {
+                    min-width: 80px;
+                }
+                
+                .nav-item.find-store-btn,
+                .nav-item.login-btn {
+                    font-size: 0.8rem;
+                    padding: 6px 8px;
+                }
+                
+                .nav-item.find-store-btn span,
+                .nav-item.login-btn span {
+                    display: none;
+                }
+                
+                .nav-item.find-store-btn i,
+                .nav-item.login-btn i {
+                    font-size: 1rem;
+                }
+            }
+
             .btn-primary-custom {
                 background: var(--primary-color);
                 border: none;
@@ -192,27 +536,240 @@
                 background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
                 color: white;
                 padding: 80px 0;
-                text-align: center;
+                text-align: left;
             }
 
-            .hero-content h1 {
+            /* Brand Logo Section */
+            .brand-logo-section {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 2rem;
+            }
+
+            .brand-icon {
+                width: 50px;
+                height: 50px;
+                background: #ff6b35;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                color: white;
+            }
+
+            .brand-name {
+                font-size: 2rem;
+                font-weight: 700;
+                color: white;
+                margin: 0;
+            }
+
+            /* Hero Headline */
+            .hero-headline {
                 font-size: 3.5rem;
                 font-weight: 700;
-                margin-bottom: 20px;
+                line-height: 1.2;
+                margin-bottom: 1.5rem;
+                color: white;
             }
 
-            .hero-content p {
+            .highlighted-text {
+                position: relative;
+                display: inline-block;
+            }
+
+            .highlighted-text::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: #ff6b35;
+                border-radius: 2px;
+            }
+
+            /* Hero Description */
+            .hero-description {
                 font-size: 1.2rem;
-                margin-bottom: 30px;
-                opacity: 0.9;
+                line-height: 1.6;
+                margin-bottom: 2rem;
+                color: rgba(255, 255, 255, 0.9);
+                max-width: 500px;
             }
 
-            .hero-image {
-                max-width: 100%;
-                height: auto;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            /* Search Section */
+            .search-container-hero {
+                display: flex;
+                max-width: 450px;
+                background: white;
+                border-radius: 25px;
+                overflow: hidden;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             }
+
+            .search-input-wrapper {
+                position: relative;
+                flex: 1;
+                display: flex;
+                align-items: center;
+            }
+
+            .search-input-hero {
+                width: 100%;
+                padding: 15px 20px;
+                border: none;
+                outline: none;
+                font-size: 1rem;
+                color: #333;
+            }
+
+            .search-dropdown {
+                position: absolute;
+                right: 15px;
+                color: #666;
+                cursor: pointer;
+                padding: 5px;
+            }
+
+            .search-btn-hero {
+                background: #ff6b35;
+                color: white;
+                border: none;
+                padding: 15px 25px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+            .search-btn-hero:hover {
+                background: #e55a2b;
+            }
+
+            /* Quick Links */
+            .quick-links {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-top: 2rem;
+            }
+
+            .quick-link {
+                color: rgba(255, 255, 255, 0.8);
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.3s ease;
+            }
+
+            .quick-link:hover {
+                color: white;
+            }
+
+            .separator {
+                color: rgba(255, 255, 255, 0.4);
+                font-weight: 300;
+            }
+
+            /* Book Covers Section */
+            .book-covers-section {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 600px;
+            }
+
+            .book-cover {
+                position: absolute;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+                transition: transform 0.3s ease;
+            }
+
+            .book-cover:hover {
+                transform: translateY(-10px);
+            }
+
+            .book-1 {
+                left: 5%;
+                top: 10%;
+                z-index: 6;
+                transform: rotate(-15deg);
+            }
+
+            .book-2 {
+                left: 30%;
+                top: 15%;
+                z-index: 5;
+                transform: rotate(-5deg);
+            }
+
+            .book-3 {
+                right: 10%;
+                top: 10%;
+                z-index: 4;
+                transform: rotate(8deg);
+            }
+
+            .book-4 {
+                left: 10%;
+                bottom: 20%;
+                z-index: 3;
+                transform: rotate(-12deg);
+            }
+
+            .book-5 {
+                left: 40%;
+                bottom: 15%;
+                z-index: 2;
+                transform: rotate(3deg);
+            }
+
+            .book-6 {
+                right: 20%;
+                bottom: 25%;
+                z-index: 1;
+                transform: rotate(12deg);
+            }
+
+            .book-cover-img {
+                width: 200px;
+                height: 280px;
+                object-fit: cover;
+            }
+
+            /* Top row books - larger size */
+            .book-1 .book-cover-img,
+            .book-2 .book-cover-img,
+            .book-3 .book-cover-img {
+                width: 250px;
+                height: 350px;
+            }
+
+            .book-info {
+                padding: 15px;
+                text-align: center;
+                background: white;
+            }
+
+            .book-info h4 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+                margin: 0 0 5px 0;
+            }
+
+            .book-info p {
+                font-size: 0.85rem;
+                color: #666;
+                margin: 0;
+            }
+
+
 
             /* Categories Section */
             .categories-section {
@@ -651,6 +1208,78 @@
                     font-size: 2.5rem;
                 }
                 
+                .hero-headline {
+                    font-size: 2.5rem;
+                }
+                
+                .brand-name {
+                    font-size: 1.5rem;
+                }
+                
+                .brand-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1.2rem;
+                }
+                
+                .search-container-hero {
+                    max-width: 100%;
+                }
+                
+                .book-covers-section {
+                    height: 400px;
+                }
+                
+                .book-cover-img {
+                    width: 150px;
+                    height: 210px;
+                }
+
+                /* Top row books - larger size on mobile */
+                .book-1 .book-cover-img,
+                .book-2 .book-cover-img,
+                .book-3 .book-cover-img {
+                    width: 180px;
+                    height: 252px;
+                }
+                
+                .book-1 {
+                    left: 2%;
+                    top: 8%;
+                }
+                
+                .book-2 {
+                    left: 25%;
+                    top: 12%;
+                }
+                
+                .book-3 {
+                    right: 15%;
+                    top: 8%;
+                }
+                
+                .book-4 {
+                    left: 8%;
+                    bottom: 18%;
+                }
+                
+                .book-5 {
+                    left: 35%;
+                    bottom: 12%;
+                }
+                
+                .book-6 {
+                    right: 8%;
+                    bottom: 22%;
+                }
+                
+
+                
+                .quick-links {
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                
                 .section-title {
                     font-size: 2rem;
                 }
@@ -685,133 +1314,73 @@
                 cursor: not-allowed;
             }
             
-            /* Logout Message Styles */
-            .alert-success.position-fixed {
-                animation: slideInRight 0.5s ease-out;
-                border: none;
-                border-radius: 10px;
+
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .nav-item.find-store-btn {
+                background: #333333;
+                color: #ffffff;
+                padding: 8px 16px;
+                border-radius: 20px;
                 font-weight: 500;
-                box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
-                z-index: 99999 !important;
-                background: #d4edda !important;
-                color: #155724 !important;
-                border-left: 4px solid #28a745 !important;
-                min-width: 350px;
-                max-width: 400px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+                font-size: 0.85rem;
             }
-            
-            .alert-success.position-fixed .btn-close {
-                padding: 0.5rem;
-                margin: 0;
-                color: #155724;
-                opacity: 0.7;
+
+            .nav-item.find-store-btn:hover {
+                background: #444444;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             }
-            
-            .alert-success.position-fixed .btn-close:hover {
-                opacity: 1;
-            }
-            
-            /* Ensure text is always visible in logout message */
-            .alert-success.position-fixed span {
-                color: #155724 !important;
-                text-shadow: none !important;
-                font-weight: 600 !important;
-                font-size: 1rem !important;
-            }
-            
-            .alert-success.position-fixed * {
-                color: inherit !important;
-            }
-            
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
+
+            .nav-item.find-store-btn i {
+                font-size: 0.8em;
+                margin-right: 5px;
             }
         </style>
     </head>
     <body>
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="contact-info">
-                            <i class="fas fa-phone"></i>
-                            <span>+94 76 59 473 3337</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <div class="social-links">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Main Header -->
-        <header class="main-header">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-3">
-                        <a href="#" class="logo">PAHANA BOOKSTORE</a>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Search products..." disabled>
-                            <button class="search-btn" disabled>Search</button>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end">
-                        <a href="#" class="btn-primary-custom" onclick="showStoreSubscriptionForm(); return false;">Find a Book Store</a>
-                    </div>
-                </div>
-            </div>
-        </header>
 
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                                 <div class="collapse navbar-collapse" id="navbarNav">
-                     <ul class="navbar-nav me-auto">
-                         <li class="nav-item">
-                             <a class="nav-link active" href="#home">Home</a>
-                         </li>
-                         <li class="nav-item">
-                             <a class="nav-link" href="#categories">Categories</a>
-                         </li>
-                         <li class="nav-item">
-                             <a class="nav-link" href="#about">About</a>
-                         </li>
-                         <li class="nav-item">
-                             <a class="nav-link" href="#service">Service</a>
-                         </li>
-                         <li class="nav-item">
-                             <a class="nav-link" href="#contact">Contact</a>
-                         </li>
-                     </ul>
-                     <ul class="navbar-nav">
-                         <li class="nav-item">
-                             <a class="nav-link login-nav-link" href="login.jsp">
-                                 <i class="fas fa-sign-in-alt me-1"></i>Login
-                             </a>
-                         </li>
-                     </ul>
-                 </div>
+        <nav class="modern-navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <a href="#home" class="brand-logo">Pahana</a>
+                </div>
+                <div class="nav-menu">
+                    <a href="#home" class="nav-item active">Home</a>
+                    <a href="#categories" class="nav-item">Categories</a>
+                    <a href="#about" class="nav-item">About</a>
+                    <a href="#service" class="nav-item">Service</a>
+                    <a href="#contact" class="nav-item">Contact</a>
+                </div>
+                <div class="nav-actions">
+                    <a href="#" class="nav-item find-store-btn" onclick="showStoreSubscriptionForm(); return false;">
+                        <i class="fas fa-store"></i>
+                        <span>Find a Book Store</span>
+                    </a>
+                    <a href="login.jsp" class="nav-item login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </a>
+                </div>
+                <div class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </nav>
+
+        <!-- Mobile Navigation Backdrop -->
+        <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
 
         <!-- Hero Section -->
         <section id="home" class="hero-section">
@@ -819,15 +1388,114 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <div class="hero-content">
-                            <h1>OUR BIGGEST SALE</h1>
-                            <h2 class="display-4 fw-bold mb-4">Buy 2 Get 3 Free</h2>
-                            <p class="lead">Limited Time Only. While Supplies Last!</p>
-                            <a href="#categories" class="btn-primary-custom btn-lg" onclick="shopNowComingSoon(); return false;">Shop Now</a>
+                            <!-- Brand Logo -->
+                            <div class="brand-logo-section mb-4">
+                                <div class="brand-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h2 class="brand-name">Pahana.</h2>
+                            </div>
+                            
+                            <!-- Main Headline -->
+                            <h1 class="hero-headline mb-4">
+                                Best Place to Find Your 
+                                <span class="highlighted-text">Favorite</span> Books
+                            </h1>
+                            
+                            <!-- Descriptive Text -->
+                            <p class="hero-description mb-4">
+                                Discover millions of book titles with the best price offered here. 
+                                Available for worldwide shipping and payment.
+                            </p>
+                            
+                            <!-- Search Bar -->
+                            <div class="search-section mb-4">
+                                <div class="search-container-hero">
+                                    <div class="search-input-wrapper">
+                                        <input type="text" class="search-input-hero" placeholder="Search">
+                                    </div>
+                                    <button class="search-btn-hero">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Category Links -->
+                            <div class="quick-links">
+                                <a href="#" class="quick-link" onclick="shopNowComingSoon(); return false;">Best Seller</a>
+                                <span class="separator">|</span>
+                                <a href="#" class="quick-link" onclick="shopNowComingSoon(); return false;">Trending Items</a>
+                                <span class="separator">|</span>
+                                <a href="#" class="quick-link" onclick="shopNowComingSoon(); return false;">New Items</a>
+                                <span class="separator">|</span>
+                                <a href="#" class="quick-link" onclick="shopNowComingSoon(); return false;">Our Recommendation</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 text-center">
-                        <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                             alt="Children Reading Books" class="img-fluid rounded">
+                    <div class="col-lg-6">
+                        <div class="book-covers-section">
+                            <!-- Book 1 - Top Left -->
+                            <div class="book-cover book-1">
+                                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="Love in Paris" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>Love in Paris.</h4>
+                                    <p>Emily Stevenson</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Book 2 - Top Center -->
+                            <div class="book-cover book-2">
+                                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="THE JOURNEY" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>THE JOURNEY</h4>
+                                    <p>ALEX TURNER</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Book 3 - Top Right -->
+                            <div class="book-cover book-3">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="Children Reading" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>Children's World</h4>
+                                    <p>Sarah Johnson</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Book 4 - Bottom Left -->
+                            <div class="book-cover book-4">
+                                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="River of My Blood" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>River of My Blood</h4>
+                                    <p>John Smith</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Book 5 - Bottom Center -->
+                            <div class="book-cover book-5">
+                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="Bobi Puribar Age" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>Bobi Puribar Age</h4>
+                                    <p>Humayun Ahmed</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Book 6 - Bottom Right -->
+                            <div class="book-cover book-6">
+                                <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     alt="The Great Adventure" class="book-cover-img">
+                                <div class="book-info">
+                                    <h4>The Great Adventure</h4>
+                                    <p>Adventure Writer</p>
+                                </div>
+                            </div>
+                            
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1335,6 +2003,98 @@
         
         <!-- Smooth Scrolling for Navigation -->
         <script>
+            // Modern Navigation Toggle Functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const navToggle = document.getElementById('navToggle');
+                const navMenu = document.querySelector('.nav-menu');
+                const mobileBackdrop = document.getElementById('mobileNavBackdrop');
+                
+                if (navToggle && navMenu) {
+                    navToggle.addEventListener('click', function() {
+                        navMenu.classList.toggle('active');
+                        if (mobileBackdrop) {
+                            mobileBackdrop.classList.toggle('active');
+                        }
+                        
+                        // Animate hamburger menu
+                        const spans = navToggle.querySelectorAll('span');
+                        spans.forEach((span, index) => {
+                            if (navMenu.classList.contains('active')) {
+                                if (index === 0) span.style.transform = 'rotate(45deg) translate(5px, 5px)';
+                                if (index === 1) span.style.opacity = '0';
+                                if (index === 2) span.style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                            } else {
+                                span.style.transform = 'none';
+                                span.style.opacity = '1';
+                            }
+                        });
+                    });
+                    
+                    // Close mobile menu when clicking on backdrop
+                    if (mobileBackdrop) {
+                        mobileBackdrop.addEventListener('click', function() {
+                            navMenu.classList.remove('active');
+                            mobileBackdrop.classList.remove('active');
+                            // Reset hamburger animation
+                            const spans = navToggle.querySelectorAll('span');
+                            spans.forEach(span => {
+                                span.style.transform = 'none';
+                                span.style.opacity = '1';
+                            });
+                        });
+                    }
+                    
+                    // Close mobile menu when clicking on a nav item
+                    const navItems = document.querySelectorAll('.nav-item');
+                    navItems.forEach(item => {
+                        item.addEventListener('click', function() {
+                            if (window.innerWidth <= 768) {
+                                navMenu.classList.remove('active');
+                                if (mobileBackdrop) {
+                                    mobileBackdrop.classList.remove('active');
+                                }
+                                // Reset hamburger animation
+                                const spans = navToggle.querySelectorAll('span');
+                                spans.forEach(span => {
+                                    span.style.transform = 'none';
+                                    span.style.opacity = '1';
+                                });
+                            }
+                        });
+                    });
+                    
+                    // Close mobile menu when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                            navMenu.classList.remove('active');
+                            if (mobileBackdrop) {
+                                mobileBackdrop.classList.remove('active');
+                            }
+                            const spans = navToggle.querySelectorAll('span');
+                            spans.forEach(span => {
+                                span.style.transform = 'none';
+                                span.style.opacity = '1';
+                            });
+                        }
+                    });
+
+                    // Handle window resize
+                    window.addEventListener('resize', function() {
+                        if (window.innerWidth > 768) {
+                            navMenu.classList.remove('active');
+                            if (mobileBackdrop) {
+                                mobileBackdrop.classList.remove('active');
+                            }
+                            const spans = navToggle.querySelectorAll('span');
+                            spans.forEach(span => {
+                                span.style.transform = 'none';
+                                span.style.opacity = '1';
+                            });
+                        }
+                    });
+                }
+            });
+
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -1362,7 +2122,10 @@
                     }
                 });
 
-                document.querySelectorAll('.nav-link').forEach(link => {
+                document.querySelectorAll('.nav-item').forEach(link => {
+                    // Skip login button from active state management
+                    if (link.classList.contains('login-btn')) return;
+                    
                     link.classList.remove('active');
                     if (link.getAttribute('href') === `#${current}`) {
                         link.classList.add('active');
@@ -1568,49 +2331,6 @@
 
             // Add loading animation to category cards and intercept footer links
             document.addEventListener('DOMContentLoaded', function() {
-                // Check for logout message in URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                const message = urlParams.get('message');
-                console.log('URL search params:', window.location.search);
-                console.log('Message parameter:', message);
-                console.log('Message type:', typeof message);
-                console.log('Message length:', message ? message.length : 'null');
-                
-                if (message) {
-                    console.log('Creating logout message alert with message:', message);
-                    const alertDiv = document.createElement('div');
-                    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
-                    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 99999 !important;';
-                    alertDiv.innerHTML = `
-                        <i class="fas fa-check-circle me-2"></i>
-                        <span style="color: #155724 !important; text-shadow: none !important; font-weight: 600 !important;">${message}</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    `;
-                    document.body.appendChild(alertDiv);
-                    console.log('Alert div created and added to body');
-                    console.log('Alert div HTML:', alertDiv.outerHTML);
-                    
-                    // Auto-hide after 5 seconds
-                    setTimeout(() => {
-                        if (alertDiv.parentNode) {
-                            alertDiv.remove();
-                            console.log('Alert auto-removed');
-                        }
-                    }, 5000);
-                    
-                    // Re-apply text color after a short delay
-                    setTimeout(() => {
-                        const textSpan = alertDiv.querySelector('span');
-                        if (textSpan) {
-                            textSpan.style.color = '#155724 !important';
-                            textSpan.style.textShadow = 'none !important';
-                            textSpan.style.fontWeight = '600 !important';
-                            console.log('Text styles re-applied to span');
-                        }
-                    }, 100);
-                } else {
-                    console.log('No message parameter found in URL');
-                }
                 
                 // Hover animation for category cards
                 const categoryCards = document.querySelectorAll('.category-card');
