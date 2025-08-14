@@ -40,6 +40,32 @@ public class CustomerDAO {
         }
     }
     
+    /**
+     * Create customer using an externally provided connection for transaction management
+     */
+    public boolean createCustomerWithConnection(Customer customer, Connection conn) throws SQLException {
+        String sql = "INSERT INTO customers (account_number, name, address, phone, username, email, password, role_id, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, customer.getAccountNumber());
+            pstmt.setString(2, customer.getName());
+            pstmt.setString(3, customer.getAddress());
+            pstmt.setString(4, customer.getPhone());
+            pstmt.setString(5, customer.getUsername());
+            pstmt.setString(6, customer.getEmail());
+            pstmt.setString(7, customer.getPassword());
+            pstmt.setInt(8, customer.getRole().getRoleId());
+            pstmt.setInt(9, customer.getCreatedBy().getUserId());
+            
+            int result = pstmt.executeUpdate();
+            System.out.println("✓ Customer creation SQL executed, rows affected: " + result);
+            return result > 0;
+        } catch (SQLException e) {
+            System.err.println("✗ Error creating customer with connection: " + e.getMessage());
+            throw e; // Re-throw to be handled by transaction manager
+        }
+    }
+    
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, u.username as created_by_name FROM customers c " +

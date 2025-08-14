@@ -7,6 +7,8 @@ package com.booking.patterns;
 import com.booking.models.*;
 import com.booking.dao.*;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
@@ -45,6 +47,51 @@ public class FacadeDP {
         return userDAO.createUser(user);
     }
     
+    /**
+     * Register user with transaction management for better reliability
+     */
+    public boolean registerUserWithTransaction(User user) {
+        Connection conn = null;
+        try {
+            conn = SingletonDP.getInstance().getConnection();
+            conn.setAutoCommit(false); // Start transaction
+            
+            // Create user
+            boolean userCreated = userDAO.createUserWithConnection(user, conn);
+            
+            if (userCreated) {
+                conn.commit(); // Commit transaction
+                System.out.println("✓ User created successfully with transaction");
+                return true;
+            } else {
+                conn.rollback(); // Rollback on failure
+                System.out.println("✗ User creation failed, transaction rolled back");
+                return false;
+            }
+        } catch (Exception e) {
+            try {
+                if (conn != null) {
+                    conn.rollback(); // Rollback on exception
+                    System.err.println("✗ Exception occurred, transaction rolled back: " + e.getMessage());
+                }
+            } catch (SQLException rollbackEx) {
+                System.err.println("✗ Error during rollback: " + rollbackEx.getMessage());
+            }
+            System.err.println("✗ Error in registerUserWithTransaction: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Reset auto-commit
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("✗ Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    
     public List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
@@ -64,6 +111,51 @@ public class FacadeDP {
     // Customer Management Facade
     public boolean createCustomer(Customer customer) {
         return customerDAO.createCustomer(customer);
+    }
+    
+    /**
+     * Create customer with transaction management
+     */
+    public boolean createCustomerWithTransaction(Customer customer) {
+        Connection conn = null;
+        try {
+            conn = SingletonDP.getInstance().getConnection();
+            conn.setAutoCommit(false); // Start transaction
+            
+            // Create customer
+            boolean customerCreated = customerDAO.createCustomerWithConnection(customer, conn);
+            
+            if (customerCreated) {
+                conn.commit(); // Commit transaction
+                System.out.println("✓ Customer created successfully with transaction");
+                return true;
+            } else {
+                conn.rollback(); // Rollback on failure
+                System.out.println("✗ Customer creation failed, transaction rolled back");
+                return false;
+            }
+        } catch (Exception e) {
+            try {
+                if (conn != null) {
+                    conn.rollback(); // Rollback on exception
+                    System.err.println("✗ Exception occurred, transaction rolled back: " + e.getMessage());
+                }
+            } catch (SQLException rollbackEx) {
+                System.err.println("✗ Error during rollback: " + rollbackEx.getMessage());
+            }
+            System.err.println("✗ Error in createCustomerWithTransaction: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Reset auto-commit
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("✗ Error closing connection: " + e.getMessage());
+            }
+        }
     }
     
     public Customer authenticateCustomer(String username, String password) {

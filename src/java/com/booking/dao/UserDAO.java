@@ -66,6 +66,27 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Create user using an existing connection (for transaction management)
+     */
+    public boolean createUserWithConnection(User user, Connection conn) throws SQLException {
+        String sql = "INSERT INTO users (username, password, email, role_id) VALUES (?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setInt(4, user.getRole().getRoleId());
+            
+            int result = pstmt.executeUpdate();
+            System.out.println("✓ User creation SQL executed, rows affected: " + result);
+            return result > 0;
+        } catch (SQLException e) {
+            System.err.println("✗ Error creating user with connection: " + e.getMessage());
+            throw e; // Re-throw to be handled by transaction manager
+        }
+    }
+    
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT u.*, r.role_id, r.role_name FROM users u " +

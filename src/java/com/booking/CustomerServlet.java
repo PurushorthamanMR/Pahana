@@ -109,6 +109,9 @@ public class CustomerServlet extends HttpServlet {
             case "check-email-exists":
                 handleCheckEmailExists(request, response);
                 break;
+            case "check-username-exists":
+                handleCheckUsernameExists(request, response);
+                break;
             default:
                 response.sendRedirect("customer.jsp?error=Invalid action.");
         }
@@ -628,6 +631,28 @@ public class CustomerServlet extends HttpServlet {
             
             // Check if phone number exists in customers table
             boolean exists = facade.isPhoneNumberExists(phone.trim());
+            
+            response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void handleCheckUsernameExists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String username = request.getParameter("username");
+            
+            if (username == null || username.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Username is required\"}");
+                return;
+            }
+            
+            // Check if username exists in ANY table (customers or users)
+            boolean exists = facade.isUsernameExistsInAnyTable(username.trim());
             
             response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
             
