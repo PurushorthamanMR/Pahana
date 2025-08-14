@@ -100,6 +100,12 @@ public class UserServlet extends HttpServlet {
             case "verify-email":
                 handleVerifyEmailCode(request, response);
                 break;
+            case "check-username-exists":
+                handleCheckUsernameExists(request, response);
+                break;
+            case "check-email-exists":
+                handleCheckEmailExists(request, response);
+                break;
 
             default:
                 response.sendRedirect("user.jsp?error=Invalid action.");
@@ -122,6 +128,11 @@ public class UserServlet extends HttpServlet {
 
     private void handleCreateUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
+        
+        // Set response timeout
+        response.setHeader("Connection", "close");
+        response.setHeader("Keep-Alive", "timeout=30");
+        
         try {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
@@ -160,26 +171,45 @@ public class UserServlet extends HttpServlet {
             user.setPassword(password);
             user.setRole(role);
 
-            boolean success = facade.registerUser(user);
-
-            if (success) {
-                // Send role-specific help sections via email
-                try {
-                    sendUserHelpSectionsEmail(user);
-                } catch (Exception emailException) {
-                    // Log email error but don't fail user creation
-                    System.err.println("Error sending help sections email: " + emailException.getMessage());
-                }
-                
-                eventManager.logEvent("User created successfully: " + username, "INFO");
-                response.sendRedirect("user.jsp?message=User created successfully.");
-            } else {
-                eventManager.logEvent("User creation failed: " + username, "ERROR");
-                response.sendRedirect("user.jsp?error=Failed to create user. Username or email might already exist.");
+            // Create user with transaction management and timeout
+            boolean success = false;
+            try {
+                // Set a timeout for the database operation
+                success = facade.registerUserWithTransaction(user);
+            } catch (Exception dbException) {
+                System.err.println("Database error during user creation: " + dbException.getMessage());
+                dbException.printStackTrace();
+                response.sendRedirect("user.jsp?error=Database error occurred. Please try again or contact administrator.");
+                return;
             }
 
+            if (success) {
+                // Send role-specific help sections via email ASYNCHRONOUSLY
+                // This prevents blocking the user creation response
+                new Thread(() -> {
+                    try {
+                        sendUserHelpSectionsEmail(user);
+                    } catch (Exception emailException) {
+                        // Log email error but don't fail user creation
+                        System.err.println("Error sending help sections email: " + emailException.getMessage());
+                        emailException.printStackTrace();
+                        eventManager.logEvent("Error sending help sections email to: " + user.getEmail() + " - " + emailException.getMessage(), "ERROR");
+                    }
+                }).start();
+                
+                eventManager.logEvent("User created successfully: " + username, "INFO");
+                response.sendRedirect("user.jsp?message=User created successfully. Help sections email will be sent shortly.");
+            } else {
+                eventManager.logEvent("User creation failed: " + username, "ERROR");
+                response.sendRedirect("user.jsp?error=Failed to create user. Please try again or contact administrator.");
+            }
+
+        } catch (NumberFormatException e) {
+            eventManager.logEvent("Invalid role ID format: " + e.getMessage(), "ERROR");
+            response.sendRedirect("user.jsp?error=Invalid role selection. Please try again.");
         } catch (Exception e) {
             eventManager.logEvent("User creation error: " + e.getMessage(), "ERROR");
+            e.printStackTrace();
             response.sendRedirect("user.jsp?error=Error creating user: " + e.getMessage());
         }
     }
@@ -627,6 +657,28 @@ public class UserServlet extends HttpServlet {
             
             // Check if email exists in users table
             boolean exists = facade.isUserEmailExists(email.trim());
+            
+            response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
+            
+        } catch (Exception e) {
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void handleCheckUsernameExists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            
+            String username = request.getParameter("username");
+            
+            if (username == null || username.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Username is required\"}");
+                return;
+            }
+            
+            // Check if username exists in ANY table (customers or users)
+            boolean exists = facade.isUsernameExistsInAnyTable(username.trim());
             
             response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
             

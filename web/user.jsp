@@ -572,7 +572,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <input type="text" class="form-control" id="username" name="username" required onblur="checkUsernameOnBlur(this.value)">
+                                    <div id="usernameWarning" class="text-danger mt-1" style="display: none;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        <small>This username is already taken. Please choose a different one.</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -1084,6 +1088,27 @@
                             return false;
                         }
                         
+                        // Check username before submitting
+                        const username = document.getElementById('username').value.trim();
+                        if (username) {
+                            checkUsernameExists(username, function(exists) {
+                                if (exists) {
+                                    e.preventDefault();
+                                    showAlert('This username is already taken. Please choose a different username.', 'error');
+                                    return false;
+                                } else {
+                                    // Username is unique, allow form submission
+                                    showLoadingScreen();
+                                    // Submit form after a short delay to show loading
+                                    setTimeout(() => {
+                                        form.submit();
+                                    }, 500);
+                                }
+                            });
+                            e.preventDefault(); // Prevent default until we check username
+                            return false;
+                        }
+                        
                         // Show loading screen
                         showLoadingScreen();
                     });
@@ -1092,17 +1117,92 @@
             
             // Function to show loading screen
             function showLoadingScreen() {
-                document.getElementById('loadingOverlay').style.display = 'flex';
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                const addUserBtn = document.getElementById('addUserBtn');
+                const form = document.getElementById('addUserForm');
+                
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                }
+                
                 // Disable the form to prevent multiple submissions
-                document.getElementById('addUserForm').style.pointerEvents = 'none';
-                document.getElementById('addUserBtn').disabled = true;
+                if (form) {
+                    form.style.pointerEvents = 'none';
+                }
+                
+                if (addUserBtn) {
+                    addUserBtn.disabled = true;
+                    addUserBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating User...';
+                }
+                
+                // Show progress message
+                showAlert('Creating user account... Please wait.', 'info');
             }
             
             // Function to hide loading screen (can be called from other parts if needed)
             function hideLoadingScreen() {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('addUserForm').style.pointerEvents = 'auto';
-                document.getElementById('addUserBtn').disabled = false;
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                const addUserBtn = document.getElementById('addUserBtn');
+                const form = document.getElementById('addUserForm');
+                
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+                
+                if (form) {
+                    form.style.pointerEvents = 'auto';
+                }
+                
+                if (addUserBtn) {
+                    addUserBtn.disabled = false;
+                    addUserBtn.innerHTML = 'Add User';
+                }
+            }
+            
+            // Function to check if username already exists
+            function checkUsernameExists(username, callback) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'UserServlet?action=check-username-exists', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    callback(response.exists);
+                                } else {
+                                    callback(false); // Allow submission on error
+                                }
+                            } catch (e) {
+                                callback(false); // Allow submission on parse error
+                            }
+                        } else {
+                            callback(false); // Allow submission on network error
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    callback(false); // Allow submission on error
+                };
+                
+                xhr.send('username=' + encodeURIComponent(username));
+            }
+
+            function checkUsernameOnBlur(username) {
+                if (username) {
+                    checkUsernameExists(username, function(exists) {
+                        const usernameWarning = document.getElementById('usernameWarning');
+                        if (exists) {
+                            usernameWarning.style.display = 'block';
+                        } else {
+                            usernameWarning.style.display = 'none';
+                        }
+                    });
+                }
             }
 
         </script>

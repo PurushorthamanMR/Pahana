@@ -128,16 +128,16 @@
             /* Main Content Styles */
             .main-content {
                 flex: 1;
-                margin-left: 280px;
-                padding: 2rem;
+                margin-left: 260px;
+                padding: 1rem;
             }
 
             .header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 2rem;
-                padding: 1rem 0;
+                margin-bottom: 1rem;
+                padding: 0.5rem 0;
             }
 
             .header-left {
@@ -176,16 +176,16 @@
             .content-card {
                 background: white;
                 border-radius: 12px;
-                padding: 1.5rem;
+                padding: 1rem;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
             }
 
             .card-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -211,6 +211,7 @@
             /* Table Styles */
             .table {
                 margin-bottom: 0;
+                font-size: 0.9rem;
             }
 
             .table th {
@@ -218,15 +219,17 @@
                 font-weight: 600;
                 color: #333;
                 background-color: #f8f9fa;
+                padding: 0.5rem;
             }
 
             .table td {
                 vertical-align: middle;
+                padding: 0.5rem;
             }
 
             .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.875rem;
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
                 border-radius: 4px;
             }
 
@@ -250,19 +253,20 @@
 
             /* Form Styles */
             .form-group {
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
             }
 
             .form-label {
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.3rem;
+                font-size: 0.9rem;
             }
 
             .form-control {
                 border: 2px solid #e9ecef;
                 border-radius: 6px;
-                padding: 0.75rem;
+                padding: 0.5rem;
                 transition: border-color 0.3s ease;
             }
 
@@ -275,8 +279,8 @@
             .alert {
                 border-radius: 8px;
                 border: none;
-                padding: 1rem;
-                margin-bottom: 1.5rem;
+                padding: 0.75rem;
+                margin-bottom: 1rem;
             }
 
             .alert-success {
@@ -464,7 +468,7 @@
                         <button class="menu-toggle" onclick="toggleSidebar()">
                             <i class="bi bi-list"></i>
                         </button>
-                        <h1 class="h3 mb-0">Customer Management</h1>
+                        <h2 class="h4 mb-0">Customer Management</h2>
                     </div>
                     <div class="user-info">
                         <span>Welcome, <%= username %> (<%= role %>)</span>
@@ -498,7 +502,7 @@
                     <form action="CustomerServlet" method="post">
                         <input type="hidden" name="action" value="create">
                         
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name" class="form-label">Customer Name</label>
@@ -517,20 +521,24 @@
                             </div>
                         </div>
                         
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="address" class="form-label">Address</label>
-                                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                                    <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <input type="text" class="form-control" id="username" name="username" required onblur="checkUsernameOnBlur(this.value)">
+                                    <div id="usernameWarning" class="text-danger mt-1" style="display: none;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        <small>This username is already taken. Please choose a different one.</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -557,7 +565,7 @@
                             </div>
                         </div>
                         
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="verificationPin" class="form-label">Verification Pin</label>
@@ -581,7 +589,7 @@
                             </div>
                         </div>
                         
-                        <div class="text-end">
+                        <div class="text-end mt-3">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Add Customer
                             </button>
@@ -593,8 +601,8 @@
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-people me-2"></i>Customer List</span>
-                        <a href="CustomerServlet?action=list" class="btn btn-primary">
-                            <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                        <a href="CustomerServlet?action=list" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
                         </a>
                     </h3>
                     
@@ -659,8 +667,70 @@
             </div>
         </div>
 
+        <!-- Loading Screen Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-white mb-2">Creating Customer...</h5>
+                <p class="text-white-50 mb-0">Please wait while we process your request.</p>
+            </div>
+        </div>
+
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <style>
+            /* Loading Screen Styles */
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+
+            .loading-content {
+                text-align: center;
+                background-color: rgba(255, 255, 255, 0.1);
+                padding: 2rem;
+                border-radius: 12px;
+                backdrop-filter: blur(10px);
+            }
+
+            .loading-content .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
+            
+            /* Compact form styles */
+            .form-control-sm {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.875rem;
+                border-radius: 0.375rem;
+            }
+            
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .spinner-border-sm {
+                width: 1rem;
+                height: 1rem;
+            }
+            
+            /* Reduce spacing between sections */
+            .content-card + .content-card {
+                margin-top: 0.5rem;
+            }
+        </style>
 
         <script>
             // Toggle sidebar on mobile
@@ -680,6 +750,38 @@
                     }
                 }
             });
+
+            // Loading screen functions
+            function showLoadingScreen() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                const addCustomerBtn = document.querySelector('button[type="submit"]');
+                
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                }
+                
+                if (addCustomerBtn) {
+                    addCustomerBtn.disabled = true;
+                    addCustomerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating Customer...';
+                }
+                
+                // Show alert
+                showAlert('Creating customer, please wait...', 'info');
+            }
+
+            function hideLoadingScreen() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                const addCustomerBtn = document.querySelector('button[type="submit"]');
+                
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+                
+                if (addCustomerBtn) {
+                    addCustomerBtn.disabled = false;
+                    addCustomerBtn.innerHTML = '<i class="bi bi-plus-circle me-2"></i>Add Customer';
+                }
+            }
 
             // Customer management functions
             function editCustomer(customerId) {
@@ -758,7 +860,7 @@
 
             function showAlert(message, type) {
                 const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show';
+                alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info') + ' alert-dismissible fade show';
                 alertDiv.style.position = 'fixed';
                 alertDiv.style.top = '20px';
                 alertDiv.style.right = '20px';
@@ -1001,27 +1103,51 @@
                 const form = document.querySelector('form[action="CustomerServlet"]');
                 if (form) {
                     form.addEventListener('submit', function(e) {
+                        e.preventDefault(); // Always prevent default first
+                        
                         if (!emailVerified) {
-                            e.preventDefault();
                             showAlert('Please verify your email address before adding the customer.', 'error');
                             return false;
                         }
                         
-                        // Check phone number before submitting
-                        const phone = document.getElementById('phone').value.trim();
-                        if (phone) {
-                            checkPhoneNumberExists(phone, function(exists) {
+                        // Check username before submitting
+                        const username = document.getElementById('username').value.trim();
+                        if (username) {
+                            checkUsernameExists(username, function(exists) {
                                 if (exists) {
-                                    e.preventDefault();
-                                    showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
+                                    showAlert('This username is already taken. Please choose a different username.', 'error');
                                     return false;
                                 } else {
-                                    // Phone number is unique, allow form submission
-                                    form.submit();
+                                    // Username is unique, check phone number
+                                    const phone = document.getElementById('phone').value.trim();
+                                    if (phone) {
+                                        checkPhoneNumberExists(phone, function(phoneExists) {
+                                            if (phoneExists) {
+                                                showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
+                                                return false;
+                                            } else {
+                                                // Both username and phone are unique, show loading and submit
+                                                showLoadingScreen();
+                                                setTimeout(() => {
+                                                    form.submit();
+                                                }, 100);
+                                            }
+                                        });
+                                    } else {
+                                        // Username is unique and no phone to check, show loading and submit
+                                        showLoadingScreen();
+                                        setTimeout(() => {
+                                            form.submit();
+                                        }, 100);
+                                    }
                                 }
                             });
-                            e.preventDefault(); // Prevent default until we check phone
-                            return false;
+                        } else {
+                            // No username to check, show loading and submit
+                            showLoadingScreen();
+                            setTimeout(() => {
+                                form.submit();
+                            }, 100);
                         }
                     });
                 }
@@ -1071,6 +1197,52 @@
                             // For now, we just show the warning.
                         } else {
                             phoneWarning.style.display = 'none';
+                        }
+                    });
+                }
+            }
+            
+            // Function to check if username already exists
+            function checkUsernameExists(username, callback) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=check-username-exists', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    callback(response.exists);
+                                } else {
+                                    callback(false); // Allow submission on error
+                                }
+                            } catch (e) {
+                                callback(false); // Allow submission on parse error
+                            }
+                        } else {
+                            callback(false); // Allow submission on network error
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    callback(false); // Allow submission on error
+                };
+                
+                xhr.send('username=' + encodeURIComponent(username));
+            }
+
+            function checkUsernameOnBlur(username) {
+                if (username) {
+                    checkUsernameExists(username, function(exists) {
+                        const usernameWarning = document.getElementById('usernameWarning');
+                        if (exists) {
+                            usernameWarning.style.display = 'block';
+                        } else {
+                            usernameWarning.style.display = 'none';
                         }
                     });
                 }

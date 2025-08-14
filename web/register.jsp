@@ -342,7 +342,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="regUsername" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="regUsername" name="username" placeholder="Enter your username" required>
+                                    <input type="text" class="form-control" id="regUsername" name="username" placeholder="Enter your username" required onblur="checkUsernameOnBlur(this.value)">
+                                    <div id="usernameWarning" class="text-danger mt-1" style="display: none;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        <small>This username is already taken. Please choose a different one.</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -662,22 +666,39 @@
                             return false;
                         }
                         
-                        // Check phone number before submitting
-                        const phone = document.getElementById('regPhone').value.trim();
-                        if (phone) {
-                            checkPhoneNumberExists(phone, function(exists) {
+                        // Check username before submitting
+                        const username = document.getElementById('regUsername').value.trim();
+                        if (username) {
+                            checkUsernameExists(username, function(exists) {
                                 if (exists) {
                                     e.preventDefault();
-                                    showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
+                                    showAlert('This username is already taken. Please choose a different username.', 'error');
                                     return false;
                                 } else {
-                                    // Phone number is unique, allow form submission
-                                    // Show loading screen before submitting
-                                    showLoadingScreen();
-                                    form.submit();
+                                    // Username is unique, check phone number
+                                    const phone = document.getElementById('regPhone').value.trim();
+                                    if (phone) {
+                                        checkPhoneNumberExists(phone, function(phoneExists) {
+                                            if (phoneExists) {
+                                                e.preventDefault();
+                                                showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
+                                                return false;
+                                            } else {
+                                                // Both username and phone are unique, allow form submission
+                                                showLoadingScreen();
+                                                form.submit();
+                                            }
+                                        });
+                                        e.preventDefault(); // Prevent default until we check phone
+                                        return false;
+                                    } else {
+                                        // Username is unique and no phone to check, allow form submission
+                                        showLoadingScreen();
+                                        form.submit();
+                                    }
                                 }
                             });
-                            e.preventDefault(); // Prevent default until we check phone
+                            e.preventDefault(); // Prevent default until we check username
                             return false;
                         }
                     });
@@ -725,6 +746,52 @@
                             phoneWarning.style.display = 'block';
                         } else {
                             phoneWarning.style.display = 'none';
+                        }
+                    });
+                }
+            }
+            
+            // Function to check if username already exists
+            function checkUsernameExists(username, callback) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=check-username-exists', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    callback(response.exists);
+                                } else {
+                                    callback(false); // Allow submission on error
+                                }
+                            } catch (e) {
+                                callback(false); // Allow submission on parse error
+                            }
+                        } else {
+                            callback(false); // Allow submission on network error
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    callback(false); // Allow submission on error
+                };
+                
+                xhr.send('username=' + encodeURIComponent(username));
+            }
+
+            function checkUsernameOnBlur(username) {
+                if (username) {
+                    checkUsernameExists(username, function(exists) {
+                        const usernameWarning = document.getElementById('usernameWarning');
+                        if (exists) {
+                            usernameWarning.style.display = 'block';
+                        } else {
+                            usernameWarning.style.display = 'none';
                         }
                     });
                 }
