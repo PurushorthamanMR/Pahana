@@ -378,7 +378,7 @@
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-tags me-2"></i>Book Category Management</span>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal" onclick="resetAddCategoryModal()">
                             <i class="bi bi-plus-circle me-2"></i>Add Category
                         </button>
                     </h3>
@@ -453,13 +453,17 @@
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="BookCategoryServlet" method="post">
+                            <form action="BookCategoryServlet" method="post" onsubmit="return validateAddCategory(event)">
                                 <input type="hidden" name="action" value="add">
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label for="categoryName" class="form-label">Category Name</label>
-                                        <input type="text" class="form-control" id="categoryName" name="categoryName" 
+                                        <input type="text" class="form-control" id="categoryName" name="categoryName" oninput="hideAddDupWarning()" 
                                                required placeholder="Enter category name">
+                                        <div id="addDupWarning" class="text-danger mt-1" style="display:none;">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                            <small>Category name already exists.</small>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -483,14 +487,18 @@
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="BookCategoryServlet" method="post">
+                            <form action="BookCategoryServlet" method="post" onsubmit="return validateEditCategory(event)">
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="categoryId" id="editCategoryId">
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label for="editCategoryName" class="form-label">Category Name</label>
-                                        <input type="text" class="form-control" id="editCategoryName" name="categoryName" 
+                                        <input type="text" class="form-control" id="editCategoryName" name="categoryName" oninput="hideEditDupWarning()"
                                                required placeholder="Enter category name">
+                                        <div id="editDupWarning" class="text-danger mt-1" style="display:none;">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                            <small>Category name already exists.</small>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -556,6 +564,7 @@
             function editCategory(categoryId, categoryName) {
                 document.getElementById('editCategoryId').value = categoryId;
                 document.getElementById('editCategoryName').value = categoryName;
+                hideEditDupWarning();
                 new bootstrap.Modal(document.getElementById('editCategoryModal')).show();
             }
 
@@ -644,6 +653,78 @@
                     });
                 }
             });
+
+            // Duplicate validation helpers
+            function resetAddCategoryModal(){
+                const input = document.getElementById('categoryName');
+                if (input) input.value = '';
+                hideAddDupWarning();
+            }
+
+            function hideAddDupWarning(){
+                const warn = document.getElementById('addDupWarning');
+                if (warn) warn.style.display = 'none';
+            }
+
+            function hideEditDupWarning(){
+                const warn = document.getElementById('editDupWarning');
+                if (warn) warn.style.display = 'none';
+            }
+
+            function validateAddCategory(e){
+                const name = document.getElementById('categoryName').value.trim();
+                if (!name) return true;
+                e.preventDefault();
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'BookCategoryServlet?action=check-name', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState === 4){
+                        try {
+                            const res = JSON.parse(xhr.responseText);
+                            if (res.success && res.exists){
+                                const warn = document.getElementById('addDupWarning');
+                                if (warn) warn.style.display = 'block';
+                            } else {
+                                e.target.submit();
+                            }
+                        } catch(ex){
+                            e.target.submit();
+                        }
+                    }
+                };
+                xhr.send('name=' + encodeURIComponent(name));
+                return false;
+            }
+
+            function validateEditCategory(e){
+                const name = document.getElementById('editCategoryName').value.trim();
+                const id = document.getElementById('editCategoryId').value;
+                if (!name) return true;
+                e.preventDefault();
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'BookCategoryServlet?action=check-name', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState === 4){
+                        try {
+                            const res = JSON.parse(xhr.responseText);
+                            if (res.success && res.exists){
+                                const warn = document.getElementById('editDupWarning');
+                                if (warn) warn.style.display = 'block';
+                            } else {
+                                e.target.submit();
+                            }
+                        } catch(ex){
+                            e.target.submit();
+                        }
+                    }
+                };
+                xhr.send('name=' + encodeURIComponent(name) + '&excludeId=' + encodeURIComponent(id));
+                return false;
+            }
         </script>
     </body>
 </html> 

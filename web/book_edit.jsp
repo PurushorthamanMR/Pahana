@@ -322,7 +322,7 @@
                         </a>
                     </h3>
                     
-                    <form action="BookServlet" method="post">
+                    <form action="BookServlet" method="post" onsubmit="return validateEditBook(event)">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="bookId" value="<%= book.getBookId() %>">
                         
@@ -359,7 +359,11 @@
                                 <div class="mb-3">
                                     <label for="price" class="form-label">Price *</label>
                                     <input type="number" class="form-control" id="price" name="price" 
-                                           value="<%= book.getPricePerUnit() %>" step="0.01" min="0" required>
+                                           value="<%= book.getPricePerUnit() %>" step="0.01" min="0.01" required oninput="hideEditBookWarnings()">
+                                    <div id="editPriceWarning" class="text-danger mt-1" style="display:none;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        <small>Price must be greater than 0.</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -415,6 +419,24 @@
                     }
                 }
             });
+
+            // Edit Book validation
+            function hideEditBookWarnings(){
+                const pw = document.getElementById('editPriceWarning');
+                if (pw) pw.style.display = 'none';
+            }
+
+            function validateEditBook(e){
+                const priceInput = document.getElementById('price');
+                const priceVal = parseFloat(priceInput.value);
+                if (isNaN(priceVal) || priceVal <= 0){
+                    const pw = document.getElementById('editPriceWarning');
+                    if (pw) pw.style.display = 'block';
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            }
         </script>
     </body>
 </html> 

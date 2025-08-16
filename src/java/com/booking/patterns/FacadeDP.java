@@ -170,6 +170,10 @@ public class FacadeDP {
         return customerDAO.getCustomerById(customerId);
     }
     
+    public Customer getCustomerByUsername(String username) {
+        return customerDAO.getCustomerByUsername(username);
+    }
+    
     public boolean updateCustomer(Customer customer) {
         return customerDAO.updateCustomer(customer);
     }

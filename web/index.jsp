@@ -1391,9 +1391,9 @@
                             <!-- Brand Logo -->
                             <div class="brand-logo-section mb-4">
                                 <div class="brand-icon">
-                                    <i class="fas fa-book-open"></i>
+                                    <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana" style="width: 50px; height: 50px; border-radius: 12px; object-fit: contain; background: transparent;">
                                 </div>
-                                <h2 class="brand-name">Pahana.</h2>
+                                <h2 class="brand-name">Pahana</h2>
                             </div>
                             
                             <!-- Main Headline -->
@@ -1790,8 +1790,8 @@
                          <a href="#service" class="btn-primary-custom" onclick="shopNowComingSoon(); return false;">Learn More</a>
                      </div>
                                           <div class="col-lg-6 text-center">
-                          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                               alt="Bookstore Interior" class="img-fluid rounded" style="max-width: 400px; height: auto;">
+                          <img src="<%= request.getContextPath() %>/IMG/pahana.png" 
+                               alt="Pahana" class="img-fluid rounded" style="max-width: 400px; height: auto;">
                       </div>
                  </div>
              </div>

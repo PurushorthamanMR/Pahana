@@ -465,7 +465,7 @@
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="BookServlet" method="post">
+                            <form action="BookServlet" method="post" onsubmit="return validateAddBook(event)">
                                 <input type="hidden" name="action" value="add">
                                 <div class="modal-body">
                                     <div class="row">
@@ -503,14 +503,22 @@
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">Price *</label>
                                                 <input type="number" class="form-control" id="price" name="price" 
-                                                       step="0.01" min="0" required placeholder="0.00">
+                                                       step="0.01" min="0.01" required placeholder="0.00" oninput="hideAddBookWarnings()">
+                                                <div id="addPriceWarning" class="text-danger mt-1" style="display:none;">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    <small>Price must be greater than 0.</small>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="stock" class="form-label">Stock Quantity *</label>
                                                 <input type="number" class="form-control" id="stock" name="stock" 
-                                                       min="0" required placeholder="0">
+                                                       min="1" required placeholder="1" oninput="hideAddBookWarnings()">
+                                                <div id="addStockWarning" class="text-danger mt-1" style="display:none;">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    <small>Stock must be at least 1.</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -578,6 +586,37 @@
                     }
                 }
             });
+
+            // Add Book validation
+            function hideAddBookWarnings(){
+                const pw = document.getElementById('addPriceWarning');
+                const sw = document.getElementById('addStockWarning');
+                if (pw) pw.style.display = 'none';
+                if (sw) sw.style.display = 'none';
+            }
+
+            function validateAddBook(e){
+                const priceInput = document.getElementById('price');
+                const stockInput = document.getElementById('stock');
+                const priceVal = parseFloat(priceInput.value);
+                const stockVal = parseInt(stockInput.value, 10);
+                let valid = true;
+                if (isNaN(priceVal) || priceVal <= 0){
+                    const pw = document.getElementById('addPriceWarning');
+                    if (pw) pw.style.display = 'block';
+                    valid = false;
+                }
+                if (isNaN(stockVal) || stockVal <= 0){
+                    const sw = document.getElementById('addStockWarning');
+                    if (sw) sw.style.display = 'block';
+                    valid = false;
+                }
+                if (!valid){
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            }
 
             // Edit book function
             function editBook(bookId) {

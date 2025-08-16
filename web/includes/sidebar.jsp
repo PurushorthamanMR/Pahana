@@ -16,7 +16,7 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <i class="bi bi-book"></i> Pahana
+            <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana" style="height: 36px; width: auto; margin-right: 4px; vertical-align: middle;"/>Pahana
         </div>
     </div>
 

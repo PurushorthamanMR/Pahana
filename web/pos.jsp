@@ -950,7 +950,7 @@
                                 <i class="bi bi-collection me-2"></i>All Categories
                             </div>
                             <% for (BookCategory category : categories) { %>
-                                <div class="category-item" onclick="selectCategory(<%= category.getCategoryId() %>, '<%= category.getCategoryName() %>')">
+                                <div class="category-item" data-category-id="<%= category.getCategoryId() %>" data-category-name="<%= category.getCategoryName().replace("\"", "&quot;") %>" onclick="selectCategoryFromItem(this)">
                                     <i class="bi bi-tag me-2"></i><%= category.getCategoryName() %>
                                 </div>
                             <% } %>
@@ -994,6 +994,7 @@
                                     List<Book> booksList = (List<Book>) request.getAttribute("allBooks");
                                     if (booksList != null && !booksList.isEmpty()) {
                                         for (Book book : booksList) {
+                                            if (book.getStockQuantity() <= 0) { continue; }
                                     %>
                                     <tr data-category-id="<%= book.getCategory().getCategoryId() %>">
                                         <td><%= book.getBookId() %></td>
@@ -1002,13 +1003,13 @@
                                         <td><%= book.getStockQuantity() %></td>
                                         <td><%= book.getCategory().getCategoryName() %></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary" onclick="showQuantityModal({
-                                                id: <%= book.getBookId() %>,
-                                                title: '<%= book.getTitle().replace("'", "\\'") %>',
-                                                price: <%= book.getPricePerUnit() %>,
-                                                stock: <%= book.getStockQuantity() %>,
-                                                category: '<%= book.getCategory().getCategoryName().replace("'", "\\'") %>'
-                                            })">
+                                            <button class="btn btn-sm btn-primary" 
+                                                data-book-id="<%= book.getBookId() %>"
+                                                data-book-title="<%= book.getTitle().replace("\"", "&quot;") %>"
+                                                data-book-price="<%= book.getPricePerUnit() %>"
+                                                data-book-stock="<%= book.getStockQuantity() %>"
+                                                data-book-category="<%= book.getCategory().getCategoryName().replace("\"", "&quot;") %>"
+                                                onclick="showQuantityFromButton(this)">
                                                 Add to Cart
                                             </button>
                                         </td>
@@ -1099,13 +1100,22 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="mb-3">Select Customer</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Select Customer</h6>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="showAddCustomerModal()">
+                                        <i class="bi bi-person-plus me-1"></i>Add Customer
+                                    </button>
+                                </div>
                                 <div class="customer-search">
                                     <input type="text" class="form-control" id="customerSearch" placeholder="Search customers...">
                                 </div>
                                 <div class="customer-list" id="customerList">
                                     <% for (Customer customer : customers) { %>
-                                        <div class="customer-item" onclick="selectCustomer(<%= customer.getCustomerId() %>, '<%= customer.getName().replace("'", "\\'") %>', '<%= customer.getEmail() != null ? customer.getEmail().replace("'", "\\'") : "" %>')">
+                                        <div class="customer-item" 
+                                             data-customer-id="<%= customer.getCustomerId() %>"
+                                             data-customer-name="<%= customer.getName().replace("\"", "&quot;") %>"
+                                             data-customer-email="<%= customer.getEmail() != null ? customer.getEmail().replace("\"", "&quot;") : "" %>"
+                                             onclick="selectCustomerFromItem(this)">
                                             <strong><%= customer.getName() %></strong><br>
                                             <small class="text-muted">Account: <%= customer.getAccountNumber() %></small><br>
                                             <small class="text-muted">Email: <%= customer.getEmail() != null ? customer.getEmail() : "No email" %></small>
@@ -1162,6 +1172,99 @@
             </div>
         </div>
 
+        <!-- Add Customer Modal (with email verification, same as Customer Management) -->
+        <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCustomerModalLabel">
+                            <i class="bi bi-person-plus me-2"></i>Add New Customer
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Customer Name<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="posName">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number<span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="posPhone" onblur="posCheckPhoneOnBlur(this.value)">
+                                <div id="posPhoneWarning" class="text-danger mt-1" style="display: none;">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    <small>This phone number is already registered.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <label class="form-label">Address<span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="posAddress" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Username<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="posUsername" onblur="posCheckUsernameOnBlur(this.value)">
+                                <div id="posUsernameWarning" class="text-danger mt-1" style="display: none;">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    <small>This username is already taken.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Email<span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" id="posEmail">
+                                    <button class="btn btn-outline-primary" type="button" id="posSendVerificationBtn" onclick="posSendVerificationCode()">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Password<span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="posPassword">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="posTogglePassword()">
+                                        <i class="bi bi-eye" id="posPasswordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Verification Pin</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="posVerificationPin" placeholder="Enter 6-digit code" maxlength="6" disabled>
+                                    <button class="btn btn-outline-success" type="button" id="posVerifyPinBtn" onclick="posVerifyPin()" disabled>
+                                        <i class="bi bi-check-circle"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Click the envelope button to receive code</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Status</label>
+                                <div class="d-flex align-items-center">
+                                    <span id="posEmailStatus" class="badge bg-secondary">Not Verified</span>
+                                    <div id="posVerificationSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="posAddCustomerBtn" onclick="saveNewCustomer()" disabled>
+                                <i class="bi bi-save me-1"></i>Save Customer & Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Email Loading Overlay -->
         <div id="emailLoadingOverlay" class="email-loading-overlay" style="display: none;">
             <div class="email-loading-content">
@@ -1185,11 +1288,92 @@
             let currentBook = null;
             let transactionId = null;
             let billCustomer = null; // Separate variable for bill customer data
+            let bookStockMap = {}; // bookId -> remaining stock (client-side)
+
+            function initBookStockMap() {
+                const rows = document.querySelectorAll('#bookTableBody tr');
+                rows.forEach(row => {
+                    const idCell = row.cells && row.cells[0];
+                    const stockCell = row.cells && row.cells[3];
+                    if (!idCell || !stockCell) return;
+                    const id = parseInt(idCell.textContent.trim());
+                    const stock = parseInt(stockCell.textContent.trim());
+                    if (!isNaN(id) && !isNaN(stock)) {
+                        if (bookStockMap[id] == null) {
+                            bookStockMap[id] = stock;
+                        }
+                        updateRowStockUI(id, bookStockMap[id]);
+                    }
+                });
+            }
+
+            function getRemainingStock(bookId) {
+                if (bookStockMap[bookId] != null) return bookStockMap[bookId];
+                // Fallback: read from table
+                const rows = document.querySelectorAll('#bookTableBody tr');
+                for (const row of rows) {
+                    const id = parseInt(row.cells[0].textContent.trim());
+                    if (id === bookId) {
+                        const stock = parseInt(row.cells[3].textContent.trim());
+                        bookStockMap[bookId] = isNaN(stock) ? 0 : stock;
+                        return bookStockMap[bookId];
+                    }
+                }
+                return 0;
+            }
+
+            function updateRowStockUI(bookId, remaining) {
+                const rows = document.querySelectorAll('#bookTableBody tr');
+                for (const row of rows) {
+                    const id = parseInt(row.cells[0].textContent.trim());
+                    if (id === bookId) {
+                        // Update stock cell
+                        row.cells[3].textContent = String(remaining);
+                        // Toggle Add to Cart button
+                        const btn = row.querySelector('button.btn.btn-sm.btn-primary');
+                        if (btn) {
+                            if (remaining <= 0) {
+                                btn.disabled = true;
+                                btn.textContent = 'Out of Stock';
+                            } else {
+                                btn.disabled = false;
+                                btn.textContent = 'Add to Cart';
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
 
             // Toggle sidebar on mobile
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
+            }
+
+            // Safe onclick wrappers to avoid inline parsing issues
+            function selectCategoryFromItem(el) {
+                const id = parseInt(el.getAttribute('data-category-id'));
+                const name = el.getAttribute('data-category-name');
+                selectCategory(id, name);
+            }
+
+            function showQuantityFromButton(btn) {
+                const book = {
+                    id: parseInt(btn.getAttribute('data-book-id')),
+                    title: btn.getAttribute('data-book-title'),
+                    price: parseFloat(btn.getAttribute('data-book-price')),
+                    stock: parseInt(btn.getAttribute('data-book-stock')),
+                    category: btn.getAttribute('data-book-category')
+                };
+                showQuantityModal(book);
+            }
+
+            function selectCustomerFromItem(el) {
+                const id = parseInt(el.getAttribute('data-customer-id'));
+                const name = el.getAttribute('data-customer-name');
+                const email = el.getAttribute('data-customer-email') || '';
+                selectCustomer(id, name, email);
             }
 
             // Close sidebar when clicking outside on mobile
@@ -1318,12 +1502,14 @@
 
             // Show quantity modal
             function showQuantityModal(book) {
-                currentBook = book;
+                // Override stock with remaining stock map
+                const remaining = getRemainingStock(book.id);
+                currentBook = Object.assign({}, book, { stock: remaining });
                 document.getElementById('bookTitle').textContent = book.title;
                 document.getElementById('bookPrice').textContent = book.price.toFixed(2);
-                document.getElementById('bookStock').textContent = book.stock;
+                document.getElementById('bookStock').textContent = remaining;
                 document.getElementById('quantityInput').value = 1;
-                document.getElementById('quantityInput').max = book.stock;
+                document.getElementById('quantityInput').max = Math.max(remaining, 0);
                 
                 const modal = new bootstrap.Modal(document.getElementById('quantityModal'));
                 modal.show();
@@ -1335,12 +1521,12 @@
                 const stock = currentBook.stock;
                 
                 if (quantity < 1) {
-                    alert('Quantity must be at least 1');
+                    showToast('Quantity must be at least 1', 'warning');
                     return;
                 }
                 
                 if (quantity > stock) {
-                    alert('Quantity cannot exceed available stock');
+                    showToast('Quantity cannot exceed available stock', 'warning');
                     return;
                 }
                 
@@ -1349,7 +1535,7 @@
                 if (existingItem) {
                     const newTotal = existingItem.quantity + quantity;
                     if (newTotal > stock) {
-                        alert('Total quantity cannot exceed available stock');
+                        showToast('Total quantity cannot exceed available stock', 'warning');
                         return;
                     }
                     existingItem.quantity += quantity;
@@ -1363,6 +1549,11 @@
                     });
                 }
                 
+                // Update remaining stock and UI
+                const remaining = Math.max(getRemainingStock(currentBook.id) - quantity, 0);
+                bookStockMap[currentBook.id] = remaining;
+                updateRowStockUI(currentBook.id, remaining);
+
                 updateCartDisplay();
                 
                 // Close modal
@@ -1423,21 +1614,38 @@
             // Update quantity
             function updateQuantity(productId, change) {
                 const item = cart.find(item => item.id === productId);
-                
-                if (item) {
-                    const newQuantity = item.quantity + change;
-                    
-                    if (newQuantity <= 0) {
-                        cart = cart.filter(item => item.id !== productId);
-                    } else if (newQuantity > item.stock) {
-                        alert('Quantity cannot exceed available stock');
+                if (!item) return;
+
+                const remaining = getRemainingStock(productId);
+                const currentQty = item.quantity;
+                const newQuantity = currentQty + change;
+
+                if (change === 1) {
+                    // Increase quantity: require available remaining stock
+                    if (remaining <= 0) {
+                        showToast('Quantity cannot exceed available stock', 'warning');
                         return;
+                    }
+                    item.quantity = currentQty + 1;
+                    bookStockMap[productId] = remaining - 1;
+                    updateRowStockUI(productId, bookStockMap[productId]);
+                } else if (change === -1) {
+                    // Decrease quantity: restore stock
+                    if (newQuantity <= 0) {
+                        // Removing entire item from cart, restore all its quantity
+                        bookStockMap[productId] = remaining + currentQty;
+                        cart = cart.filter(i => i.id !== productId);
                     } else {
                         item.quantity = newQuantity;
+                        bookStockMap[productId] = remaining + 1;
                     }
-                    
-                    updateCartDisplay();
+                    updateRowStockUI(productId, bookStockMap[productId]);
+                } else {
+                    // Other changes not supported
+                    return;
                 }
+
+                updateCartDisplay();
             }
 
             // Reset checkout modal state
@@ -1771,6 +1979,9 @@
                         }
                     });
                 }
+
+                // Initialize client-side stock snapshot
+                initBookStockMap();
             });
             
             // Send bill to customer email
@@ -1889,6 +2100,267 @@
                     });
                 }
             });
+
+            // Show Add Customer Modal
+            function showAddCustomerModal() {
+                // Reset form
+                ['posName','posEmail','posPhone','posAddress','posUsername','posPassword','posVerificationPin']
+                    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+                document.getElementById('posEmailStatus').textContent = 'Not Verified';
+                document.getElementById('posEmailStatus').className = 'badge bg-secondary';
+                document.getElementById('posVerificationSpinner').style.display = 'none';
+                document.getElementById('posSendVerificationBtn').disabled = false;
+                document.getElementById('posVerificationPin').disabled = true;
+                document.getElementById('posVerifyPinBtn').disabled = true;
+                document.getElementById('posAddCustomerBtn').disabled = true;
+                const modal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
+                modal.show();
+            }
+
+            // Save new customer via AJAX then auto confirm transaction
+            function saveNewCustomer() {
+                const name = document.getElementById('posName').value.trim();
+                const email = document.getElementById('posEmail').value.trim();
+                const phone = document.getElementById('posPhone').value.trim();
+                const address = document.getElementById('posAddress').value.trim();
+                const username = document.getElementById('posUsername').value.trim();
+                const password = document.getElementById('posPassword').value.trim();
+
+                if (!name || !email || !phone || !address) {
+                    showToast('Name, Email, Phone and Address are required', 'warning');
+                    return;
+                }
+
+                if (cart.length === 0) {
+                    showToast('Cart is empty. Add items before creating a customer.', 'warning');
+                    return;
+                }
+
+                const btn = document.getElementById('posAddCustomerBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+
+                const params = new URLSearchParams();
+                params.append('name', name);
+                params.append('email', email);
+                params.append('phone', phone);
+                params.append('address', address);
+                params.append('username', username);
+                params.append('password', password);
+
+                fetch('CustomerServlet?action=create-ajax', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: params.toString()
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        selectedCustomer = { id: data.customerId, name: data.name, email: data.email };
+                        showToast('Customer created successfully. Processing transaction...', 'success');
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addCustomerModal'));
+                        if (modal) modal.hide();
+                        // Proceed to process transaction
+                        processTransaction();
+                    } else {
+                        showToast(data.message || 'Failed to create customer', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error('Create customer error:', err);
+                    showToast('Error creating customer. Please try again.', 'error');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-save me-1"></i>Save Customer & Confirm';
+                });
+            }
+
+            // POS email verification logic (mirrors customer.jsp)
+            let posEmailVerified = false;
+            function posSendVerificationCode() {
+                const email = document.getElementById('posEmail').value.trim();
+                if (!email) { showToast('Enter email first', 'warning'); return; }
+                document.getElementById('posVerificationSpinner').style.display = 'inline-block';
+                document.getElementById('posSendVerificationBtn').disabled = true;
+                document.getElementById('posEmailStatus').textContent = 'Checking email...';
+                document.getElementById('posEmailStatus').className = 'badge bg-warning';
+
+                const checkEmailXhr = new XMLHttpRequest();
+                checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
+                checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                checkEmailXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                checkEmailXhr.onreadystatechange = function() {
+                    if (checkEmailXhr.readyState === 4) {
+                        if (checkEmailXhr.status === 200) {
+                            try {
+                                const response = JSON.parse(checkEmailXhr.responseText);
+                                if (response.status === 'success' && response.exists) {
+                                    document.getElementById('posVerificationSpinner').style.display = 'none';
+                                    document.getElementById('posSendVerificationBtn').disabled = false;
+                                    document.getElementById('posEmailStatus').textContent = 'Email Exists';
+                                    document.getElementById('posEmailStatus').className = 'badge bg-danger';
+                                    showToast('Email already registered. Use a different email.', 'error');
+                                    return;
+                                } else {
+                                    posSendVerificationEmail(email);
+                                }
+                            } catch (e) {
+                                posSendVerificationEmail(email);
+                            }
+                        } else {
+                            posSendVerificationEmail(email);
+                        }
+                    }
+                };
+                checkEmailXhr.onerror = function(){ posSendVerificationEmail(email); };
+                checkEmailXhr.send('email=' + encodeURIComponent(email));
+            }
+
+            function posSendVerificationEmail(email) {
+                document.getElementById('posVerificationSpinner').style.display = 'inline-block';
+                document.getElementById('posSendVerificationBtn').disabled = true;
+                document.getElementById('posEmailStatus').textContent = 'Sending...';
+                document.getElementById('posEmailStatus').className = 'badge bg-warning';
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=send-verification', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('posVerificationSpinner').style.display = 'none';
+                        document.getElementById('posSendVerificationBtn').disabled = false;
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    showToast('Verification code sent to email', 'success');
+                                    document.getElementById('posEmailStatus').textContent = 'Code Sent';
+                                    document.getElementById('posEmailStatus').className = 'badge bg-info';
+                                    document.getElementById('posVerificationPin').disabled = false;
+                                    document.getElementById('posVerifyPinBtn').disabled = false;
+                                } else {
+                                    showToast(response.message || 'Failed to send code', 'error');
+                                    document.getElementById('posEmailStatus').textContent = 'Failed';
+                                    document.getElementById('posEmailStatus').className = 'badge bg-danger';
+                                }
+                            } catch (e) {
+                                showToast('Verification code sent', 'success');
+                                document.getElementById('posEmailStatus').textContent = 'Code Sent';
+                                document.getElementById('posEmailStatus').className = 'badge bg-info';
+                                document.getElementById('posVerificationPin').disabled = false;
+                                document.getElementById('posVerifyPinBtn').disabled = false;
+                            }
+                        } else {
+                            showToast('Failed to send code', 'error');
+                            document.getElementById('posEmailStatus').textContent = 'Failed';
+                            document.getElementById('posEmailStatus').className = 'badge bg-danger';
+                        }
+                    }
+                };
+                xhr.send('email=' + encodeURIComponent(email) + '&context=pos');
+            }
+
+            function posVerifyPin() {
+                const email = document.getElementById('posEmail').value.trim();
+                const pin = document.getElementById('posVerificationPin').value.trim();
+                if (!pin) { showToast('Enter the verification code', 'warning'); return; }
+                document.getElementById('posVerificationSpinner').style.display = 'inline-block';
+                document.getElementById('posVerifyPinBtn').disabled = true;
+                document.getElementById('posEmailStatus').textContent = 'Verifying...';
+                document.getElementById('posEmailStatus').className = 'badge bg-warning';
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=verify-email', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        document.getElementById('posVerificationSpinner').style.display = 'none';
+                        document.getElementById('posVerifyPinBtn').disabled = false;
+                        if (xhr.status === 200) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    showToast('Email verified', 'success');
+                                    document.getElementById('posEmailStatus').textContent = 'Verified';
+                                    document.getElementById('posEmailStatus').className = 'badge bg-success';
+                                    posEmailVerified = true;
+                                    document.getElementById('posVerificationPin').disabled = true;
+                                    document.getElementById('posVerifyPinBtn').disabled = true;
+                                    document.getElementById('posSendVerificationBtn').disabled = true;
+                                    document.getElementById('posAddCustomerBtn').disabled = false;
+                                } else {
+                                    showToast(response.message || 'Invalid code', 'error');
+                                    document.getElementById('posEmailStatus').textContent = 'Invalid Code';
+                                    document.getElementById('posEmailStatus').className = 'badge bg-danger';
+                                }
+                            } catch (e) {
+                                showToast('Email verified', 'success');
+                                document.getElementById('posEmailStatus').textContent = 'Verified';
+                                document.getElementById('posEmailStatus').className = 'badge bg-success';
+                                posEmailVerified = true;
+                                document.getElementById('posVerificationPin').disabled = true;
+                                document.getElementById('posVerifyPinBtn').disabled = true;
+                                document.getElementById('posSendVerificationBtn').disabled = true;
+                                document.getElementById('posAddCustomerBtn').disabled = false;
+                            }
+                        } else {
+                            showToast('Failed to verify code', 'error');
+                            document.getElementById('posEmailStatus').textContent = 'Failed';
+                            document.getElementById('posEmailStatus').className = 'badge bg-danger';
+                        }
+                    }
+                };
+                xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
+            }
+
+            function posCheckPhoneOnBlur(phone) {
+                if (!phone) return; 
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=check-phone-exists', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        try { const res = JSON.parse(xhr.responseText); 
+                            document.getElementById('posPhoneWarning').style.display = (res.status==='success' && res.exists) ? 'block' : 'none';
+                        } catch(e) { document.getElementById('posPhoneWarning').style.display = 'none'; }
+                    }
+                };
+                xhr.send('phone=' + encodeURIComponent(phone));
+            }
+
+            function posCheckUsernameExists(username, callback){
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'CustomerServlet?action=check-username-exists', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try { const res = JSON.parse(xhr.responseText); callback(res.status==='success' && res.exists); } catch(e){ callback(false); }
+                        } else { callback(false); }
+                    }
+                };
+                xhr.send('username=' + encodeURIComponent(username));
+            }
+
+            function posCheckUsernameOnBlur(username){
+                if (!username) return;
+                posCheckUsernameExists(username, function(exists){
+                    document.getElementById('posUsernameWarning').style.display = exists ? 'block' : 'none';
+                });
+            }
+
+            function posTogglePassword(){
+                const input = document.getElementById('posPassword');
+                const icon = document.getElementById('posPasswordIcon');
+                if (input.type === 'password') { input.type = 'text'; icon.classList.remove('bi-eye'); icon.classList.add('bi-eye-slash'); }
+                else { input.type = 'password'; icon.classList.remove('bi-eye-slash'); icon.classList.add('bi-eye'); }
+            }
         </script>
     </body>
 </html> 
