@@ -354,7 +354,7 @@
                 <!-- Illustration Section -->
                 <div class="illustration-section">
                     <div class="illustration-image">
-                        <img src="IMG/login.jpg" alt="Pahana Password Reset">
+                        <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana Password Reset">
                     </div>
                     <h3 style="color: #333; margin-bottom: 10px;">Forgot Your Password?</h3>
                     <p style="color: #666; font-size: 0.9rem;">Don't worry! We'll help you reset it securely.</p>

@@ -372,15 +372,39 @@
                             <a href="TransactionServlet?action=list" class="btn btn-secondary me-2">
                                 <i class="bi bi-arrow-clockwise me-2"></i>Refresh
                             </a>
-                            <% if (!"CUSTOMER".equals(role)) { %>
-                            <a href="pos.jsp" class="btn btn-primary">
-                                <i class="bi bi-cart-plus me-2"></i>New Transaction
-                            </a>
-                            <% } %>
                         </div>
                     </h3>
                     
                     <div class="table-responsive">
+                        <!-- Filters -->
+                        <div class="row g-2 mb-3 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label mb-1">Start Date</label>
+                                <input type="date" class="form-control" id="filterStartDate">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label mb-1">End Date</label>
+                                <input type="date" class="form-control" id="filterEndDate">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label mb-1">Filter By</label>
+                                <select class="form-select" id="filterField">
+                                    <option value="id">Transaction ID</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="created_by">Created By</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label mb-1">Search</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="filterSearch" placeholder="Type to search...">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearFiltersBtn">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -400,7 +424,16 @@
                                     if (transactions != null && !transactions.isEmpty()) {
                                         for (Transaction transaction : transactions) {
                                 %>
-                                <tr>
+                                <%
+                                    String _createdDateStr = "";
+                                    try {
+                                        java.util.Date _cd = transaction.getCreatedAt();
+                                        if (_cd != null) {
+                                            _createdDateStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(_cd);
+                                        }
+                                    } catch (Exception _e) { _createdDateStr = ""; }
+                                %>
+                                <tr data-id="<%= String.valueOf(transaction.getTransactionId()) %>" data-customer="<%= transaction.getCustomer().getName() != null ? transaction.getCustomer().getName().toLowerCase() : "" %>" data-created-by="<%= transaction.getCreatedBy() != null ? (transaction.getCreatedBy().getUsername() != null ? transaction.getCreatedBy().getUsername().toLowerCase() : "") : "" %>" data-created-at="<%= _createdDateStr %>">
                                     <td><%= transaction.getTransactionId() %></td>
                                     <% if (!"CUSTOMER".equals(role)) { %>
                                     <td>
@@ -461,6 +494,53 @@
                     }
                 }
             });
+
+            // Client-side filtering for transactions
+            const startDateEl = document.getElementById('filterStartDate');
+            const endDateEl = document.getElementById('filterEndDate');
+            const fieldEl = document.getElementById('filterField');
+            const searchEl = document.getElementById('filterSearch');
+            const clearBtn = document.getElementById('clearFiltersBtn');
+
+            function applyFilters() {
+                const startDate = startDateEl && startDateEl.value ? startDateEl.value : null; // yyyy-MM-dd
+                const endDate = endDateEl && endDateEl.value ? endDateEl.value : null;       // yyyy-MM-dd
+                const field = fieldEl ? fieldEl.value : 'id';
+                const query = (searchEl ? searchEl.value : '').toLowerCase().trim();
+
+                const rows = document.querySelectorAll('table.table tbody tr');
+                rows.forEach(row => {
+                    // Skip placeholder rows
+                    if (!row.hasAttribute('data-id')) { return; }
+
+                    const rowDate = row.getAttribute('data-created-at'); // yyyy-MM-dd
+                    const matchesDate = (!startDate || rowDate >= startDate) && (!endDate || rowDate <= endDate);
+
+                    let fieldValue = '';
+                    if (field === 'id') fieldValue = row.getAttribute('data-id') || '';
+                    if (field === 'customer') fieldValue = row.getAttribute('data-customer') || '';
+                    if (field === 'created_by') fieldValue = row.getAttribute('data-created-by') || '';
+
+                    const matchesQuery = query === '' || (fieldValue.toLowerCase().includes(query));
+
+                    row.style.display = (matchesDate && matchesQuery) ? '' : 'none';
+                });
+            }
+
+            if (startDateEl) startDateEl.addEventListener('change', applyFilters);
+            if (endDateEl) endDateEl.addEventListener('change', applyFilters);
+            if (fieldEl) fieldEl.addEventListener('change', applyFilters);
+            if (searchEl) searchEl.addEventListener('input', applyFilters);
+            if (clearBtn) clearBtn.addEventListener('click', () => {
+                if (startDateEl) startDateEl.value = '';
+                if (endDateEl) endDateEl.value = '';
+                if (fieldEl) fieldEl.value = 'id';
+                if (searchEl) searchEl.value = '';
+                applyFilters();
+            });
+        
+            // Initialize filters to show all
+            applyFilters();
         </script>
     </body>
 </html> 

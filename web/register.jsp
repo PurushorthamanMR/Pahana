@@ -411,7 +411,7 @@
                 <!-- Illustration Section -->
                 <div class="illustration-section">
                     <div class="illustration-image">
-                        <img src="IMG/login.jpg" alt="Pahana Welcome">
+                        <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana Welcome">
                     </div>
                     <h3 style="color: #333; margin-bottom: 10px;">Welcome to Pahana</h3>
                     <p style="color: #666; font-size: 0.9rem;">Discover your next favorite book from our vast collection of titles.</p>

@@ -85,6 +85,9 @@ public class CustomerServlet extends HttpServlet {
         }
 
         switch (action) {
+            case "create-ajax":
+                handleCreateCustomerAjax(request, response, session);
+                break;
             case "create":
                 handleCreateCustomer(request, response, session);
                 break;
@@ -286,6 +289,109 @@ public class CustomerServlet extends HttpServlet {
             eventManager.logEvent("Customer creation error: " + e.getMessage(), "ERROR");
             response.sendRedirect("customer.jsp?error=Error creating customer: " + e.getMessage());
         }
+    }
+
+    /**
+     * Create customer via AJAX and return JSON with the new customer details.
+     * This is used from POS checkout to quickly create a customer and proceed with the transaction.
+     */
+    private void handleCreateCustomerAjax(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+
+            // Require authenticated user (cashier/manager)
+            if (session == null || session.getAttribute("user") == null) {
+                response.getWriter().write("{\"success\": false, \"message\": \"Please login first.\"}");
+                return;
+            }
+
+            String name = request.getParameter("name");
+            String address = request.getParameter("address");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+
+            // Validate minimal required fields for POS creation
+            if (name == null || name.trim().isEmpty() ||
+                phone == null || phone.trim().isEmpty() ||
+                email == null || email.trim().isEmpty()) {
+                response.getWriter().write("{\"success\": false, \"message\": \"Name, phone and email are required.\"}");
+                return;
+            }
+
+            // Ensure email and phone are unique
+            if (facade.isEmailExistsInAnyTable(email.trim())) {
+                response.getWriter().write("{\"success\": false, \"message\": \"Email already exists.\"}");
+                return;
+            }
+            if (facade.isPhoneNumberExists(phone.trim())) {
+                response.getWriter().write("{\"success\": false, \"message\": \"Phone number already exists.\"}");
+                return;
+            }
+
+            // Generate username/password if not provided
+            if (username == null || username.trim().isEmpty()) {
+                String base = (name.replaceAll("[^A-Za-z0-9]", "").toLowerCase());
+                if (base.length() < 4) {
+                    base = "cust" + base;
+                }
+                username = base;
+                int suffix = 1;
+                while (facade.isUsernameExistsInAnyTable(username)) {
+                    username = base + (suffix++);
+                }
+            } else if (facade.isUsernameExistsInAnyTable(username.trim())) {
+                response.getWriter().write("{\"success\": false, \"message\": \"Username already exists.\"}");
+                return;
+            }
+
+            if (password == null || password.trim().isEmpty()) {
+                password = "Pahana" + (int)(Math.random() * 900000 + 100000); // Simple random password
+            }
+
+            // Generate unique account number
+            String accountNumber = facade.generateUniqueAccountNumber();
+
+            // Build customer
+            UserRole role = new UserRole();
+            role.setRoleId(4);
+            role.setRoleName("CUSTOMER");
+
+            Customer customer = new com.booking.patterns.BuilderDP.CustomerBuilder()
+                .accountNumber(accountNumber)
+                .name(name)
+                .address(address)
+                .phone(phone)
+                .username(username)
+                .email(email)
+                .password(password)
+                .role(role)
+                .createdBy((User) session.getAttribute("user"))
+                .build();
+
+            boolean success = facade.createCustomer(customer);
+            if (success) {
+                // Fetch created customer to get ID
+                Customer created = facade.getCustomerById(facade.getCustomerByUsername(username).getCustomerId());
+                int newId = created != null ? created.getCustomerId() : -1;
+                String resp = String.format("{\"success\": true, \"customerId\": %d, \"name\": \"%s\", \"email\": \"%s\"}",
+                        newId, escapeJson(name), email == null ? "" : escapeJson(email));
+                response.getWriter().write(resp);
+            } else {
+                response.getWriter().write("{\"success\": false, \"message\": \"Failed to create customer.\"}");
+            }
+
+        } catch (Exception e) {
+            eventManager.logEvent("Customer AJAX creation error: " + e.getMessage(), "ERROR");
+            response.getWriter().write("{\"success\": false, \"message\": \"Error creating customer: " + e.getMessage().replace("\"", "'") + "\"}");
+        }
+    }
+
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     private void handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response, HttpSession session)

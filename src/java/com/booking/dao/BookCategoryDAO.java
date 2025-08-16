@@ -89,6 +89,39 @@ public class BookCategoryDAO {
         }
     }
     
+    public boolean isCategoryNameExists(String categoryName) {
+        String sql = "SELECT COUNT(*) FROM book_categories WHERE LOWER(category_name) = LOWER(?)";
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, categoryName);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking category name existence: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean isCategoryNameExistsExcludingId(String categoryName, int excludeCategoryId) {
+        String sql = "SELECT COUNT(*) FROM book_categories WHERE LOWER(category_name) = LOWER(?) AND category_id <> ?";
+        try (Connection conn = SingletonDP.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, categoryName);
+            pstmt.setInt(2, excludeCategoryId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking category name existence (excluding id): " + e.getMessage());
+        }
+        return false;
+    }
+
     public boolean deleteBookCategory(int categoryId) {
         String sql = "DELETE FROM book_categories WHERE category_id = ?";
         

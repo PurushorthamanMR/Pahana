@@ -62,6 +62,9 @@ public class BookCategoryServlet extends HttpServlet {
                 case "add":
                     addBookCategory(request, response);
                     break;
+                case "check-name":
+                    checkCategoryName(request, response);
+                    break;
                 case "edit":
                     editBookCategory(request, response);
                     break;
@@ -96,6 +99,12 @@ public class BookCategoryServlet extends HttpServlet {
         
         if (categoryName == null || categoryName.trim().isEmpty()) {
             response.sendRedirect("book_category.jsp?error=Category name is required.");
+            return;
+        }
+
+        // Duplicate validation
+        if (bookCategoryDAO.isCategoryNameExists(categoryName.trim())) {
+            response.sendRedirect("BookCategoryServlet?action=list&error=Category name already exists.");
             return;
         }
 
@@ -151,6 +160,12 @@ public class BookCategoryServlet extends HttpServlet {
         try {
             int categoryId = Integer.parseInt(categoryIdStr);
             
+            // Duplicate validation excluding current id
+            if (bookCategoryDAO.isCategoryNameExistsExcludingId(categoryName.trim(), categoryId)) {
+                response.sendRedirect("BookCategoryServlet?action=list&error=Category name already exists.");
+                return;
+            }
+
             BookCategory bookCategory = new BookCategory();
             bookCategory.setCategoryId(categoryId);
             bookCategory.setCategoryName(categoryName.trim());
@@ -164,6 +179,29 @@ public class BookCategoryServlet extends HttpServlet {
             }
         } catch (NumberFormatException e) {
             response.sendRedirect("BookCategoryServlet?action=list&error=Invalid category ID.");
+        }
+    }
+
+    private void checkCategoryName(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        String name = request.getParameter("name");
+        String excludeIdStr = request.getParameter("excludeId");
+        if (name == null || name.trim().isEmpty()) {
+            response.getWriter().write("{\"success\":false,\"message\":\"Name is required\"}");
+            return;
+        }
+        boolean exists;
+        try {
+            if (excludeIdStr != null && !excludeIdStr.trim().isEmpty()) {
+                int excludeId = Integer.parseInt(excludeIdStr);
+                exists = bookCategoryDAO.isCategoryNameExistsExcludingId(name.trim(), excludeId);
+            } else {
+                exists = bookCategoryDAO.isCategoryNameExists(name.trim());
+            }
+            response.getWriter().write("{\"success\":true,\"exists\":" + exists + "}");
+        } catch (Exception e) {
+            response.getWriter().write("{\"success\":false,\"message\":\"Error: " + e.getMessage().replace("\"", "'") + "\"}");
         }
     }
 
