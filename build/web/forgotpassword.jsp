@@ -426,39 +426,94 @@
             }
             
             function determineEmailContextAndSendVerification(email) {
-                // Since CustomerServlet now checks both tables, we can determine context
-                // by checking which table the email actually exists in
-                const checkCustomerXhr = new XMLHttpRequest();
-                checkCustomerXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
-                checkCustomerXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                checkCustomerXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                
-                checkCustomerXhr.onreadystatechange = function() {
-                    if (checkCustomerXhr.readyState === 4) {
-                        if (checkCustomerXhr.status === 200) {
+                // Determine context precisely by checking users first, then customers
+                const checkUserXhr = new XMLHttpRequest();
+                checkUserXhr.open('POST', 'UserServlet?action=check-email-exists', true);
+                checkUserXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                checkUserXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+                checkUserXhr.onreadystatechange = function() {
+                    if (checkUserXhr.readyState === 4) {
+                        if (checkUserXhr.status === 200) {
                             try {
-                                const response = JSON.parse(checkCustomerXhr.responseText);
-                                if (response.status === 'success' && response.exists) {
-                                    // Email exists in customers table
-                                    sendVerificationEmail(email, 'customer');
+                                const userResp = JSON.parse(checkUserXhr.responseText);
+                                if (userResp.status === 'success' && userResp.exists) {
+                                    // Email exists in users table
+                                    sendVerificationEmail(email, 'user');
                                     return;
                                 }
                             } catch (e) {
-                                console.log('Error parsing customer response:', e);
+                                console.log('Error parsing user response:', e);
                             }
                         }
+
+                        // If not a user, check customers table
+                        const checkCustomerXhr = new XMLHttpRequest();
+                        checkCustomerXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
+                        checkCustomerXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        checkCustomerXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+                        checkCustomerXhr.onreadystatechange = function() {
+                            if (checkCustomerXhr.readyState === 4) {
+                                if (checkCustomerXhr.status === 200) {
+                                    try {
+                                        const custResp = JSON.parse(checkCustomerXhr.responseText);
+                                        if (custResp.status === 'success' && custResp.exists) {
+                                            // Email exists in customers table
+                                            sendVerificationEmail(email, 'customer');
+                                            return;
+                                        }
+                                    } catch (e) {
+                                        console.log('Error parsing customer response:', e);
+                                    }
+                                }
+                                // Not found in either table
+                                document.getElementById('verificationSpinner').style.display = 'none';
+                                document.getElementById('sendVerificationBtn').disabled = false;
+                                document.getElementById('emailStatus').textContent = 'Email Not Found';
+                                document.getElementById('emailStatus').className = 'badge bg-danger';
+                                showAlert('This email address is not registered in our system. Please check your email or register first.', 'error');
+                            }
+                        };
                         
-                        // If not found in customers, it must be in users table
-                        sendVerificationEmail(email, 'user');
+                        checkCustomerXhr.onerror = function() {
+                            document.getElementById('verificationSpinner').style.display = 'none';
+                            document.getElementById('sendVerificationBtn').disabled = false;
+                            showAlert('Network error while checking email. Please try again.', 'error');
+                        };
+
+                        checkCustomerXhr.send('email=' + encodeURIComponent(email));
                     }
                 };
-                
-                checkCustomerXhr.onerror = function() {
-                    // Fallback: assume it's a user
-                    sendVerificationEmail(email, 'user');
+
+                checkUserXhr.onerror = function() {
+                    // Fallback: try customers only
+                    const checkCustomerXhr = new XMLHttpRequest();
+                    checkCustomerXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
+                    checkCustomerXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    checkCustomerXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    checkCustomerXhr.onreadystatechange = function() {
+                        if (checkCustomerXhr.readyState === 4) {
+                            if (checkCustomerXhr.status === 200) {
+                                try {
+                                    const custResp = JSON.parse(checkCustomerXhr.responseText);
+                                    if (custResp.status === 'success' && custResp.exists) {
+                                        sendVerificationEmail(email, 'customer');
+                                        return;
+                                    }
+                                } catch (e) {}
+                            }
+                            document.getElementById('verificationSpinner').style.display = 'none';
+                            document.getElementById('sendVerificationBtn').disabled = false;
+                            showAlert('This email address is not registered in our system. Please check your email or register first.', 'error');
+                            document.getElementById('emailStatus').textContent = 'Email Not Found';
+                            document.getElementById('emailStatus').className = 'badge bg-danger';
+                        }
+                    };
+                    checkCustomerXhr.send('email=' + encodeURIComponent(email));
                 };
-                
-                checkCustomerXhr.send('email=' + encodeURIComponent(email));
+
+                checkUserXhr.send('email=' + encodeURIComponent(email));
             }
             
             function sendVerificationEmail(email, context) {
@@ -579,9 +634,12 @@
                 document.getElementById('emailStatus').textContent = 'Verifying...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request
+                // Send AJAX request to the correct servlet based on context
+                const verifyServletUrl = (window.passwordResetContext === 'user') 
+                    ? 'UserServlet?action=verify-email' 
+                    : 'CustomerServlet?action=verify-email';
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'CustomerServlet?action=verify-email', true);
+                xhr.open('POST', verifyServletUrl, true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                 

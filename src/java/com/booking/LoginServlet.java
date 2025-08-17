@@ -141,11 +141,11 @@ public class LoginServlet extends HttpServlet {
                     
                     // Redirect based on role
                     if ("ADMIN".equals(roleName)) {
-                        response.sendRedirect("CustomerServlet?action=list");
+                        response.sendRedirect("CustomerServlet?action=list&message=Login successful!");
                     } else if ("CASHIER".equals(roleName)) {
-                        response.sendRedirect("pos.jsp");
+                        response.sendRedirect("pos.jsp?message=Login successful!");
                     } else {
-                        response.sendRedirect("DashboardServlet");
+                        response.sendRedirect("DashboardServlet?message=Login successful!");
                     }
                     return;
                 } else {
@@ -174,7 +174,7 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("customerName", customer.getName());
                     
                     eventManager.logEvent("Customer logged in successfully: " + username + " (Role: " + roleName + ")", "INFO");
-                    response.sendRedirect("transaction.jsp");
+                    response.sendRedirect("transaction.jsp?message=Login successful!");
                     return;
                 } else {
                     // Customer exists but has invalid role for customers table

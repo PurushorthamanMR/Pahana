@@ -260,6 +260,9 @@ public class UserServlet extends HttpServlet {
                 return;
             }
 
+            // Load existing user to compute changes later
+            User oldUser = facade.getUserById(userId);
+            
             UserRole role = new UserRole();
             role.setRoleId(roleId);
             
@@ -302,6 +305,38 @@ public class UserServlet extends HttpServlet {
                     System.out.println("No password change detected, skipping email");
                 }
                 
+                // Send Changed Column data email (old vs new values)
+                try {
+                    if (oldUser != null) {
+                        boolean usernameChanged = !safeEqualsIgnoreCase(oldUser.getUsername(), username);
+                        boolean emailChanged = !safeEqualsIgnoreCase(oldUser.getEmail(), email);
+                        boolean roleChanged = oldUser.getRole() != null ? (oldUser.getRole().getRoleId() != roleId) : true;
+                        boolean passwordChanged = password != null && !password.trim().isEmpty();
+
+                        if (usernameChanged || emailChanged || roleChanged || passwordChanged) {
+                            EmailService emailService = new EmailService();
+                            String subject = "Your Pahana account details were updated";
+                            String html = buildUserUpdateEmailContent(oldUser, user, passwordChanged);
+
+                            // Send to the new email
+                            emailService.sendEmail(email, subject, html);
+
+                            // If email was changed, also notify the old email address
+                            if (emailChanged && oldUser.getEmail() != null && !oldUser.getEmail().trim().isEmpty()
+                                    && !oldUser.getEmail().equalsIgnoreCase(email)) {
+                                String subjectOld = "Your Pahana account email was changed";
+                                emailService.sendEmail(oldUser.getEmail(), subjectOld, html);
+                            }
+
+                            eventManager.logEvent("User update summary email sent for user ID: " + userId, "INFO");
+                        }
+                    }
+                } catch (Exception emailEx) {
+                    System.out.println("ERROR sending user update summary email: " + emailEx.getMessage());
+                    emailEx.printStackTrace();
+                    eventManager.logEvent("Error sending user update summary email: " + emailEx.getMessage(), "ERROR");
+                }
+                
                 eventManager.logEvent("User updated successfully: " + username, "INFO");
                 if (isAjaxRequest(request)) {
                     sendAjaxResponse(response, true, "User updated successfully. " + 
@@ -329,6 +364,79 @@ public class UserServlet extends HttpServlet {
                 response.sendRedirect("user.jsp?error=Error updating user: " + e.getMessage());
             }
         }
+    }
+
+    private boolean safeEqualsIgnoreCase(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equalsIgnoreCase(b);
+    }
+
+    private String buildUserUpdateEmailContent(User oldUser, User newUser, boolean passwordChanged) {
+        String oldUsername = oldUser.getUsername() != null ? oldUser.getUsername() : "";
+        String newUsername = newUser.getUsername() != null ? newUser.getUsername() : "";
+        String oldEmail = oldUser.getEmail() != null ? oldUser.getEmail() : "";
+        String newEmail = newUser.getEmail() != null ? newUser.getEmail() : "";
+        String oldRoleName = oldUser.getRole() != null ? getRoleNameById(oldUser.getRole().getRoleId()) : "UNKNOWN";
+        String newRoleName = newUser.getRole() != null ? getRoleNameById(newUser.getRole().getRoleId()) : "UNKNOWN";
+
+        boolean usernameChanged = !safeEqualsIgnoreCase(oldUsername, newUsername);
+        boolean emailChanged = !safeEqualsIgnoreCase(oldEmail, newEmail);
+        boolean roleChanged = !safeEqualsIgnoreCase(oldRoleName, newRoleName);
+
+        StringBuilder rows = new StringBuilder();
+        if (usernameChanged) {
+            rows.append(buildRow("Username", oldUsername, newUsername));
+        }
+        if (emailChanged) {
+            rows.append(buildRow("Email", oldEmail, newEmail));
+        }
+        if (roleChanged) {
+            rows.append(buildRow("Role", oldRoleName, newRoleName));
+        }
+        if (passwordChanged) {
+            rows.append(buildRow("Password", "(hidden)", "(hidden)"));
+        }
+
+        String table = rows.length() == 0 ? "<p>No profile fields were changed.</p>"
+                : ("<table style='width:100%; border-collapse:collapse;'>" +
+                   "<thead><tr style='background:#e9ecef'>" +
+                   "<th style='padding:8px; text-align:left; border-bottom:1px solid #dee2e6;'>Field</th>" +
+                   "<th style='padding:8px; text-align:left; border-bottom:1px solid #dee2e6;'>Old</th>" +
+                   "<th style='padding:8px; text-align:left; border-bottom:1px solid #dee2e6;'>New</th>" +
+                   "</tr></thead><tbody>" + rows.toString() + "</tbody></table>");
+
+        return "<!DOCTYPE html>" +
+               "<html><head><meta charset='UTF-8'><title>Account Updated</title>" +
+               "<style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333}.container{max-width:600px;margin:0 auto;padding:20px}.header{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:#fff;padding:20px;text-align:center;border-radius:8px 8px 0 0}.content{background:#f8f9fa;padding:30px;border-radius:0 0 8px 8px}.footer{text-align:center;margin-top:20px;color:#6c757d;font-size:14px}</style>" +
+               "</head><body><div class='container'>" +
+               "<div class='header'><h1>Pahana Account Updated</h1></div>" +
+               "<div class='content'>" +
+               "<p>Hello " + (newUsername.isEmpty() ? "User" : newUsername) + ",</p>" +
+               "<p>Your account details have been updated. See the summary below:</p>" +
+               table +
+               "<p>If you did not request these changes, please contact the administrator immediately.</p>" +
+               "<p>Best regards,<br/>The Pahana Team</p>" +
+               "</div><div class='footer'><p>This is an automated message, please do not reply.</p></div></div></body></html>";
+    }
+
+    private String buildRow(String field, String oldVal, String newVal) {
+        String safeOld = oldVal == null ? "" : oldVal;
+        String safeNew = newVal == null ? "" : newVal;
+        return "<tr>" +
+               "<td style='padding:8px; border-bottom:1px solid #dee2e6;'>" + field + "</td>" +
+               "<td style='padding:8px; border-bottom:1px solid #dee2e6;'>" + escapeHtml(safeOld) + "</td>" +
+               "<td style='padding:8px; border-bottom:1px solid #dee2e6;'>" + escapeHtml(safeNew) + "</td>" +
+               "</tr>";
+    }
+
+    private String escapeHtml(String s) {
+        return s
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#39;");
     }
 
     private boolean canUpdateUser(String currentUserRole, int targetUserId, int targetRoleId) {

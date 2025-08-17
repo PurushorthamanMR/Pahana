@@ -395,6 +395,19 @@
                     </div>
                 </div>
 
+                <!-- Messages -->
+                <% if (request.getParameter("message") != null) { %>
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
+                </div>
+                <% } %>
+                
+                <% if (request.getParameter("error") != null) { %>
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i><%= request.getParameter("error") %>
+                </div>
+                <% } %>
+
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <%
