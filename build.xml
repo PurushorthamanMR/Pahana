@@ -10,6 +10,24 @@
 <project name="Pahana_BookStore" default="default" basedir=".">
     <description>Builds, tests, and runs the project Pahana_BookStore.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <!-- Override NetBeans-specific task usage to avoid 'copyfiles' in CI -->
+    <target name="library-inclusion-in-archive" depends="init" unless="dist.ear.dir">
+        <mkdir dir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${file.reference.mysql-connector-j-9.4.0.jar}" todir="${build.web.dir}/WEB-INF/lib" failonerror="false"/>
+        <copy file="${file.reference.jakarta.mail-api-2.1.3.jar}" todir="${build.web.dir}/WEB-INF/lib" failonerror="false"/>
+        <copy file="${file.reference.angus-mail-2.0.3.jar}" todir="${build.web.dir}/WEB-INF/lib" failonerror="false"/>
+        <copy file="${file.reference.jakarta.activation-2.0.1.jar}" todir="${build.web.dir}/WEB-INF/lib" failonerror="false"/>
+    </target>
+
+    <target name="library-inclusion-in-manifest" depends="init" if="dist.ear.dir">
+        <copy file="${file.reference.mysql-connector-j-9.4.0.jar}" todir="${dist.ear.dir}/lib" failonerror="false"/>
+        <copy file="${file.reference.jakarta.mail-api-2.1.3.jar}" todir="${dist.ear.dir}/lib" failonerror="false"/>
+        <copy file="${file.reference.angus-mail-2.0.3.jar}" todir="${dist.ear.dir}/lib" failonerror="false"/>
+        <copy file="${file.reference.jakarta.activation-2.0.1.jar}" todir="${dist.ear.dir}/lib" failonerror="false"/>
+        <mkdir dir="${build.web.dir}/META-INF"/>
+        <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
+    </target>
     <!--
 
     There exist several targets which are by default empty and which can be 
