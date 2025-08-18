@@ -1,8 +1,4 @@
-<%-- 
-    Document   : help_edit
-    Created on : Aug 3, 2025, 9:09:30 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Edit Help Section</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -99,7 +95,7 @@
                 text-align: center;
             }
 
-            /* Sidebar Footer Styles */
+            
             .sidebar-footer {
                 padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -127,7 +123,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -180,7 +176,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Card Styles */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -204,7 +200,7 @@
                 font-weight: 600;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -239,7 +235,7 @@
                 margin-top: 0.2rem;
             }
 
-            /* Button Styles */
+            
             .btn {
                 padding: 0.6rem 1.25rem;
                 border-radius: 6px;
@@ -280,7 +276,7 @@
                 transform: translateY(-1px);
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 padding: 0.8rem;
@@ -299,7 +295,7 @@
                 color: #721c24;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -325,7 +321,7 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -368,7 +364,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -377,13 +373,13 @@
                 return;
             }
             
-            // Check if user has permission to edit help sections
+            
             if (!"ADMIN".equals(role) && !"MANAGER".equals(role)) {
                 response.sendRedirect("help.jsp?error=Access denied. You don't have permission to edit help sections.");
                 return;
             }
             
-            // Get help section ID from request
+            
             String helpIdParam = request.getParameter("help_id");
             if (helpIdParam == null || helpIdParam.trim().isEmpty()) {
                 response.sendRedirect("help.jsp?error=Help section ID is required.");
@@ -398,7 +394,7 @@
                 return;
             }
             
-            // Get help section data
+            
             com.booking.patterns.FacadeDP facade = new com.booking.patterns.FacadeDP();
             HelpSection helpSection = facade.getHelpSectionById(helpId);
             
@@ -411,12 +407,12 @@
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -432,7 +428,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -445,7 +441,7 @@
                 </div>
                 <% } %>
 
-                <!-- Edit Help Section Form -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-pencil-square me-2"></i>Edit Help Section</span>
@@ -480,14 +476,14 @@
                                 <% 
                                 String currentRole = (String) session.getAttribute("role");
                                 if ("ADMIN".equals(currentRole)) {
-                                    // Admin can edit for all roles
+                                    
                                 %>
                                     <option value="1" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 1) ? "selected" : "" %>>ADMIN</option>
                                     <option value="2" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 2) ? "selected" : "" %>>MANAGER</option>
                                     <option value="3" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 3) ? "selected" : "" %>>CASHIER</option>
                                     <option value="4" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 4) ? "selected" : "" %>>CUSTOMER</option>
                                 <% } else if ("MANAGER".equals(currentRole)) {
-                                    // Manager can only edit for CUSTOMER role
+                                    
                                 %>
                                     <option value="4" <%= (helpSection.getRole() != null && helpSection.getRole().getRoleId() == 4) ? "selected" : "" %>>CUSTOMER</option>
                                 <% } %>
@@ -514,23 +510,23 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
-            // Form validation
+
             document.getElementById('helpForm').addEventListener('submit', function(e) {
                 let isValid = true;
                 const title = document.getElementById('title').value.trim();
                 const content = document.getElementById('content').value.trim();
                 
-                // Reset previous errors
+
                 document.getElementById('title').classList.remove('is-invalid');
                 document.getElementById('content').classList.remove('is-invalid');
                 document.getElementById('titleError').textContent = '';
                 document.getElementById('contentError').textContent = '';
                 
-                // Validate title
+
                 if (!title) {
                     document.getElementById('title').classList.add('is-invalid');
                     document.getElementById('titleError').textContent = 'Title is required';
@@ -541,7 +537,7 @@
                     isValid = false;
                 }
                 
-                // Validate content
+
                 if (!content) {
                     document.getElementById('content').classList.add('is-invalid');
                     document.getElementById('contentError').textContent = 'Content is required';
@@ -553,7 +549,7 @@
                 }
             });
             
-            // Sidebar toggle for mobile
+
             function toggleSidebar() {
                 const sidebar = document.querySelector('.sidebar');
                 sidebar.classList.toggle('show');

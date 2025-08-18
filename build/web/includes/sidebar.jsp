@@ -1,8 +1,4 @@
-<%-- 
-    Document   : sidebar
-    Created on : Aug 3, 2025, 9:13:00 AM
-    Author     : pruso
---%>
+
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -21,7 +17,7 @@
     </div>
 
     <nav class="nav-menu">
-        <!-- Dashboard -->
+        
         <% if ("ADMIN".equals(role)) { %>
         <div class="nav-item">
             <span class="nav-link disabled" style="opacity: 0.6; cursor: not-allowed;">
@@ -38,7 +34,7 @@
         </div>
         <% } %>
         
-        <!-- POS -->
+        
         <% if ("ADMIN".equals(role)) { %>
         <div class="nav-item">
             <span class="nav-link disabled" style="opacity: 0.6; cursor: not-allowed;">
@@ -55,7 +51,7 @@
         </div>
         <% } %>
         
-        <!-- Transactions -->
+        
         <% if ("ADMIN".equals(role)) { %>
         <div class="nav-item">
             <span class="nav-link disabled" style="opacity: 0.6; cursor: not-allowed;">
@@ -72,7 +68,7 @@
         </div>
         <% } %>
         
-        <!-- Customer -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role)) { %>
         <div class="nav-item">
             <a href="CustomerServlet?action=list" class="nav-link <%= "customer".equals(currentPage) ? "active" : "" %>">
@@ -82,7 +78,7 @@
         </div>
         <% } %>
         
-        <!-- Book Categories -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role)) { %>
         <div class="nav-item">
             <a href="BookCategoryServlet?action=list" class="nav-link <%= "bookcategory".equals(currentPage) ? "active" : "" %>">
@@ -92,7 +88,7 @@
         </div>
         <% } %>
         
-        <!-- Books -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role)) { %>
         <div class="nav-item">
             <a href="BookServlet?action=list" class="nav-link <%= "book".equals(currentPage) ? "active" : "" %>">
@@ -102,7 +98,7 @@
         </div>
         <% } %>
         
-        <!-- Stocks -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role)) { %>
         <div class="nav-item">
             <a href="StockServlet?action=list" class="nav-link <%= "stock".equals(currentPage) ? "active" : "" %>">
@@ -112,7 +108,7 @@
         </div>
         <% } %>
         
-        <!-- Users -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role)) { %>
         <div class="nav-item">
             <a href="UserServlet?action=list" class="nav-link <%= "user".equals(currentPage) ? "active" : "" %>">
@@ -122,7 +118,7 @@
         </div>
         <% } %>
         
-        <!-- User Roles -->
+        
         <% if ("ADMIN".equals(role)) { %>
         <div class="nav-item">
             <a href="UserRoleServlet?action=list" class="nav-link <%= "userrole".equals(currentPage) ? "active" : "" %>">
@@ -132,7 +128,7 @@
         </div>
         <% } %>
         
-        <!-- Profile -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role) || "CUSTOMER".equals(role)) { %>
         <div class="nav-item">
             <a href="profile.jsp" class="nav-link <%= "profile".equals(currentPage) ? "active" : "" %>">
@@ -142,7 +138,7 @@
         </div>
         <% } %>
         
-        <!-- Help Content -->
+        
         <% if ("ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role) || "CUSTOMER".equals(role)) { %>
         <div class="nav-item">
             <a href="help.jsp" class="nav-link <%= "help".equals(currentPage) ? "active" : "" %>">

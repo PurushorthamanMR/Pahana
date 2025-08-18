@@ -1,8 +1,4 @@
-<%-- 
-    Document   : pos
-    Created on : Aug 3, 2025, 9:10:02 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -14,9 +10,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Point of Sale</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -24,7 +20,7 @@
                 background-color: #f8f9fa;
                 margin: 0;
                 padding: 0;
-                font-size: 0.85rem; /* Decreased base font size for laptop screens */
+                font-size: 0.85rem; 
             }
 
             .main-container {
@@ -32,9 +28,9 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
-                width: 240px; /* Decreased from 260px for laptop screens */
+                width: 240px; 
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
                 color: white;
                 padding: 0;
@@ -45,13 +41,13 @@
             }
 
             .sidebar-header {
-                padding: 1.25rem 1rem; /* Decreased padding */
+                padding: 1.25rem 1rem; 
                 border-bottom: 1px solid rgba(255,255,255,0.1);
                 text-align: center;
             }
 
             .logo {
-                font-size: 1.4rem; /* Decreased from 1.6rem */
+                font-size: 1.4rem; 
                 font-weight: 700;
                 color: white;
                 text-decoration: none;
@@ -63,24 +59,24 @@
             }
 
             .nav-menu {
-                padding: 0.6rem 0; /* Decreased padding */
+                padding: 0.6rem 0; 
                 flex-grow: 1;
             }
 
             .nav-item {
-                margin: 0.3rem 0.6rem; /* Decreased margins */
+                margin: 0.3rem 0.6rem; 
             }
 
             .nav-link {
                 display: flex;
                 align-items: center;
-                padding: 0.5rem 0.7rem; /* Decreased padding */
+                padding: 0.5rem 0.7rem; 
                 color: rgba(255,255,255,0.8);
                 text-decoration: none;
-                border-radius: 6px; /* Decreased border radius */
+                border-radius: 6px; 
                 transition: all 0.3s ease;
                 font-weight: 500;
-                font-size: 0.8rem; /* Decreased from 0.9rem */
+                font-size: 0.8rem; 
             }
 
             .nav-link:hover {
@@ -92,17 +88,17 @@
             .nav-link.active {
                 background: rgba(255,255,255,0.2);
                 color: white;
-                border-left: 3px solid #ffd700; /* Decreased border width */
+                border-left: 3px solid #ffd700; 
             }
 
             .nav-link i {
-                margin-right: 0.5rem; /* Decreased margin */
-                font-size: 0.9rem; /* Decreased from 1rem */
-                width: 16px; /* Decreased width */
+                margin-right: 0.5rem; 
+                font-size: 0.9rem; 
+                width: 16px; 
             }
 
             .sidebar-footer {
-                padding: 0.8rem 1.25rem; /* Decreased padding */
+                padding: 0.8rem 1.25rem; 
                 border-top: 1px solid rgba(255,255,255,0.1);
                 margin-top: auto;
             }
@@ -112,14 +108,14 @@
                 background: rgba(255,255,255,0.1);
                 border: 1px solid rgba(255,255,255,0.2);
                 color: white;
-                padding: 0.6rem 0.8rem; /* Decreased padding */
-                border-radius: 6px; /* Decreased border radius */
+                padding: 0.6rem 0.8rem; 
+                border-radius: 6px; 
                 text-decoration: none;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 transition: all 0.3s ease;
-                font-size: 0.8rem; /* Added font size */
+                font-size: 0.8rem; 
             }
 
             .logout-btn:hover {
@@ -128,7 +124,7 @@
                 text-decoration: none;
             }
 
-            /* Bill Modal Styles */
+            
             .bill-container {
                 max-width: 100%;
                 margin: 0 auto;
@@ -179,7 +175,7 @@
                 color: #1e3c72;
             }
 
-            /* Modal specific styles */
+            
             #billModal .modal-content {
                 border-radius: 12px;
                 border: none;
@@ -202,7 +198,7 @@
                 filter: invert(1);
             }
 
-            /* Enhanced Cart Item Styles */
+            
             .cart-item {
                 background: white;
                 border: 1px solid #e9ecef;
@@ -270,7 +266,7 @@
                 transform: scale(0.95);
             }
 
-            /* Order Summary Styles */
+            
             #orderSummary .d-flex {
                 border-bottom: 1px solid #f1f3f4;
                 padding: 8px 0;
@@ -298,36 +294,36 @@
                 color: #6c757d;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
-                margin-left: 240px; /* Updated to match new sidebar width */
+                margin-left: 240px; 
                 padding: 0;
                 background-color: #f8f9fa;
             }
 
             .header {
                 background: white;
-                padding: 0.6rem 1.5rem; /* Further decreased padding for 1920x1200 */
+                padding: 0.6rem 1.5rem; 
                 border-bottom: 1px solid #e9ecef;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                min-height: 50px; /* Optimized height for 1920x1200 */
+                min-height: 50px; 
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 0.8rem; /* Decreased gap */
+                gap: 0.8rem; 
             }
 
             .menu-toggle {
                 display: none;
                 background: none;
                 border: none;
-                font-size: 1.3rem; /* Decreased font size */
+                font-size: 1.3rem; 
                 color: #333;
                 cursor: pointer;
             }
@@ -335,66 +331,66 @@
             .user-info {
                 display: flex;
                 align-items: center;
-                gap: 0.8rem; /* Decreased gap */
+                gap: 0.8rem; 
                 color: #666;
-                font-size: 0.85rem; /* Added font size */
+                font-size: 0.85rem; 
             }
 
             .user-avatar {
-                width: 35px; /* Decreased size */
-                height: 35px; /* Decreased size */
+                width: 35px; 
+                height: 35px; 
                 background: #667eea;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: white;
-                font-size: 0.9rem; /* Added font size */
+                font-size: 0.9rem; 
             }
 
-            /* POS Container Styles */
+            
             .pos-container {
                 display: grid;
                 grid-template-columns: 1fr 2fr 1fr;
-                gap: 1.5rem; /* Decreased gap */
-                padding: 1.5rem; /* Decreased padding */
-                height: calc(100vh - 60px); /* Optimized for 1920x1200 - reduced header height */
-                min-height: calc(100vh - 60px); /* Ensure minimum height */
+                gap: 1.5rem; 
+                padding: 1.5rem; 
+                height: calc(100vh - 60px); 
+                min-height: calc(100vh - 60px); 
             }
 
             .category-section, .books-section, .cart-section {
                 background: white;
-                border-radius: 10px; /* Decreased border radius */
-                padding: 1.25rem; /* Decreased padding */
-                box-shadow: 0 3px 5px rgba(0,0,0,0.1); /* Decreased shadow */
+                border-radius: 10px; 
+                padding: 1.25rem; 
+                box-shadow: 0 3px 5px rgba(0,0,0,0.1); 
                 display: flex;
                 flex-direction: column;
             }
 
             .section-title {
-                font-size: 1.1rem; /* Decreased from 1.3rem */
+                font-size: 1.1rem; 
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 1.25rem; /* Decreased margin */
+                margin-bottom: 1.25rem; 
                 display: flex;
                 align-items: center;
-                padding-bottom: 0.4rem; /* Decreased padding */
+                padding-bottom: 0.4rem; 
                 border-bottom: 2px solid #e9ecef;
             }
 
-            /* Category Styles */
+            
             .category-list {
                 display: flex;
                 flex-direction: column;
-                gap: 0.4rem; /* Decreased gap */
-                max-height: calc(100vh - 200px); /* Optimized for 1920x1200 - dynamic height */
-                min-height: 500px; /* Minimum height for smaller screens */
+                gap: 0.4rem; 
+                max-height: calc(100vh - 200px); 
+                min-height: 500px; 
                 overflow-y: auto;
                 padding-right: 5px;
             }
 
             .category-list::-webkit-scrollbar {
-                width: 5px; /* Decreased scrollbar width */
+                width: 5px; 
             }
 
             .category-list::-webkit-scrollbar-track {
@@ -412,21 +408,21 @@
             }
 
             .category-item {
-                padding: 0.6rem 0.8rem; /* Decreased padding */
+                padding: 0.6rem 0.8rem; 
                 background: #f8f9fa;
                 border: 2px solid #e9ecef;
-                border-radius: 6px; /* Decreased border radius */
+                border-radius: 6px; 
                 cursor: pointer;
                 transition: all 0.3s ease;
                 font-weight: 500;
                 color: #495057;
-                font-size: 0.8rem; /* Added font size */
+                font-size: 0.8rem; 
             }
 
             .category-item:hover {
                 background: #e9ecef;
                 border-color: #667eea;
-                transform: translateX(3px); /* Decreased transform */
+                transform: translateX(3px); 
             }
 
             .category-item.active {
@@ -435,10 +431,10 @@
                 border-color: #667eea;
             }
 
-            /* Book Table Styles */
+            
             .table-responsive {
-                max-height: calc(100vh - 300px); /* Optimized for 1920x1200 - dynamic height */
-                min-height: 450px; /* Minimum height for smaller screens */
+                max-height: calc(100vh - 300px); 
+                min-height: 450px; 
                 overflow-y: auto;
             }
 
@@ -448,8 +444,8 @@
                 background-color: #343a40;
                 color: white;
                 z-index: 10;
-                font-size: 0.8rem; /* Added font size */
-                padding: 0.5rem 0.75rem; /* Decreased padding */
+                font-size: 0.8rem; 
+                padding: 0.5rem 0.75rem; 
             }
 
             .table tbody tr:hover {
@@ -459,23 +455,23 @@
 
             .table td {
                 vertical-align: middle;
-                font-size: 0.8rem; /* Added font size */
-                padding: 0.5rem 0.75rem; /* Decreased padding */
+                font-size: 0.8rem; 
+                padding: 0.5rem 0.75rem; 
             }
 
             .btn-sm {
-                padding: 0.2rem 0.4rem; /* Decreased padding */
-                font-size: 0.75rem; /* Decreased font size */
+                padding: 0.2rem 0.4rem; 
+                font-size: 0.75rem; 
             }
 
-            /* Search Bar Styles */
+            
             .book-search-container {
-                margin-bottom: 1.25rem; /* Decreased margin */
+                margin-bottom: 1.25rem; 
             }
 
             .book-search-container .input-group {
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                border-radius: 6px; /* Decreased border radius */
+                border-radius: 6px; 
                 overflow: hidden;
             }
 
@@ -483,15 +479,15 @@
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
                 border: none;
-                padding: 0.6rem 0.8rem; /* Decreased padding */
-                font-size: 0.8rem; /* Added font size */
+                padding: 0.6rem 0.8rem; 
+                font-size: 0.8rem; 
             }
 
             .book-search-container .form-control {
                 border: 2px solid #e9ecef;
                 border-left: none;
-                padding: 0.6rem 0.8rem; /* Decreased padding */
-                font-size: 0.8rem; /* Decreased font size */
+                padding: 0.6rem 0.8rem; 
+                font-size: 0.8rem; 
             }
 
             .book-search-container .form-control:focus {
@@ -502,23 +498,23 @@
             .book-search-container .btn-outline-secondary {
                 border: 2px solid #e9ecef;
                 border-left: none;
-                padding: 0.6rem 0.8rem; /* Decreased padding */
+                padding: 0.6rem 0.8rem; 
                 color: #6c757d;
                 background: white;
-                font-size: 0.8rem; /* Added font size */
+                font-size: 0.8rem; 
             }
 
-            /* Cart Styles */
+            
             .cart-items {
                 flex: 1;
                 overflow-y: auto;
-                margin-bottom: 0.8rem; /* Decreased margin */
-                max-height: calc(100vh - 350px); /* Optimized for 1920x1200 - dynamic height */
-                min-height: 300px; /* Minimum height for smaller screens */
+                margin-bottom: 0.8rem; 
+                max-height: calc(100vh - 350px); 
+                min-height: 300px; 
             }
 
             .cart-items::-webkit-scrollbar {
-                width: 5px; /* Decreased scrollbar width */
+                width: 5px; 
             }
 
             .cart-items::-webkit-scrollbar-track {
@@ -539,9 +535,9 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.6rem 0; /* Decreased padding */
+                padding: 0.6rem 0; 
                 border-bottom: 1px solid #e9ecef;
-                font-size: 0.8rem; /* Added font size */
+                font-size: 0.8rem; 
             }
 
             .cart-item:last-child {
@@ -555,33 +551,33 @@
             .cart-item-title {
                 font-weight: 600;
                 color: #333;
-                font-size: 0.8rem; /* Decreased font size */
+                font-size: 0.8rem; 
             }
 
             .cart-item-price {
                 color: #28a745;
                 font-weight: 600;
-                font-size: 0.8rem; /* Decreased font size */
+                font-size: 0.8rem; 
             }
 
             .cart-item-quantity {
                 display: flex;
                 align-items: center;
-                gap: 0.4rem; /* Decreased gap */
+                gap: 0.4rem; 
             }
 
             .quantity-btn {
                 background: #667eea;
                 color: white;
                 border: none;
-                border-radius: 3px; /* Decreased border radius */
-                width: 22px; /* Decreased width */
-                height: 22px; /* Decreased height */
+                border-radius: 3px; 
+                width: 22px; 
+                height: 22px; 
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                font-size: 0.7rem; /* Decreased font size */
+                font-size: 0.7rem; 
             }
 
             .quantity-btn:hover {
@@ -590,12 +586,12 @@
 
             .cart-total {
                 border-top: 2px solid #e9ecef;
-                padding-top: 0.8rem; /* Decreased padding */
+                padding-top: 0.8rem; 
                 margin-top: auto;
             }
 
             .total-amount {
-                font-size: 1.1rem; /* Decreased from 1.3rem */
+                font-size: 1.1rem; 
                 font-weight: 700;
                 color: #333;
                 text-align: right;
@@ -606,18 +602,18 @@
                 background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
                 color: white;
                 border: none;
-                padding: 0.8rem; /* Decreased padding */
-                border-radius: 6px; /* Decreased border radius */
+                padding: 0.8rem; 
+                border-radius: 6px; 
                 font-weight: 600;
-                margin-top: 0.8rem; /* Decreased margin */
+                margin-top: 0.8rem; 
                 cursor: pointer;
                 transition: all 0.3s ease;
-                font-size: 0.85rem; /* Added font size */
+                font-size: 0.85rem; 
             }
 
             .checkout-btn:hover {
-                transform: translateY(-1px); /* Decreased transform */
-                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); /* Decreased shadow */
+                transform: translateY(-1px); 
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); 
             }
 
             .checkout-btn:disabled {
@@ -627,7 +623,7 @@
                 box-shadow: none;
             }
 
-            /* Modal Styles */
+            
             .modal-content {
                 border-radius: 12px;
                 border: none;
@@ -660,7 +656,7 @@
                 box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
             }
 
-            /* Customer Selection Styles */
+            
             .customer-search {
                 margin-bottom: 1rem;
             }
@@ -690,7 +686,7 @@
                 border-color: #667eea;
             }
 
-            /* Bill Styles */
+            
             .bill-container {
                 background: white;
                 padding: 2rem;
@@ -725,15 +721,15 @@
                 font-size: 1.2rem;
             }
 
-            /* Responsive Design */
+            
             @media (min-width: 1366px) and (max-width: 1920px) {
-                /* Laptop screen optimizations */
+                
                 body {
-                    font-size: 0.8rem; /* Even smaller for laptop screens */
+                    font-size: 0.8rem; 
                 }
                 
                 .sidebar {
-                    width: 220px; /* Smaller sidebar for laptop */
+                    width: 220px; 
                 }
                 
                 .main-content {
@@ -741,27 +737,27 @@
                 }
                 
                 .pos-container {
-                    gap: 1.25rem; /* Smaller gaps */
+                    gap: 1.25rem; 
                     padding: 1.25rem;
-                    height: calc(100vh - 55px); /* Optimized height for laptop screens */
+                    height: calc(100vh - 55px); 
                 }
                 
                 .category-section, .books-section, .cart-section {
-                    padding: 1rem; /* Smaller padding */
+                    padding: 1rem; 
                 }
                 
                 .section-title {
-                    font-size: 1rem; /* Smaller titles */
+                    font-size: 1rem; 
                     margin-bottom: 1rem;
                 }
                 
                 .category-item {
-                    padding: 0.5rem 0.7rem; /* Smaller category items */
+                    padding: 0.5rem 0.7rem; 
                     font-size: 0.75rem;
                 }
                 
                 .table th, .table td {
-                    font-size: 0.75rem; /* Smaller table text */
+                    font-size: 0.75rem; 
                     padding: 0.4rem 0.6rem;
                 }
                 
@@ -797,24 +793,24 @@
                 }
             }
 
-            /* Specific optimization for 1920x1200 resolution */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .pos-container {
-                    height: calc(100vh - 50px); /* Optimized for 1920x1200 */
+                    height: calc(100vh - 50px); 
                     gap: 1.25rem;
                     padding: 1.25rem;
                 }
                 
                 .category-list {
-                    max-height: calc(100vh - 180px); /* Optimized height for 1920x1200 */
+                    max-height: calc(100vh - 180px); 
                 }
                 
                 .table-responsive {
-                    max-height: calc(100vh - 280px); /* Optimized height for 1920x1200 */
+                    max-height: calc(100vh - 280px); 
                 }
                 
                 .cart-items {
-                    max-height: calc(100vh - 320px); /* Optimized height for 1920x1200 */
+                    max-height: calc(100vh - 320px); 
                 }
             }
 
@@ -848,7 +844,7 @@
                 }
             }
             
-            /* Email Loading Overlay Styles */
+            
             .email-loading-overlay {
                 position: fixed;
                 top: 0;
@@ -880,7 +876,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -889,39 +885,39 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "MANAGER".equals(role) || "CASHIER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // Load categories
+            
             BookCategoryDAO categoryDAO = new BookCategoryDAO();
             List<BookCategory> categories = categoryDAO.getAllBookCategories();
             request.setAttribute("categories", categories);
             
-            // Load all books
+            
             BookDAO bookDAO = new BookDAO();
             List<Book> allBooks = bookDAO.getAllBooks();
             request.setAttribute("allBooks", allBooks);
             
-            // Load customers for checkout
+            
             CustomerDAO customerDAO = new CustomerDAO();
             List<Customer> customers = customerDAO.getAllCustomers();
             request.setAttribute("customers", customers);
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "pos");
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -937,7 +933,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -950,9 +946,9 @@
                 </div>
                 <% } %>
 
-                <!-- POS Container -->
+                
                 <div class="pos-container">
-                    <!-- Book Category Section -->
+                    
                     <div class="category-section">
                         <h3 class="section-title">
                             <i class="bi bi-tags me-2"></i>Categories
@@ -970,14 +966,14 @@
                         </div>
                     </div>
 
-                    <!-- Books Section -->
+                    
                     <div class="books-section">
                         <h3 class="section-title">
                             <i class="bi bi-book me-2"></i>Books
                             <span id="categoryTitle" class="ms-2 text-muted">(All Categories)</span>
                         </h3>
                         
-                        <!-- Search Bar -->
+                        
                         <div class="book-search-container">
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -1045,7 +1041,7 @@
                         </div>
                     </div>
 
-                    <!-- Cart Section -->
+                    
                     <div class="cart-section">
                         <h3 class="section-title">
                             <i class="bi bi-cart me-2"></i>Shopping Cart
@@ -1071,7 +1067,7 @@
             </div>
         </div>
 
-        <!-- Quantity Modal -->
+        
         <div class="modal fade" id="quantityModal" tabindex="-1" aria-labelledby="quantityModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -1100,7 +1096,7 @@
             </div>
         </div>
 
-        <!-- Checkout Modal -->
+        
         <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
@@ -1139,7 +1135,7 @@
                             <div class="col-md-6">
                                 <h6 class="mb-3">Order Summary</h6>
                                 <div id="orderSummary">
-                                    <!-- Order summary will be populated here -->
+                                    
                                 </div>
                                 <div class="mt-3">
                                     <strong>Total: <span id="modalTotal">0.00</span></strong>
@@ -1157,7 +1153,7 @@
             </div>
         </div>
 
-        <!-- Bill Modal -->
+        
         <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -1169,7 +1165,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="bill-container" id="billContent">
-                            <!-- Bill content will be populated here -->
+                            
                         </div>
                         <div class="text-center mt-3">
                             <button type="button" class="btn btn-primary me-2" onclick="printBill()">
@@ -1185,7 +1181,7 @@
             </div>
         </div>
 
-        <!-- Add Customer Modal (with email verification, same as Customer Management) -->
+        
         <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -1278,7 +1274,7 @@
             </div>
         </div>
 
-        <!-- Email Loading Overlay -->
+        
         <div id="emailLoadingOverlay" class="email-loading-overlay" style="display: none;">
             <div class="email-loading-content">
                 <div class="spinner-border text-primary mb-3" role="status">
@@ -1289,19 +1285,19 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <script src="https:
 
         <script>
-            // Global variables
+
             let cart = [];
             let selectedCategoryId = 0;
             let selectedCategoryName = 'All Categories';
             let selectedCustomer = null;
             let currentBook = null;
             let transactionId = null;
-            let billCustomer = null; // Separate variable for bill customer data
-            let bookStockMap = {}; // bookId -> remaining stock (client-side)
+            let billCustomer = null; 
+            let bookStockMap = {}; 
 
             function initBookStockMap() {
                 const rows = document.querySelectorAll('#bookTableBody tr');
@@ -1322,7 +1318,7 @@
 
             function getRemainingStock(bookId) {
                 if (bookStockMap[bookId] != null) return bookStockMap[bookId];
-                // Fallback: read from table
+
                 const rows = document.querySelectorAll('#bookTableBody tr');
                 for (const row of rows) {
                     const id = parseInt(row.cells[0].textContent.trim());
@@ -1340,9 +1336,9 @@
                 for (const row of rows) {
                     const id = parseInt(row.cells[0].textContent.trim());
                     if (id === bookId) {
-                        // Update stock cell
+
                         row.cells[3].textContent = String(remaining);
-                        // Toggle Add to Cart button
+
                         const btn = row.querySelector('button.btn.btn-sm.btn-primary');
                         if (btn) {
                             if (remaining <= 0) {
@@ -1358,13 +1354,13 @@
                 }
             }
 
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Safe onclick wrappers to avoid inline parsing issues
+
             function selectCategoryFromItem(el) {
                 const id = parseInt(el.getAttribute('data-category-id'));
                 const name = el.getAttribute('data-category-name');
@@ -1389,7 +1385,7 @@
                 selectCustomer(id, name, email);
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -1401,43 +1397,43 @@
                 }
             });
 
-            // Select category
+
             function selectCategory(categoryId, categoryName) {
                 selectedCategoryId = categoryId;
                 selectedCategoryName = categoryName;
                 
-                // Update active category
+
                 document.querySelectorAll('.category-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 event.target.closest('.category-item').classList.add('active');
                 
-                // Update category title
+
                 document.getElementById('categoryTitle').textContent = `(${categoryName})`;
                 
-                // Filter books by category
+
                 filterBooksByCategory(categoryId);
             }
 
-            // Filter books by category
+
             function filterBooksByCategory(categoryId) {
                 const bookRows = document.querySelectorAll('#bookTableBody tr');
                 
                 bookRows.forEach(row => {
                     if (categoryId === 0) {
-                        // Show all books
+
                         row.style.display = '';
                     } else {
-                        // Show only books from selected category
+
                         const rowCategoryId = parseInt(row.getAttribute('data-category-id'));
                         row.style.display = rowCategoryId === categoryId ? '' : 'none';
                     }
                 });
                 
-                // Check if any books are visible
+
                 const visibleRows = document.querySelectorAll('#bookTableBody tr:not([style*="display: none"])');
                 if (visibleRows.length === 0) {
-                    // Show "no books" message
+
                     const noBooksRow = document.createElement('tr');
                     noBooksRow.innerHTML = `
                         <td colspan="6" class="text-center text-muted">
@@ -1449,13 +1445,13 @@
                 }
             }
 
-            // Search books function
+
             function searchBooks(searchTerm) {
                 const bookRows = document.querySelectorAll('#bookTableBody tr');
                 let visibleCount = 0;
                 
                 bookRows.forEach(row => {
-                    // Skip rows that are already hidden by category filter
+
                     if (row.style.display === 'none') {
                         return;
                     }
@@ -1480,9 +1476,9 @@
                     }
                 });
                 
-                // Show "no results" message if no books match search
+
                 if (visibleCount === 0) {
-                    // Remove existing "no results" row if it exists
+
                     const existingNoResults = document.querySelector('#noResultsRow');
                     if (existingNoResults) {
                         existingNoResults.remove();
@@ -1498,7 +1494,7 @@
                     `;
                     document.getElementById('bookTableBody').appendChild(noResultsRow);
                 } else {
-                    // Remove "no results" row if it exists and we have results
+
                     const existingNoResults = document.querySelector('#noResultsRow');
                     if (existingNoResults) {
                         existingNoResults.remove();
@@ -1506,16 +1502,16 @@
                 }
             }
 
-            // Clear book search
+
             function clearBookSearch() {
                 document.getElementById('bookSearch').value = '';
-                // Re-apply category filter to show all books in current category
+
                 filterBooksByCategory(selectedCategoryId);
             }
 
-            // Show quantity modal
+
             function showQuantityModal(book) {
-                // Override stock with remaining stock map
+
                 const remaining = getRemainingStock(book.id);
                 currentBook = Object.assign({}, book, { stock: remaining });
                 document.getElementById('bookTitle').textContent = book.title;
@@ -1528,7 +1524,7 @@
                 modal.show();
             }
 
-            // Confirm add to cart
+
             function confirmAddToCart() {
                 const quantity = parseInt(document.getElementById('quantityInput').value);
                 const stock = currentBook.stock;
@@ -1562,22 +1558,22 @@
                     });
                 }
                 
-                // Update remaining stock and UI
+
                 const remaining = Math.max(getRemainingStock(currentBook.id) - quantity, 0);
                 bookStockMap[currentBook.id] = remaining;
                 updateRowStockUI(currentBook.id, remaining);
 
                 updateCartDisplay();
                 
-                // Close modal
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('quantityModal'));
                 modal.hide();
                 
-                // Show success message
+
                 showToast('Item added to cart successfully!', 'success');
             }
 
-            // Update cart display
+
             function updateCartDisplay() {
                 const cartItems = document.getElementById('cartItems');
                 const cartTotal = document.getElementById('cartTotal');
@@ -1595,7 +1591,7 @@
                     cartItems.innerHTML = '';
                     let total = 0;
                     
-                    // Display cart items in reverse order (newest first)
+
                     cart.slice().reverse().forEach(item => {
                         const itemTotal = item.price * item.quantity;
                         total += itemTotal;
@@ -1624,7 +1620,7 @@
                 }
             }
 
-            // Update quantity
+
             function updateQuantity(productId, change) {
                 const item = cart.find(item => item.id === productId);
                 if (!item) return;
@@ -1634,7 +1630,7 @@
                 const newQuantity = currentQty + change;
 
                 if (change === 1) {
-                    // Increase quantity: require available remaining stock
+
                     if (remaining <= 0) {
                         showToast('Quantity cannot exceed available stock', 'warning');
                         return;
@@ -1643,9 +1639,9 @@
                     bookStockMap[productId] = remaining - 1;
                     updateRowStockUI(productId, bookStockMap[productId]);
                 } else if (change === -1) {
-                    // Decrease quantity: restore stock
+
                     if (newQuantity <= 0) {
-                        // Removing entire item from cart, restore all its quantity
+
                         bookStockMap[productId] = remaining + currentQty;
                         cart = cart.filter(i => i.id !== productId);
                     } else {
@@ -1654,14 +1650,14 @@
                     }
                     updateRowStockUI(productId, bookStockMap[productId]);
                 } else {
-                    // Other changes not supported
+
                     return;
                 }
 
                 updateCartDisplay();
             }
 
-            // Reset checkout modal state
+
             function resetCheckoutModal() {
                 selectedCustomer = null;
                 document.getElementById('confirmCheckoutBtn').disabled = true;
@@ -1672,24 +1668,24 @@
                 });
             }
 
-            // Show checkout modal
+
             function showCheckoutModal() {
                 if (cart.length === 0) {
                     alert('Cart is empty!');
                     return;
                 }
                 
-                // Reset checkout modal state
+
                 resetCheckoutModal();
                 
-                // Update order summary
+
                 updateOrderSummary();
                 
                 const modal = new bootstrap.Modal(document.getElementById('checkoutModal'));
                 modal.show();
             }
 
-            // Select customer
+
             function selectCustomer(customerId, customerName, customerEmail) {
                 selectedCustomer = { 
                     id: customerId, 
@@ -1699,7 +1695,7 @@
                 
                 console.log('Customer selected:', selectedCustomer);
                 
-                // Update UI
+
                 document.querySelectorAll('.customer-item').forEach(item => {
                     item.classList.remove('selected');
                 });
@@ -1708,7 +1704,7 @@
                 document.getElementById('confirmCheckoutBtn').disabled = false;
             }
 
-            // Update order summary
+
             function updateOrderSummary() {
                 const orderSummary = document.getElementById('orderSummary');
                 const modalTotal = document.getElementById('modalTotal');
@@ -1734,7 +1730,7 @@
                 modalTotal.textContent = total.toFixed(2);
             }
 
-            // Process transaction
+
             function processTransaction() {
                 console.log('=== PROCESS TRANSACTION DEBUG ===');
                 console.log('selectedCustomer at start:', selectedCustomer);
@@ -1749,13 +1745,13 @@
                     return;
                 }
                 
-                // Calculate total amount from cart
+
                 let totalAmount = 0;
                 cart.forEach(item => {
                     totalAmount += item.price * item.quantity;
                 });
                 
-                // Prepare transaction data
+
                 const transactionData = {
                     customerId: selectedCustomer.id,
                     items: cart.map(item => ({
@@ -1766,11 +1762,11 @@
                     totalAmount: totalAmount
                 };
                 
-                // Debug: Log the transaction data
+
                 console.log('Transaction data:', transactionData);
                 console.log('JSON string:', JSON.stringify(transactionData));
                 
-                // Send transaction to server
+
                 fetch('TransactionServlet?action=create', {
                     method: 'POST',
                     headers: {
@@ -1785,19 +1781,19 @@
                         transactionId = data.transactionId;
                         showBill(data.transaction);
                         
-                        // Clear cart
+
                         cart = [];
                         updateCartDisplay();
                         
-                        // Reset modal total and clear order summary
+
                         document.getElementById('modalTotal').textContent = '0.00';
                         document.getElementById('orderSummary').innerHTML = '';
                         
-                        // Close checkout modal
+
                         const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
                         modal.hide();
                         
-                        // Reset checkout modal state
+
                         resetCheckoutModal();
                         
                         showToast('Transaction completed successfully!', 'success');
@@ -1812,7 +1808,7 @@
                 });
             }
 
-            // Show bill
+
             function showBill(transaction) {
                 console.log('=== SHOW BILL DEBUG ===');
                 console.log('showBill called with transaction:', transaction);
@@ -1832,7 +1828,7 @@
                 let itemsHTML = '';
                 let total = 0;
                 
-                // Check if transaction and items exist
+
                 if (!transaction) {
                     console.error('Transaction is null or undefined');
                     return;
@@ -1882,16 +1878,16 @@
                 console.log('Generated bill HTML:', billHTML);
                 billContent.innerHTML = billHTML;
                 
-                // Update the billCustomer variable with the transaction customer info
-                // This ensures the email functionality works properly
+
+
                 if (transaction.customerId && transaction.customerName) {
-                    // Store the current selectedCustomer email before updating
+
                     const currentEmail = selectedCustomer ? selectedCustomer.email : null;
                     
                     billCustomer = {
                         id: transaction.customerId,
                         name: transaction.customerName,
-                        email: currentEmail // Preserve the email from customer selection
+                        email: currentEmail 
                     };
                     console.log('Updated billCustomer for bill:', billCustomer);
                     console.log('Customer ID:', billCustomer.id);
@@ -1910,7 +1906,7 @@
                 console.log('Bill modal should be visible now');
             }
 
-            // Print bill
+
             function printBill() {
                 const billContent = document.getElementById('billContent').innerHTML;
                 const printWindow = window.open('', '_blank');
@@ -1938,9 +1934,9 @@
                 printWindow.print();
             }
 
-            // Show toast notification
+
             function showToast(message, type = 'info') {
-                // Create toast element
+
                 const toast = document.createElement('div');
                 toast.className = 'alert alert-' + type + ' alert-dismissible fade show position-fixed';
                 toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
@@ -1949,7 +1945,7 @@
                 
                 document.body.appendChild(toast);
                 
-                // Auto remove after 3 seconds
+
                 setTimeout(() => {
                     if (toast.parentNode) {
                         toast.parentNode.removeChild(toast);
@@ -1957,7 +1953,7 @@
                 }, 3000);
             }
 
-            // Customer search functionality
+
             document.getElementById('customerSearch').addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 const customerItems = document.querySelectorAll('.customer-item');
@@ -1974,37 +1970,37 @@
                 });
             });
 
-            // Initialize POS
+
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('POS initialized with enhanced functionality');
                 
-                // Add event listener for book search
+
                 const bookSearchInput = document.getElementById('bookSearch');
                 if (bookSearchInput) {
                     bookSearchInput.addEventListener('input', function() {
                         const searchTerm = this.value.toLowerCase().trim();
                         if (searchTerm === '') {
-                            // If search is empty, re-apply category filter
+
                             filterBooksByCategory(selectedCategoryId);
                         } else {
-                            // Apply search filter
+
                             searchBooks(searchTerm);
                         }
                     });
                 }
 
-                // Initialize client-side stock snapshot
+
                 initBookStockMap();
             });
             
-            // Send bill to customer email
+
             function sendBillToEmail() {
                 console.log('=== SEND BILL EMAIL DEBUG ===');
                 console.log('selectedCustomer:', selectedCustomer);
                 console.log('billCustomer:', billCustomer);
                 console.log('transactionId:', transactionId);
                 
-                // Use billCustomer if available, otherwise fall back to selectedCustomer
+
                 let customerToUse = billCustomer || selectedCustomer;
                 
                 if (!customerToUse || !customerToUse.id) {
@@ -2019,11 +2015,11 @@
                     return;
                 }
                 
-                // Show loading overlay
+
                 showEmailLoadingOverlay();
                 
-                // Prepare email data - only send customerId and transactionId
-                // The servlet will fetch the customer details from database using foreign key
+
+
                 const emailData = {
                     customerId: customerToUse.id,
                     transactionId: transactionId
@@ -2032,7 +2028,7 @@
                 console.log('Sending bill to email:', emailData);
                 console.log('Using customer data:', customerToUse);
                 
-                // Send email request
+
                 fetch('TransactionServlet?action=send-bill-email', {
                     method: 'POST',
                     headers: {
@@ -2047,7 +2043,7 @@
                     
                     if (data.success) {
                         showToast('Bill sent to customer email successfully!', 'success');
-                        // Update button to show success
+
                         const sendEmailBtn = document.getElementById('sendEmailBtn');
                         sendEmailBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Email Sent';
                         sendEmailBtn.className = 'btn btn-success me-2';
@@ -2063,50 +2059,50 @@
                 });
             }
             
-            // Show email loading overlay
+
             function showEmailLoadingOverlay() {
                 const overlay = document.getElementById('emailLoadingOverlay');
                 overlay.style.display = 'flex';
                 
-                // Disable the send email button
+
                 const sendEmailBtn = document.getElementById('sendEmailBtn');
                 if (sendEmailBtn) {
                     sendEmailBtn.disabled = true;
                 }
             }
             
-            // Hide email loading overlay
+
             function hideEmailLoadingOverlay() {
                 const overlay = document.getElementById('emailLoadingOverlay');
                 overlay.style.display = 'none';
                 
-                // Re-enable the send email button
+
                 const sendEmailBtn = document.getElementById('sendEmailBtn');
                 if (sendEmailBtn) {
                     sendEmailBtn.disabled = false;
                 }
             }
             
-            // Refresh page function
+
             function refreshPage() {
-                // Close the modal first
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('billModal'));
                 if (modal) {
                     modal.hide();
                 }
                 
-                // Wait a bit for modal to close, then refresh
+
                 setTimeout(() => {
                     window.location.reload();
                 }, 300);
             }
             
-            // Add event listener to bill modal close events
+
             document.addEventListener('DOMContentLoaded', function() {
                 const billModal = document.getElementById('billModal');
                 if (billModal) {
                     billModal.addEventListener('hidden.bs.modal', function() {
-                        // Refresh page when modal is closed
+
                         setTimeout(() => {
                             window.location.reload();
                         }, 100);
@@ -2114,9 +2110,9 @@
                 }
             });
 
-            // Show Add Customer Modal
+
             function showAddCustomerModal() {
-                // Reset form
+
                 ['posName','posEmail','posPhone','posAddress','posUsername','posPassword','posVerificationPin']
                     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
                 document.getElementById('posEmailStatus').textContent = 'Not Verified';
@@ -2130,7 +2126,7 @@
                 modal.show();
             }
 
-            // Save new customer via AJAX then auto confirm transaction
+
             function saveNewCustomer() {
                 const name = document.getElementById('posName').value.trim();
                 const email = document.getElementById('posEmail').value.trim();
@@ -2176,7 +2172,7 @@
                         showToast('Customer created successfully. Processing transaction...', 'success');
                         const modal = bootstrap.Modal.getInstance(document.getElementById('addCustomerModal'));
                         if (modal) modal.hide();
-                        // Proceed to process transaction
+
                         processTransaction();
                     } else {
                         showToast(data.message || 'Failed to create customer', 'error');
@@ -2192,7 +2188,7 @@
                 });
             }
 
-            // POS email verification logic (mirrors customer.jsp)
+
             let posEmailVerified = false;
             function posSendVerificationCode() {
                 const email = document.getElementById('posEmail').value.trim();

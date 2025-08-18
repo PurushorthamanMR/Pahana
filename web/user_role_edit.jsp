@@ -1,6 +1,6 @@
 <%-- 
     Document   : user_role_edit
-    Created on : Aug 3, 2025, 9:11:24 AM
+    Created on : Aug 3, 2025, 9:07:20 AM
     Author     : pruso
 --%>
 
@@ -13,9 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Edit User Role</title>
-        <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +28,6 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -126,7 +123,6 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -175,7 +171,6 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -230,7 +225,6 @@
                 color: white;
             }
 
-            /* Alert Styles */
             .alert {
                 border-radius: 6px;
                 border: none;
@@ -254,7 +248,6 @@
                 color: #0c5460;
             }
 
-            /* Form Styles */
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -284,7 +277,6 @@
                 opacity: 0.6;
             }
 
-            /* Breadcrumb Styles */
             .breadcrumb {
                 background-color: #f8f9fa;
                 border-radius: 6px;
@@ -309,7 +301,6 @@
                 font-weight: 500;
             }
 
-            /* Responsive Design */
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -325,7 +316,6 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -370,7 +360,6 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -379,20 +368,17 @@
                 return;
             }
             
-            // Check role-based access - only ADMIN can edit user roles
             if (!"ADMIN".equals(role)) {
                 response.sendRedirect("dashboard.jsp?error=Access denied. Only administrators can edit user roles.");
                 return;
             }
             
-            // Get role ID from request parameter
             String roleId = request.getParameter("role_id");
             if (roleId == null || roleId.trim().isEmpty()) {
                 response.sendRedirect("user_role.jsp?error=Role ID is required.");
                 return;
             }
             
-            // Get role name from request parameter
             String roleName = request.getParameter("role_name");
             if (roleName == null) {
                 roleName = "";
@@ -402,12 +388,8 @@
         %>
         
         <div class="main-container">
-            <!-- Sidebar -->
             <jsp:include page="includes/sidebar.jsp" />
-
-            <!-- Main Content -->
             <div class="main-content">
-                <!-- Header -->
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -423,7 +405,6 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -436,7 +417,6 @@
                 </div>
                 <% } %>
 
-                <!-- Breadcrumb Navigation -->
                 <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="dashboard.jsp">Dashboard</a></li>
@@ -445,7 +425,6 @@
                     </ol>
                 </nav>
 
-                <!-- Edit User Role Form -->
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-pencil-square me-2"></i>Edit User Role</span>
@@ -490,17 +469,14 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -512,7 +488,6 @@
                 }
             });
 
-            // Form validation and submission
             document.getElementById('editRoleForm').addEventListener('submit', function(e) {
                 const roleName = document.getElementById('role_name').value.trim();
                 
@@ -533,48 +508,41 @@
                     alert('Role name must be less than 50 characters.');
                     return false;
                 }
-                
-                // Show loading state
+
                 const submitBtn = this.querySelector('button[type="submit"]');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Updating...';
                 submitBtn.disabled = true;
-                
-                // Allow form submission
+
                 return true;
             });
 
-            // Check for success/error messages on page load
             window.addEventListener('load', function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const message = urlParams.get('message');
                 const error = urlParams.get('error');
                 
                 if (message) {
-                    // Show success message
                     const alertDiv = document.createElement('div');
                     alertDiv.className = 'alert alert-success';
                     alertDiv.innerHTML = '<i class="bi bi-check-circle me-2"></i>' + message;
                     
                     const header = document.querySelector('.header');
                     header.parentNode.insertBefore(alertDiv, header.nextSibling);
-                    
-                    // Auto-remove after 5 seconds
+
                     setTimeout(() => {
                         alertDiv.remove();
                     }, 5000);
                 }
                 
                 if (error) {
-                    // Show error message
                     const alertDiv = document.createElement('div');
                     alertDiv.className = 'alert alert-danger';
                     alertDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>' + error;
                     
                     const header = document.querySelector('.header');
                     header.parentNode.insertBefore(alertDiv, header.nextSibling);
-                    
-                    // Auto-remove after 5 seconds
+
                     setTimeout(() => {
                         alertDiv.remove();
                     }, 5000);

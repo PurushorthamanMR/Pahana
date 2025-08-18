@@ -19,7 +19,6 @@ public class BookCategory {
         this.categoryName = categoryName;
     }
     
-    // Getters and Setters
     public int getCategoryId() {
         return categoryId;
     }

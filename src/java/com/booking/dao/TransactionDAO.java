@@ -37,7 +37,6 @@ public class TransactionDAO {
                         int transactionId = generatedKeys.getInt(1);
                         transaction.setTransactionId(transactionId);
                         
-                        // Create transaction items
                         return createTransactionItems(transaction);
                     }
                 }
@@ -95,21 +94,18 @@ public class TransactionDAO {
                 transaction.setTransactionId(rs.getInt("transaction_id"));
                 transaction.setTotalAmount(rs.getBigDecimal("total_amount"));
                 transaction.setCreatedAt(rs.getTimestamp("created_at"));
-                
-                // Set customer
+               
                 Customer customer = new Customer();
                 customer.setCustomerId(rs.getInt("customer_id"));
                 customer.setAccountNumber(rs.getString("account_number"));
                 customer.setName(rs.getString("customer_name"));
                 transaction.setCustomer(customer);
                 
-                // Set created by user
                 User createdBy = new User();
                 createdBy.setUserId(rs.getInt("created_by"));
                 createdBy.setUsername(rs.getString("created_by_name"));
                 transaction.setCreatedBy(createdBy);
                 
-                // Load transaction items
                 transaction.setItems(getTransactionItems(transaction.getTransactionId()));
                 
                 transactions.add(transaction);
@@ -141,20 +137,17 @@ public class TransactionDAO {
                     transaction.setTotalAmount(rs.getBigDecimal("total_amount"));
                     transaction.setCreatedAt(rs.getTimestamp("created_at"));
                     
-                    // Set customer
                     Customer customer = new Customer();
                     customer.setCustomerId(rs.getInt("customer_id"));
                     customer.setAccountNumber(rs.getString("account_number"));
                     customer.setName(rs.getString("customer_name"));
                     transaction.setCustomer(customer);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
                     transaction.setCreatedBy(createdBy);
                     
-                    // Load transaction items
                     transaction.setItems(getTransactionItems(transaction.getTransactionId()));
                     
                     transactions.add(transaction);
@@ -185,20 +178,17 @@ public class TransactionDAO {
                     transaction.setTotalAmount(rs.getBigDecimal("total_amount"));
                     transaction.setCreatedAt(rs.getTimestamp("created_at"));
                     
-                    // Set customer
                     Customer customer = new Customer();
                     customer.setCustomerId(rs.getInt("customer_id"));
                     customer.setAccountNumber(rs.getString("account_number"));
                     customer.setName(rs.getString("customer_name"));
                     transaction.setCustomer(customer);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
                     transaction.setCreatedBy(createdBy);
                     
-                    // Load transaction items
                     transaction.setItems(getTransactionItems(transaction.getTransactionId()));
                     
                     return transaction;
@@ -229,7 +219,6 @@ public class TransactionDAO {
                     item.setQuantity(rs.getInt("quantity"));
                     item.setPrice(rs.getBigDecimal("price"));
                     
-                    // Set book
                     com.booking.models.Book book = new com.booking.models.Book();
                     book.setBookId(rs.getInt("book_id"));
                     book.setTitle(rs.getString("book_title"));

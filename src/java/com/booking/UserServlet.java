@@ -42,12 +42,10 @@ public class UserServlet extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
         
-        // If no action specified, default to list (load the page with data)
         if (action == null || action.isEmpty()) {
             action = "list";
         }
         
-        // Handle unauthenticated password reset actions first
         if ("check-email-exists".equals(action) || "reset-password".equals(action) || "send-verification".equals(action)) {
             switch (action) {
                 case "check-email-exists":
@@ -63,16 +61,13 @@ public class UserServlet extends HttpServlet {
             return;
         }
         
-        // For other actions, require authentication
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login.jsp?error=Please login first.");
             return;
         }
 
-        // Get current user's role
         String currentUserRole = (String) session.getAttribute("role");
         
-        // Check role-based access
         if (!hasAccess(currentUserRole, action)) {
             response.sendRedirect("dashboard.jsp?error=Access denied.");
             return;
@@ -114,13 +109,11 @@ public class UserServlet extends HttpServlet {
 
     private boolean hasAccess(String currentUserRole, String action) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin has access to everything
+            return true; 
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can manage CASHIER and CUSTOMER users
             return "create".equals(action) || "update".equals(action) || 
                    "delete".equals(action) || "view".equals(action) || "list".equals(action);
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can only view users (no create, update, delete)
             return "view".equals(action) || "list".equals(action);
         }
         return false;
@@ -129,7 +122,6 @@ public class UserServlet extends HttpServlet {
     private void handleCreateUser(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
         
-        // Set response timeout
         response.setHeader("Connection", "close");
         response.setHeader("Keep-Alive", "timeout=30");
         
@@ -139,7 +131,6 @@ public class UserServlet extends HttpServlet {
             String password = request.getParameter("password");
             int roleId = Integer.parseInt(request.getParameter("role_id"));
 
-            // Role-based validation
             String currentUserRole = (String) session.getAttribute("role");
             if (!canCreateRole(currentUserRole, roleId)) {
                 if ("ADMIN".equals(currentUserRole) && roleId == 4) {
@@ -150,13 +141,11 @@ public class UserServlet extends HttpServlet {
                 return;
             }
 
-            // Check if username already exists in ANY table (customers or users)
             if (facade.isUsernameExistsInAnyTable(username.trim())) {
                 response.sendRedirect("user.jsp?error=Username already exists in our system. Please use a different username.");
                 return;
             }
 
-            // Check if email already exists in ANY table (customers or users)
             if (facade.isEmailExistsInAnyTable(email.trim())) {
                 response.sendRedirect("user.jsp?error=Email already exists in our system. Please use a different email address.");
                 return;
@@ -171,10 +160,8 @@ public class UserServlet extends HttpServlet {
             user.setPassword(password);
             user.setRole(role);
 
-            // Create user with transaction management and timeout
             boolean success = false;
             try {
-                // Set a timeout for the database operation
                 success = facade.registerUserWithTransaction(user);
             } catch (Exception dbException) {
                 System.err.println("Database error during user creation: " + dbException.getMessage());
@@ -184,13 +171,10 @@ public class UserServlet extends HttpServlet {
             }
 
             if (success) {
-                // Send role-specific help sections via email ASYNCHRONOUSLY
-                // This prevents blocking the user creation response
                 new Thread(() -> {
                     try {
                         sendUserHelpSectionsEmail(user);
                     } catch (Exception emailException) {
-                        // Log email error but don't fail user creation
                         System.err.println("Error sending help sections email: " + emailException.getMessage());
                         emailException.printStackTrace();
                         eventManager.logEvent("Error sending help sections email to: " + user.getEmail() + " - " + emailException.getMessage(), "ERROR");
@@ -216,14 +200,10 @@ public class UserServlet extends HttpServlet {
 
     private boolean canCreateRole(String currentUserRole, int targetRoleId) {
         if ("ADMIN".equals(currentUserRole)) {
-            // Admin can only create system users (ADMIN=1, MANAGER=2, CASHIER=3)
-            // CUSTOMER (role_id=4) should be created through customer registration
             return targetRoleId >= 1 && targetRoleId <= 3;
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only create CASHIER (role_id=3)
             return targetRoleId == 3;
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can only create CUSTOMER (role_id=4)
             return targetRoleId == 4;
         }
         return false;
@@ -248,7 +228,6 @@ public class UserServlet extends HttpServlet {
             System.out.println("Password length: " + (password != null ? password.length() : 0));
             System.out.println("Role ID: " + roleId);
 
-            // Role-based validation
             String currentUserRole = (String) session.getAttribute("role");
             if (!canUpdateUser(currentUserRole, userId, roleId)) {
                 System.out.println("ERROR: Permission denied for role: " + currentUserRole);
@@ -260,7 +239,6 @@ public class UserServlet extends HttpServlet {
                 return;
             }
 
-            // Load existing user to compute changes later
             User oldUser = facade.getUserById(userId);
             
             UserRole role = new UserRole();
@@ -282,7 +260,6 @@ public class UserServlet extends HttpServlet {
             System.out.println("Update result: " + success);
 
             if (success) {
-                // Check if password was changed and send email if needed
                 if (password != null && !password.trim().isEmpty()) {
                     try {
                         System.out.println("Password was changed, sending email to: " + email);
@@ -305,7 +282,6 @@ public class UserServlet extends HttpServlet {
                     System.out.println("No password change detected, skipping email");
                 }
                 
-                // Send Changed Column data email (old vs new values)
                 try {
                     if (oldUser != null) {
                         boolean usernameChanged = !safeEqualsIgnoreCase(oldUser.getUsername(), username);
@@ -318,10 +294,8 @@ public class UserServlet extends HttpServlet {
                             String subject = "Your Pahana account details were updated";
                             String html = buildUserUpdateEmailContent(oldUser, user, passwordChanged);
 
-                            // Send to the new email
                             emailService.sendEmail(email, subject, html);
 
-                            // If email was changed, also notify the old email address
                             if (emailChanged && oldUser.getEmail() != null && !oldUser.getEmail().trim().isEmpty()
                                     && !oldUser.getEmail().equalsIgnoreCase(email)) {
                                 String subjectOld = "Your Pahana account email was changed";
@@ -441,12 +415,10 @@ public class UserServlet extends HttpServlet {
 
     private boolean canUpdateUser(String currentUserRole, int targetUserId, int targetRoleId) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin can update any user
+            return true;
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only update CASHIER users
             return targetRoleId == 3;
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can only update CUSTOMER users
             return targetRoleId == 4;
         }
         return false;
@@ -457,12 +429,10 @@ public class UserServlet extends HttpServlet {
         try {
             int userId = Integer.parseInt(request.getParameter("user_id"));
 
-            // Role-based validation
             String currentUserRole = (String) session.getAttribute("role");
             User targetUser = facade.getUserById(userId);
             
             if (targetUser == null) {
-                // Check if this is an AJAX request
                 String xRequestedWith = request.getHeader("X-Requested-With");
                 boolean isAjaxRequest = "XMLHttpRequest".equals(xRequestedWith);
                 
@@ -477,7 +447,6 @@ public class UserServlet extends HttpServlet {
             }
 
             if (!canDeleteUser(currentUserRole, targetUser.getRole().getRoleId())) {
-                // Check if this is an AJAX request
                 String xRequestedWith = request.getHeader("X-Requested-With");
                 boolean isAjaxRequest = "XMLHttpRequest".equals(xRequestedWith);
                 
@@ -493,47 +462,39 @@ public class UserServlet extends HttpServlet {
 
             boolean success = facade.deleteUser(userId);
 
-            // Check if this is an AJAX request
             String xRequestedWith = request.getHeader("X-Requested-With");
             boolean isAjaxRequest = "XMLHttpRequest".equals(xRequestedWith);
 
             if (success) {
                 eventManager.logEvent("User deleted successfully: ID " + userId, "INFO");
                 if (isAjaxRequest) {
-                    // Return JSON response for AJAX
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write("{\"success\": true, \"message\": \"User deleted successfully.\"}");
                 } else {
-                    // Redirect for regular requests
                     response.sendRedirect("user.jsp?message=User deleted successfully.");
                 }
             } else {
                 eventManager.logEvent("User deletion failed: ID " + userId, "ERROR");
                 if (isAjaxRequest) {
-                    // Return JSON response for AJAX
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write("{\"success\": false, \"message\": \"Failed to delete user.\"}");
                 } else {
-                    // Redirect for regular requests
                     response.sendRedirect("user.jsp?error=Failed to delete user.");
                 }
             }
 
         } catch (Exception e) {
             eventManager.logEvent("User deletion error: " + e.getMessage(), "ERROR");
-            // Check if this is an AJAX request
             String xRequestedWith = request.getHeader("X-Requested-With");
             boolean isAjaxRequest = "XMLHttpRequest".equals(xRequestedWith);
             
             if (isAjaxRequest) {
-                // Return JSON response for AJAX
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"success\": false, \"message\": \"Error deleting user: " + e.getMessage() + "\"}");
             } else {
-                // Redirect for regular requests
                 response.sendRedirect("user.jsp?error=Error deleting user: " + e.getMessage());
             }
         }
@@ -541,12 +502,10 @@ public class UserServlet extends HttpServlet {
 
     private boolean canDeleteUser(String currentUserRole, int targetRoleId) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin can delete any user
+            return true; 
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only delete CASHIER users
             return targetRoleId == 3;
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can only delete CUSTOMER users
             return targetRoleId == 4;
         }
         return false;
@@ -559,7 +518,6 @@ public class UserServlet extends HttpServlet {
             User user = facade.getUserById(userId);
             
             if (user != null) {
-                // Check if current user has permission to view this user
                 String currentUserRole = (String) session.getAttribute("role");
                 if (canViewUser(currentUserRole, user.getRole().getRoleId())) {
                     request.setAttribute("user", user);
@@ -580,12 +538,10 @@ public class UserServlet extends HttpServlet {
 
     private boolean canViewUser(String currentUserRole, int targetRoleId) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin can view any user
+            return true;
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only view CASHIER users
             return targetRoleId == 3;
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can view CASHIER and CUSTOMER users
             return targetRoleId == 3 || targetRoleId == 4;
         }
         return false;
@@ -597,13 +553,11 @@ public class UserServlet extends HttpServlet {
             List<User> allUsers = facade.getAllUsers();
             String currentUserRole = (String) session.getAttribute("role");
             
-            // Filter users based on current user's role
             List<User> filteredUsers = filterUsersByRole(allUsers, currentUserRole);
             
             request.setAttribute("users", filteredUsers);
             request.setAttribute("userRoles", facade.getAllUserRoles());
             
-            // Preserve any message or error parameters
             String message = request.getParameter("message");
             String error = request.getParameter("error");
             
@@ -624,9 +578,8 @@ public class UserServlet extends HttpServlet {
 
     private List<User> filterUsersByRole(List<User> allUsers, String currentUserRole) {
         if ("ADMIN".equals(currentUserRole)) {
-            return allUsers; // Admin can see all users
+            return allUsers; 
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only see CASHIER users
             return allUsers.stream()
                 .filter(user -> {
                     int roleId = user.getRole().getRoleId();
@@ -634,7 +587,6 @@ public class UserServlet extends HttpServlet {
                 })
                 .collect(java.util.stream.Collectors.toList());
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can see CASHIER and CUSTOMER users
             return allUsers.stream()
                 .filter(user -> {
                     int roleId = user.getRole().getRoleId();
@@ -663,23 +615,20 @@ public class UserServlet extends HttpServlet {
             response.setContentType("application/json;charset=UTF-8");
             
             String email = request.getParameter("email");
-            String context = request.getParameter("context"); // New parameter to distinguish context
+            String context = request.getParameter("context"); 
             
             if (email == null || email.trim().isEmpty()) {
                 response.getWriter().write("{\"status\":\"error\",\"message\":\"Email is required\"}");
                 return;
             }
             
-            // Create email service and send verification code
             EmailService emailService = new EmailService();
             String verificationCode = emailService.generateVerificationCode();
             
-            // Store the code in session for verification (in production, use Redis or database)
             HttpSession session = request.getSession();
             session.setAttribute("verification_code_" + email, verificationCode);
             session.setAttribute("verification_email", email);
-            
-            // Send email based on context
+
             boolean emailSent;
             if ("email-change".equals(context)) {
                 emailSent = emailService.sendEmailChangeVerificationEmail(email, verificationCode);
@@ -712,20 +661,17 @@ public class UserServlet extends HttpServlet {
                 response.getWriter().write("{\"status\":\"error\",\"message\":\"Email and verification code are required\"}");
                 return;
             }
-            
-            // Get stored verification code from session
+                   
             HttpSession session = request.getSession();
             String storedCode = (String) session.getAttribute("verification_code_" + email);
             String storedEmail = (String) session.getAttribute("verification_email");
             
-            // Check if code matches and email is correct
             boolean isValid = storedCode != null && storedCode.equals(code) && 
                             storedEmail != null && storedEmail.equals(email);
             
             if (isValid) {
-                // Mark email as verified in session
+                
                 session.setAttribute("email_verified_" + email, true);
-                // Remove the used code
                 session.removeAttribute("verification_code_" + email);
                 response.getWriter().write("{\"status\":\"success\",\"message\":\"Email verified successfully\"}");
             } else {
@@ -763,7 +709,6 @@ public class UserServlet extends HttpServlet {
                 return;
             }
             
-            // Check if email exists in users table
             boolean exists = facade.isUserEmailExists(email.trim());
             
             response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
@@ -785,7 +730,6 @@ public class UserServlet extends HttpServlet {
                 return;
             }
             
-            // Check if username exists in ANY table (customers or users)
             boolean exists = facade.isUsernameExistsInAnyTable(username.trim());
             
             response.getWriter().write("{\"status\":\"success\",\"exists\":" + exists + "}");
@@ -808,7 +752,6 @@ public class UserServlet extends HttpServlet {
                 return;
             }
             
-            // Update user password
             boolean success = facade.updateUserPassword(email.trim(), newPassword.trim());
             
             if (success) {
@@ -835,52 +778,41 @@ public class UserServlet extends HttpServlet {
      */
     private void sendUserHelpSectionsEmail(User user) {
         try {
-            // Get help sections based on user's role ID
             List<HelpSection> helpSections = null;
             int roleId = user.getRole().getRoleId();
             String roleName = getRoleNameById(roleId);
             
             switch (roleId) {
-                case 1: // ADMIN
-                    // Admin gets all help sections
+                case 1:
                     helpSections = facade.getAllHelpSections();
                     break;
-                case 2: // MANAGER
-                    // Manager gets MANAGER role help sections
+                case 2: 
                     helpSections = facade.getHelpSectionsByRole(2);
                     break;
-                case 3: // CASHIER
-                    // Cashier gets CASHIER role help sections
+                case 3: 
                     helpSections = facade.getHelpSectionsByRole(3);
                     break;
                 default:
-                    // Default: no help sections
                     helpSections = new ArrayList<>();
                     break;
             }
             
             if (helpSections != null && !helpSections.isEmpty()) {
-                // Create email service instance
                 EmailService emailService = new EmailService();
                 
-                // Build email content with help sections
                 String subject = "Welcome to Pahana BookStore - " + roleName + " Help & Guidelines";
                 String emailContent = buildUserHelpEmailContent(user, helpSections, roleName);
                 
-                // Send email
                 emailService.sendEmail(user.getEmail(), subject, emailContent);
                 
-                // Log successful email
                 eventManager.logEvent("Help sections email sent to new " + roleName + " user: " + user.getEmail(), "INFO");
             } else {
-                // Log that no help sections found
                 eventManager.logEvent("No " + roleName + " help sections found for email to: " + user.getEmail(), "INFO");
             }
             
         } catch (Exception e) {
-            // Log email error
             eventManager.logEvent("Error sending help sections email to user: " + user.getEmail() + " - " + e.getMessage(), "ERROR");
-            throw e; // Re-throw to be caught by caller
+            throw e;
         }
     }
     

@@ -1,6 +1,6 @@
 <%-- 
     Document   : user_role
-    Created on : Aug 3, 2025, 9:11:24 AM
+    Created on : Aug 3, 2025, 9:07:20 AM
     Author     : pruso
 --%>
 
@@ -13,9 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - User Role Management</title>
-        <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +28,6 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -126,7 +123,6 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -175,7 +171,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -212,7 +208,7 @@
                 color: white;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 border: none;
@@ -236,7 +232,7 @@
                 color: #0c5460;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -261,7 +257,7 @@
                 box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
             }
 
-            /* Table Styles */
+            
             .table {
                 font-size: 0.9rem;
             }
@@ -292,7 +288,7 @@
                 font-size: 0.75rem;
             }
 
-            /* Action Button Styles */
+            
             .btn-edit {
                 background-color: #ffc107;
                 border-color: #ffc107;
@@ -323,7 +319,7 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -339,7 +335,7 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -424,12 +420,12 @@
         %>
         
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -445,7 +441,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -458,7 +454,7 @@
                 </div>
                 <% } %>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -471,7 +467,7 @@
                 </div>
                 <% } %>
 
-                <!-- Add User Role Form -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-shield-plus me-2"></i>Add New User Role</span>
@@ -498,7 +494,7 @@
                     </form>
                 </div>
 
-                <!-- User Role List -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-shield-check me-2"></i>User Role List</span>
@@ -553,17 +549,17 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -575,9 +571,9 @@
                 }
             });
 
-            // User role management functions
+
             function editRole(roleId, roleName) {
-                // Redirect to the edit page with role information
+
                 window.location.href = 'user_role_edit.jsp?role_id=' + roleId + '&role_name=' + encodeURIComponent(roleName);
             }
 

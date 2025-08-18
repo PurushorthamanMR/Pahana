@@ -59,15 +59,13 @@ public class ChartServlet extends HttpServlet {
     private void handleTransactionSalesChart(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // Get transaction data for the last 30 days
             List<Map<String, Object>> transactionData = facade.getTransactionSalesData(30);
             
             StringBuilder jsonBuilder = new StringBuilder();
             jsonBuilder.append("{\"success\":true,\"labels\":[");
             
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
-            
-            // Build labels array
+
             for (int i = 0; i < transactionData.size(); i++) {
                 Map<String, Object> transaction = transactionData.get(i);
                 Timestamp createdAt = (Timestamp) transaction.get("created_at");
@@ -81,7 +79,6 @@ public class ChartServlet extends HttpServlet {
             
             jsonBuilder.append("],\"data\":[");
             
-            // Build data array
             for (int i = 0; i < transactionData.size(); i++) {
                 Map<String, Object> transaction = transactionData.get(i);
                 Double totalAmount = (Double) transaction.get("total_amount");

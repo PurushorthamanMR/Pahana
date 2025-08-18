@@ -1,8 +1,4 @@
-<%-- 
-    Document   : user
-    Created on : Aug 3, 2025, 9:11:03 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - User Management</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -99,7 +95,7 @@
                 width: 16px;
             }
 
-            /* Loading Overlay Styles */
+            
             .loading-overlay {
                 position: fixed;
                 top: 0;
@@ -154,7 +150,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 280px;
@@ -201,7 +197,7 @@
                 font-weight: 600;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 12px;
@@ -237,7 +233,7 @@
                 color: white;
             }
 
-            /* Table Styles */
+            
             .table {
                 margin-bottom: 0;
             }
@@ -273,7 +269,7 @@
 
 
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1rem;
             }
@@ -296,7 +292,7 @@
                 box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 8px;
                 border: none;
@@ -314,7 +310,7 @@
                 color: #721c24;
             }
 
-            /* Role Badge Styles */
+            
             .role-badge {
                 padding: 0.25rem 0.5rem;
                 border-radius: 4px;
@@ -343,7 +339,7 @@
                 color: white;
             }
 
-            /* Custom Popup Styles */
+            
             .custom-popup-overlay {
                 position: fixed;
                 top: 0;
@@ -456,7 +452,7 @@
                 border-color: #bd2130;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -479,7 +475,7 @@
         </style>
     </head>
     <body>
-        <!-- Loading Screen Overlay -->
+        
         <div id="loadingOverlay" class="loading-overlay" style="display: none;">
             <div class="loading-content">
                 <div class="spinner-border text-primary mb-3" role="status">
@@ -490,7 +486,7 @@
             </div>
         </div>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -499,7 +495,7 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
@@ -508,17 +504,17 @@
         %>
 
         <%
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "user");
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -534,7 +530,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% 
                     String message = (String) request.getAttribute("message");
                     if (message == null) {
@@ -558,7 +554,7 @@
                 </div>
                 <% } %>
 
-                <!-- Add User Form -->
+                
                 <% if (!"CASHIER".equals(role)) { %>
                 <div class="content-card">
                     <h3 class="card-title">
@@ -604,15 +600,15 @@
                                     <label for="role_id" class="form-label">User Role</label>
                                     <select class="form-control" id="role_id" name="role_id" required>
                                         <option value="">Select Role</option>
-                                        <!-- Note: ADMIN can only create system users (ADMIN, MANAGER, CASHIER). CUSTOMER accounts are created through customer registration. -->
+                                        
                                         <%
                                             List<UserRole> userRoles = (List<UserRole>) request.getAttribute("userRoles");
                                             if (userRoles != null) {
                                                 for (UserRole userRole : userRoles) {
-                                                    // Role-based filtering - ADMIN can only create system users (ADMIN, MANAGER, CASHIER)
+                                                    
                                                     boolean canCreate = false;
                                                     if ("ADMIN".equals(role)) {
-                                                        // Admin can only create ADMIN, MANAGER, CASHIER (system users)
+                                                        
                                                         canCreate = !"CUSTOMER".equals(userRole.getRoleName());
                                                     } else if ("MANAGER".equals(role)) {
                                                         canCreate = "CASHIER".equals(userRole.getRoleName());
@@ -666,7 +662,7 @@
                 </div>
                 <% } %>
 
-                <!-- User List -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-people me-2"></i>User List</span>
@@ -678,9 +674,9 @@
                     </h3>
                     
                     <%
-                        // Check if user data is loaded
+                        
                         if (request.getAttribute("users") == null) {
-                            // Show message to refresh instead of redirecting
+                            
                     %>
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
@@ -757,17 +753,17 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -779,14 +775,14 @@
                 }
             });
 
-            // User management functions
+
             function editUser(userId) {
-                // Navigate to edit page
+
                 window.location.href = 'UserServlet?action=view&user_id=' + userId;
             }
 
             function deleteUser(userId) {
-                // Create custom popup
+
                 const popup = document.createElement('div');
                 popup.className = 'custom-popup-overlay';
                 popup.innerHTML = 
@@ -814,7 +810,7 @@
             }
 
             function confirmDelete(userId) {
-                // Create AJAX request
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'UserServlet?action=delete&user_id=' + userId, true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -827,25 +823,25 @@
                             try {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
-                                    // Show success message
+
                                     showAlert(response.message, 'success');
-                                    // Reload the page after a short delay
+
                                     setTimeout(() => {
                                         window.location.reload();
                                     }, 1500);
                                 } else {
-                                    // Show error message
+
                                     showAlert(response.message, 'error');
                                 }
                             } catch (e) {
-                                // Fallback for non-JSON responses
+
                                 showAlert('User deleted successfully!', 'success');
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 1500);
                             }
                         } else {
-                            // Show error message
+
                             showAlert('Failed to delete user. Please try again.', 'error');
                         }
                     }
@@ -867,7 +863,7 @@
                     '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
                 document.body.appendChild(alertDiv);
                 
-                // Auto remove after 3 seconds
+
                 setTimeout(() => {
                     if (alertDiv.parentNode) {
                         alertDiv.remove();
@@ -875,7 +871,7 @@
                 }, 3000);
             }
             
-            // Email verification functions
+
             let emailVerified = false;
             
             function sendVerificationCode() {
@@ -885,13 +881,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Checking email...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // First check if email exists in ANY table (customers or users)
+
                 const checkEmailXhr = new XMLHttpRequest();
                 checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                 checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -903,7 +899,7 @@
                             try {
                                 const response = JSON.parse(checkEmailXhr.responseText);
                                 if (response.status === 'success' && response.exists) {
-                                    // Email already exists in either table - BLOCK verification
+
                                     document.getElementById('verificationSpinner').style.display = 'none';
                                     document.getElementById('sendVerificationBtn').disabled = false;
                                     document.getElementById('emailStatus').textContent = 'Email Exists';
@@ -911,23 +907,23 @@
                                     showAlert('This email address is already registered in our system. Please use a different email address.', 'error');
                                     return;
                                 } else {
-                                    // Email is unique - proceed with verification
+
                                     sendVerificationEmail(email);
                                 }
                             } catch (e) {
                                 console.log('Error parsing email check response:', e);
-                                // Fallback: proceed with verification
+
                                 sendVerificationEmail(email);
                             }
                         } else {
-                            // Fallback: proceed with verification
+
                             sendVerificationEmail(email);
                         }
                     }
                 };
                 
                 checkEmailXhr.onerror = function() {
-                    // Fallback: proceed with verification
+
                     sendVerificationEmail(email);
                 };
                 
@@ -935,13 +931,13 @@
             }
             
             function sendVerificationEmail(email) {
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Sending...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request for verification code
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'UserServlet?action=send-verification', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -960,7 +956,7 @@
                                     document.getElementById('emailStatus').textContent = 'Code Sent';
                                     document.getElementById('emailStatus').className = 'badge bg-info';
                                     
-                                    // Enable verification pin input and button
+
                                     document.getElementById('verificationPin').disabled = false;
                                     document.getElementById('verifyPinBtn').disabled = false;
                                     document.getElementById('verificationPin').focus();
@@ -974,7 +970,7 @@
                                 document.getElementById('emailStatus').textContent = 'Code Sent';
                                 document.getElementById('emailStatus').className = 'badge bg-info';
                                 
-                                // Enable verification pin input and button
+
                                 document.getElementById('verificationPin').disabled = false;
                                 document.getElementById('verifyPinBtn').disabled = false;
                                 document.getElementById('verificationPin').focus();
@@ -1007,13 +1003,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('verifyPinBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Verifying...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'UserServlet?action=verify-email', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -1033,12 +1029,12 @@
                                     document.getElementById('emailStatus').className = 'badge bg-success';
                                     emailVerified = true;
                                     
-                                    // Disable verification inputs
+
                                     document.getElementById('verificationPin').disabled = true;
                                     document.getElementById('verifyPinBtn').disabled = true;
                                     document.getElementById('sendVerificationBtn').disabled = true;
                                     
-                                    // Enable the Add User button
+
                                     document.getElementById('addUserBtn').disabled = false;
                                 } else {
                                     showAlert(response.message, 'error');
@@ -1051,12 +1047,12 @@
                                 document.getElementById('emailStatus').className = 'badge bg-success';
                                 emailVerified = true;
                                 
-                                // Disable verification inputs
+
                                 document.getElementById('verificationPin').disabled = true;
                                 document.getElementById('verifyPinBtn').disabled = true;
                                 document.getElementById('sendVerificationBtn').disabled = true;
                                 
-                                // Enable the Add User button
+
                                 document.getElementById('addUserBtn').disabled = false;
                             }
                         } else {
@@ -1070,7 +1066,7 @@
                 xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
             }
             
-            // Form validation - disable Add User button until email is verified
+
             document.addEventListener('DOMContentLoaded', function() {
                 const addUserBtn = document.getElementById('addUserBtn');
                 if (addUserBtn) {
@@ -1078,7 +1074,7 @@
                     addUserBtn.title = 'Please verify your email first';
                 }
                 
-                // Add form validation
+
                 const form = document.getElementById('addUserForm');
                 if (form) {
                     form.addEventListener('submit', function(e) {
@@ -1088,7 +1084,7 @@
                             return false;
                         }
                         
-                        // Check username before submitting
+
                         const username = document.getElementById('username').value.trim();
                         if (username) {
                             checkUsernameExists(username, function(exists) {
@@ -1097,25 +1093,25 @@
                                     showAlert('This username is already taken. Please choose a different username.', 'error');
                                     return false;
                                 } else {
-                                    // Username is unique, allow form submission
+
                                     showLoadingScreen();
-                                    // Submit form after a short delay to show loading
+
                                     setTimeout(() => {
                                         form.submit();
                                     }, 500);
                                 }
                             });
-                            e.preventDefault(); // Prevent default until we check username
+                            e.preventDefault(); 
                             return false;
                         }
                         
-                        // Show loading screen
+
                         showLoadingScreen();
                     });
                 }
             });
             
-            // Function to show loading screen
+
             function showLoadingScreen() {
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 const addUserBtn = document.getElementById('addUserBtn');
@@ -1125,7 +1121,7 @@
                     loadingOverlay.style.display = 'flex';
                 }
                 
-                // Disable the form to prevent multiple submissions
+
                 if (form) {
                     form.style.pointerEvents = 'none';
                 }
@@ -1135,11 +1131,11 @@
                     addUserBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating User...';
                 }
                 
-                // Show progress message
+
                 showAlert('Creating user account... Please wait.', 'info');
             }
             
-            // Function to hide loading screen (can be called from other parts if needed)
+
             function hideLoadingScreen() {
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 const addUserBtn = document.getElementById('addUserBtn');
@@ -1159,7 +1155,7 @@
                 }
             }
             
-            // Function to check if username already exists
+
             function checkUsernameExists(username, callback) {
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'UserServlet?action=check-username-exists', true);
@@ -1174,19 +1170,19 @@
                                 if (response.status === 'success') {
                                     callback(response.exists);
                                 } else {
-                                    callback(false); // Allow submission on error
+                                    callback(false); 
                                 }
                             } catch (e) {
-                                callback(false); // Allow submission on parse error
+                                callback(false); 
                             }
                         } else {
-                            callback(false); // Allow submission on network error
+                            callback(false); 
                         }
                     }
                 };
                 
                 xhr.onerror = function() {
-                    callback(false); // Allow submission on error
+                    callback(false); 
                 };
                 
                 xhr.send('username=' + encodeURIComponent(username));

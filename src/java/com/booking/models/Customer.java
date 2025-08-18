@@ -34,7 +34,6 @@ public class Customer {
         this.phone = phone;
     }
     
-    // Getters and Setters
     public int getCustomerId() {
         return customerId;
     }

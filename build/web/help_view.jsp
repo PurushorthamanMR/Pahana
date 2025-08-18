@@ -1,8 +1,4 @@
-<%-- 
-    Document   : help_view
-    Created on : Aug 3, 2025, 9:09:43 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - View Help Section</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -99,7 +95,7 @@
                 text-align: center;
             }
 
-            /* Sidebar Footer Styles */
+            
             .sidebar-footer {
                 padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -127,7 +123,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -180,7 +176,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Card Styles */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -204,7 +200,7 @@
                 font-weight: 600;
             }
 
-            /* Help Section Display */
+            
             .help-section-display {
                 background-color: #f8f9fa;
                 border-radius: 6px;
@@ -241,7 +237,7 @@
                 font-size: 0.85rem;
             }
 
-            /* Button Styles */
+            
             .btn {
                 padding: 0.6rem 1.25rem;
                 border-radius: 6px;
@@ -292,7 +288,7 @@
                 transform: translateY(-1px);
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 padding: 0.8rem;
@@ -311,7 +307,7 @@
                 color: #721c24;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -337,7 +333,7 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -393,7 +389,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -402,7 +398,7 @@
                 return;
             }
             
-            // Get help section from request attribute
+            
             HelpSection helpSection = (HelpSection) request.getAttribute("helpSection");
             
             if (helpSection == null) {
@@ -414,12 +410,12 @@
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -435,7 +431,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -448,7 +444,7 @@
                 </div>
                 <% } %>
 
-                <!-- Help Section Display -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-eye me-2"></i>Help Section Details</span>
@@ -471,7 +467,7 @@
                         </div>
                     </div>
                     
-                    <!-- Action Buttons -->
+                    
                     <div class="d-flex gap-2">
                         <a href="HelpServlet?action=list" class="btn btn-secondary">
                             <i class="bi bi-list me-2"></i>Back to List
@@ -491,7 +487,7 @@
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
+        
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -515,17 +511,17 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
-            // Delete confirmation
+
             function confirmDelete() {
                 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
                 deleteModal.show();
             }
             
-            // Sidebar toggle for mobile
+
             function toggleSidebar() {
                 const sidebar = document.querySelector('.sidebar');
                 sidebar.classList.toggle('show');

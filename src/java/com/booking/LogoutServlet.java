@@ -36,16 +36,13 @@ public class LogoutServlet extends HttpServlet {
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
-            // Log the logout event
             if (username != null) {
                 eventManager.logEvent("User logged out: " + username + " (Role: " + role + ")", "INFO");
             }
             
-            // Invalidate the session
             session.invalidate();
         }
         
-        // Redirect to index page
         response.sendRedirect("index.jsp?message=You have been logged out successfully.");
     }
 

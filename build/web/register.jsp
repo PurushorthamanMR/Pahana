@@ -1,8 +1,4 @@
-<%-- 
-    Document   : register
-    Created on : Aug 12, 2025, 1:10:00 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,9 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BookClub - Register</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -248,7 +244,7 @@
                 margin-top: 0.25rem;
             }
 
-            /* Loading Overlay Styles */
+            
             .loading-overlay {
                 position: fixed;
                 top: 0;
@@ -294,7 +290,7 @@
         </style>
     </head>
     <body>
-        <!-- Loading Screen Overlay -->
+        
         <div id="loadingOverlay" class="loading-overlay" style="display: none;">
             <div class="loading-content">
                 <div class="spinner-border text-primary mb-3" role="status">
@@ -306,7 +302,7 @@
         </div>
         <div class="register-container">
             <div class="register-content">
-                <!-- Form Section -->
+                
                 <div class="form-section">
                     <h1 class="form-title">Create Account</h1>
                     <p class="form-subtitle">Join our community today</p>
@@ -408,7 +404,7 @@
                     </div>
                 </div>
 
-                <!-- Illustration Section -->
+                
                 <div class="illustration-section">
                     <div class="illustration-image">
                         <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana Welcome">
@@ -419,12 +415,12 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Custom JavaScript -->
+        
         <script>
-            // Email verification functions for registration
+
             let emailVerified = false;
             
             function sendVerificationCode() {
@@ -434,13 +430,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Checking email...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // First check if email exists in ANY table (customers or users)
+
                 const checkEmailXhr = new XMLHttpRequest();
                 checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                 checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -452,7 +448,7 @@
                             try {
                                 const response = JSON.parse(checkEmailXhr.responseText);
                                 if (response.status === 'success' && response.exists) {
-                                    // Email already exists in either table - BLOCK verification
+
                                     document.getElementById('verificationSpinner').style.display = 'none';
                                     document.getElementById('sendVerificationBtn').disabled = false;
                                     document.getElementById('emailStatus').textContent = 'Email Exists';
@@ -460,23 +456,23 @@
                                     showAlert('This email address is already registered in our system. Please use a different email address or login instead.', 'error');
                                     return;
                                 } else {
-                                    // Email is unique - proceed with verification
+
                                     sendVerificationEmail(email);
                                 }
                             } catch (e) {
                                 console.log('Error parsing email check response:', e);
-                                // Fallback: proceed with verification
+
                                 sendVerificationEmail(email);
                             }
                         } else {
-                            // Fallback: proceed with verification
+
                             sendVerificationEmail(email);
                         }
                     }
                 };
                 
                 checkEmailXhr.onerror = function() {
-                    // Fallback: proceed with verification
+
                     sendVerificationEmail(email);
                 };
                 
@@ -484,13 +480,13 @@
             }
             
             function sendVerificationEmail(email) {
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Sending...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request for verification code
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=send-verification', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -509,7 +505,7 @@
                                     document.getElementById('emailStatus').textContent = 'Code Sent';
                                     document.getElementById('emailStatus').className = 'badge bg-info';
                                     
-                                    // Enable verification pin input and button
+
                                     document.getElementById('verificationPin').disabled = false;
                                     document.getElementById('verifyPinBtn').disabled = false;
                                     document.getElementById('verificationPin').focus();
@@ -523,7 +519,7 @@
                                 document.getElementById('emailStatus').textContent = 'Code Sent';
                                 document.getElementById('emailStatus').className = 'badge bg-info';
                                 
-                                // Enable verification pin input and button
+
                                 document.getElementById('verificationPin').disabled = false;
                                 document.getElementById('verifyPinBtn').disabled = false;
                                 document.getElementById('verificationPin').focus();
@@ -556,13 +552,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('verifyPinBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Verifying...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=verify-email', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -582,12 +578,12 @@
                                     document.getElementById('emailStatus').className = 'badge bg-success';
                                     emailVerified = true;
                                     
-                                    // Disable verification inputs
+
                                     document.getElementById('verificationPin').disabled = true;
                                     document.getElementById('verifyPinBtn').disabled = true;
                                     document.getElementById('sendVerificationBtn').disabled = true;
                                     
-                                    // Enable the Create Account button
+
                                     document.getElementById('createAccountBtn').disabled = false;
                                 } else {
                                     showAlert(response.message, 'error');
@@ -600,12 +596,12 @@
                                 document.getElementById('emailStatus').className = 'badge bg-success';
                                 emailVerified = true;
                                 
-                                // Disable verification inputs
+
                                 document.getElementById('verificationPin').disabled = true;
                                 document.getElementById('verifyPinBtn').disabled = true;
                                 document.getElementById('sendVerificationBtn').disabled = true;
                                 
-                                // Enable the Create Account button
+
                                 document.getElementById('createAccountBtn').disabled = false;
                             }
                         } else {
@@ -648,7 +644,7 @@
                 }
             }
             
-            // Form validation - disable Create Account button until email is verified
+
             document.addEventListener('DOMContentLoaded', function() {
                 const createAccountBtn = document.getElementById('createAccountBtn');
                 if (createAccountBtn) {
@@ -656,7 +652,7 @@
                     createAccountBtn.title = 'Please verify your email first';
                 }
                 
-                // Add form validation
+
                 const form = document.getElementById('registerForm');
                 if (form) {
                     form.addEventListener('submit', function(e) {
@@ -666,7 +662,7 @@
                             return false;
                         }
                         
-                        // Check username before submitting
+
                         const username = document.getElementById('regUsername').value.trim();
                         if (username) {
                             checkUsernameExists(username, function(exists) {
@@ -675,7 +671,7 @@
                                     showAlert('This username is already taken. Please choose a different username.', 'error');
                                     return false;
                                 } else {
-                                    // Username is unique, check phone number
+
                                     const phone = document.getElementById('regPhone').value.trim();
                                     if (phone) {
                                         checkPhoneNumberExists(phone, function(phoneExists) {
@@ -684,28 +680,28 @@
                                                 showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
                                                 return false;
                                             } else {
-                                                // Both username and phone are unique, allow form submission
+
                                                 showLoadingScreen();
                                                 form.submit();
                                             }
                                         });
-                                        e.preventDefault(); // Prevent default until we check phone
+                                        e.preventDefault(); 
                                         return false;
                                     } else {
-                                        // Username is unique and no phone to check, allow form submission
+
                                         showLoadingScreen();
                                         form.submit();
                                     }
                                 }
                             });
-                            e.preventDefault(); // Prevent default until we check username
+                            e.preventDefault(); 
                             return false;
                         }
                     });
                 }
             });
             
-            // Function to check if phone number already exists
+
             function checkPhoneNumberExists(phone, callback) {
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=check-phone-exists', true);
@@ -720,19 +716,19 @@
                                 if (response.status === 'success') {
                                     callback(response.exists);
                                 } else {
-                                    callback(false); // Allow submission on error
+                                    callback(false); 
                                 }
                             } catch (e) {
-                                callback(false); // Allow submission on parse error
+                                callback(false); 
                             }
                         } else {
-                            callback(false); // Allow submission on network error
+                            callback(false); 
                         }
                     }
                 };
                 
                 xhr.onerror = function() {
-                    callback(false); // Allow submission on error
+                    callback(false); 
                 };
                 
                 xhr.send('phone=' + encodeURIComponent(phone));
@@ -751,7 +747,7 @@
                 }
             }
             
-            // Function to check if username already exists
+
             function checkUsernameExists(username, callback) {
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=check-username-exists', true);
@@ -766,19 +762,19 @@
                                 if (response.status === 'success') {
                                     callback(response.exists);
                                 } else {
-                                    callback(false); // Allow submission on error
+                                    callback(false); 
                                 }
                             } catch (e) {
-                                callback(false); // Allow submission on parse error
+                                callback(false); 
                             }
                         } else {
-                            callback(false); // Allow submission on network error
+                            callback(false); 
                         }
                     }
                 };
                 
                 xhr.onerror = function() {
-                    callback(false); // Allow submission on error
+                    callback(false); 
                 };
                 
                 xhr.send('username=' + encodeURIComponent(username));
@@ -807,7 +803,7 @@
             
 
             
-            // Alert function for showing messages
+
             function showAlert(message, type) {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show';
@@ -821,7 +817,7 @@
                     '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
                 document.body.appendChild(alertDiv);
                 
-                // Auto remove after 3 seconds
+
                 setTimeout(() => {
                     if (alertDiv.parentNode) {
                         alertDiv.remove();

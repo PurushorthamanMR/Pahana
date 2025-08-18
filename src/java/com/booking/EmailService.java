@@ -23,7 +23,7 @@ import java.util.Random;
 public class EmailService {
 
     private static final String FROM_EMAIL = "pahanabookstore@gmail.com";
-    private static final String FROM_PASSWORD = "tsnh erce gbxn ztlh"; // Gmail App Password
+    private static final String FROM_PASSWORD = "tsnh erce gbxn ztlh";
     private static final String FROM_NAME = "Pahana Book Store";
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final int SMTP_PORT = 587;
@@ -33,11 +33,11 @@ public class EmailService {
     public EmailService() {
         try {
             initializeSession();
-            System.out.println("✓ EmailService initialized (jakarta.mail via Angus Mail)");
+            System.out.println("EmailService initialized (jakarta.mail via Angus Mail)");
         } catch (Exception e) {
-            System.err.println("⚠ Failed to initialize real email session: " + e.getMessage());
+            System.err.println("Failed to initialize real email session: " + e.getMessage());
             e.printStackTrace();
-            session = null; // fallback to mock mode
+            session = null;
         }
     }
 
@@ -48,11 +48,8 @@ public class EmailService {
         props.put("mail.smtp.port", String.valueOf(SMTP_PORT));
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        // Harden TLS for Gmail
         props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
         props.put("mail.smtp.ssl.trust", SMTP_HOST);
-        // Optional: enable debug
-        // props.put("mail.debug", "true");
 
         this.session = Session.getInstance(props, new Authenticator() {
             @Override
@@ -67,7 +64,7 @@ public class EmailService {
      */
     public String generateVerificationCode() {
         Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // Generates 100000-999999
+        int code = 100000 + random.nextInt(900000);
         return String.valueOf(code);
     }
 
@@ -346,7 +343,6 @@ public class EmailService {
         System.out.println("=== MOCK BILL EMAIL ===");
         System.out.println("To: " + toEmail);
         
-        // Try to extract transaction details
         if (transactionObj != null) {
             try {
                 java.lang.reflect.Method getIdMethod = transactionObj.getClass().getMethod("getTransactionId");
@@ -363,7 +359,6 @@ public class EmailService {
                 System.out.println("Transaction Date: " + (dateResult != null ? dateResult : "N/A"));
                 System.out.println("Total Amount: " + (amountResult != null ? "$" + amountResult : "$N/A"));
                 
-                // Display transaction items
                 if (itemsResult != null && itemsResult instanceof java.util.List) {
                     java.util.List<?> items = (java.util.List<?>) itemsResult;
                     if (!items.isEmpty()) {
@@ -390,7 +385,6 @@ public class EmailService {
                                     String quantity = quantityResult != null ? quantityResult.toString() : "0";
                                     String price = priceResult != null ? priceResult.toString() : "0.00";
                                     
-                                    // Truncate title if too long for display
                                     if (title.length() > 28) {
                                         title = title.substring(0, 25) + "...";
                                     }
@@ -416,7 +410,6 @@ public class EmailService {
             System.out.println("Transaction: null");
         }
         
-        // Try to extract customer details
         if (customerObj != null) {
             try {
                 java.lang.reflect.Method getNameMethod = customerObj.getClass().getMethod("getName");
@@ -439,7 +432,6 @@ public class EmailService {
     }
     
     private String buildBillEmailContent(Object transactionObj, Object customerObj) {
-        // Extract transaction details
         String transactionId = "N/A";
         String transactionDate = "N/A";
         String totalAmount = "N/A";
@@ -447,7 +439,6 @@ public class EmailService {
         
         if (transactionObj != null) {
             try {
-                // Use reflection to get transaction details
                 java.lang.reflect.Method getIdMethod = transactionObj.getClass().getMethod("getTransactionId");
                 java.lang.reflect.Method getDateMethod = transactionObj.getClass().getMethod("getCreatedAt");
                 java.lang.reflect.Method getAmountMethod = transactionObj.getClass().getMethod("getTotalAmount");
@@ -462,7 +453,6 @@ public class EmailService {
                 if (dateResult != null) transactionDate = dateResult.toString();
                 if (amountResult != null) totalAmount = amountResult.toString();
                 
-                // Extract transaction items
                 if (itemsResult != null && itemsResult instanceof java.util.List) {
                     java.util.List<?> items = (java.util.List<?>) itemsResult;
                     if (!items.isEmpty()) {
@@ -516,13 +506,11 @@ public class EmailService {
             }
         }
         
-        // Extract customer details
         String customerName = "N/A";
         String customerEmail = "N/A";
         
         if (customerObj != null) {
             try {
-                // Use reflection to get customer details
                 java.lang.reflect.Method getNameMethod = customerObj.getClass().getMethod("getName");
                 java.lang.reflect.Method getEmailMethod = customerObj.getClass().getMethod("getEmail");
                 

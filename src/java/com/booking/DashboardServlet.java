@@ -29,8 +29,7 @@ public class DashboardServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Check if user is logged in
+
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
@@ -41,11 +40,9 @@ public class DashboardServlet extends HttpServlet {
         }
 
         try {
-            // Load dashboard statistics
             DashboardStats stats = facade.getDashboardStats();
             request.setAttribute("dashboardStats", stats);
             
-            // Forward to dashboard page
             request.getRequestDispatcher("dashboard.jsp").forward(request, response);
             
         } catch (Exception e) {

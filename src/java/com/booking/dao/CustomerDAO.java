@@ -62,7 +62,7 @@ public class CustomerDAO {
             return result > 0;
         } catch (SQLException e) {
             System.err.println("✗ Error creating customer with connection: " + e.getMessage());
-            throw e; // Re-throw to be handled by transaction manager
+            throw e; 
         }
     }
     
@@ -89,14 +89,12 @@ public class CustomerDAO {
                 customer.setCreatedAt(rs.getTimestamp("created_at"));
                 customer.setUpdatedAt(rs.getTimestamp("updated_at"));
                 
-                // Set role
                 if (rs.getInt("role_id") > 0) {
                     com.booking.models.UserRole role = new com.booking.models.UserRole();
                     role.setRoleId(rs.getInt("role_id"));
                     customer.setRole(role);
                 }
                 
-                // Set created by user
                 User createdBy = new User();
                 createdBy.setUserId(rs.getInt("created_by"));
                 createdBy.setUsername(rs.getString("created_by_name"));
@@ -134,14 +132,12 @@ public class CustomerDAO {
                     customer.setCreatedAt(rs.getTimestamp("created_at"));
                     customer.setUpdatedAt(rs.getTimestamp("updated_at"));
                     
-                    // Set role
                     if (rs.getInt("role_id") > 0) {
                         com.booking.models.UserRole role = new com.booking.models.UserRole();
                         role.setRoleId(rs.getInt("role_id"));
                         customer.setRole(role);
                     }
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
@@ -180,14 +176,12 @@ public class CustomerDAO {
                     customer.setCreatedAt(rs.getTimestamp("created_at"));
                     customer.setUpdatedAt(rs.getTimestamp("updated_at"));
                     
-                    // Set role
                     if (rs.getInt("role_id") > 0) {
                         com.booking.models.UserRole role = new com.booking.models.UserRole();
                         role.setRoleId(rs.getInt("role_id"));
                         customer.setRole(role);
                     }
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
@@ -239,7 +233,6 @@ public class CustomerDAO {
     }
     
     public boolean updateCustomerPassword(String email, String newPassword) {
-        // First, let's check if the email exists
         String checkSql = "SELECT COUNT(*) FROM customers WHERE email = ?";
         String updateSql = "UPDATE customers SET password = ? WHERE email = ?";
         
@@ -249,7 +242,6 @@ public class CustomerDAO {
             System.out.println("Attempting to update password for email: " + email);
             System.out.println("New password: " + newPassword);
             
-            // Check if email exists
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setString(1, email);
                 try (ResultSet rs = checkStmt.executeQuery()) {
@@ -266,7 +258,6 @@ public class CustomerDAO {
                 }
             }
             
-            // Let's also check what emails are actually in the database
             try (Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery("SELECT email FROM customers WHERE email LIKE '%@%'")) {
                 System.out.println("=== DATABASE EMAILS ===");
@@ -276,7 +267,6 @@ public class CustomerDAO {
                 System.out.println("=====================");
             }
             
-            // Now try to update
             try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
                 pstmt.setString(1, newPassword);
                 pstmt.setString(2, email);
@@ -305,7 +295,6 @@ public class CustomerDAO {
     }
     
     public boolean deleteCustomer(int customerId) {
-        // First check if customer has any transactions
         String checkSql = "SELECT COUNT(*) FROM transactions WHERE customer_id = ?";
         
         try (Connection conn = SingletonDP.getInstance().getConnection();
@@ -320,7 +309,6 @@ public class CustomerDAO {
                 }
             }
             
-            // If no transactions exist, proceed with deletion
             String deleteSql = "DELETE FROM customers WHERE customer_id = ?";
             
             try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
@@ -379,13 +367,11 @@ public class CustomerDAO {
                     customer.setCreatedAt(rs.getTimestamp("created_at"));
                     customer.setUpdatedAt(rs.getTimestamp("updated_at"));
                     
-                    // Set role
                     com.booking.models.UserRole role = new com.booking.models.UserRole();
-                    role.setRoleId(4); // CUSTOMER role
+                    role.setRoleId(4);
                     role.setRoleName(rs.getString("role_name"));
                     customer.setRole(role);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
@@ -477,7 +463,6 @@ public class CustomerDAO {
     }
     
     public String generateUniqueAccountNumber() {
-        // Generate a 6-digit account number
         String sql = "SELECT MAX(CAST(account_number AS UNSIGNED)) FROM customers";
         
         try (Connection conn = SingletonDP.getInstance().getConnection();
@@ -486,7 +471,6 @@ public class CustomerDAO {
             
             if (rs.next()) {
                 int maxAccountNumber = rs.getInt(1);
-                // Start from 100000 if no existing account numbers
                 int nextAccountNumber = Math.max(100000, maxAccountNumber + 1);
                 return String.valueOf(nextAccountNumber);
             }
@@ -494,7 +478,6 @@ public class CustomerDAO {
             System.err.println("Error generating account number: " + e.getMessage());
         }
         
-        // Fallback: return a default account number
         return "100000";
     }
     
@@ -523,13 +506,11 @@ public class CustomerDAO {
                     customer.setCreatedAt(rs.getTimestamp("created_at"));
                     customer.setUpdatedAt(rs.getTimestamp("updated_at"));
                     
-                    // Set role
                     com.booking.models.UserRole role = new com.booking.models.UserRole();
                     role.setRoleId(rs.getInt("role_id"));
                     role.setRoleName(rs.getString("role_name"));
                     customer.setRole(role);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));

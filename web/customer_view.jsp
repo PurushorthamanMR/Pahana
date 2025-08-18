@@ -1,8 +1,4 @@
-<%-- 
-    Document   : customer_view
-    Created on : Aug 3, 2025, 9:08:30 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -14,9 +10,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - View Customer</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -31,7 +27,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -100,7 +96,7 @@
                 text-align: center;
             }
 
-            /* Sidebar Footer Styles */
+            
             .sidebar-footer {
                 padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -128,7 +124,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -177,7 +173,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -251,7 +247,7 @@
                 text-decoration: none;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -307,7 +303,7 @@
                 padding-left: 0.6rem;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 padding: 0.8rem;
                 margin-bottom: 1rem;
@@ -328,7 +324,7 @@
                 border-color: #c3e6cb;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -349,7 +345,7 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -388,7 +384,7 @@
     </head>
     <body>
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <div class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <a href="dashboard.jsp" class="logo">
@@ -446,7 +442,7 @@
                 </div>
             </div>
 
-            <!-- Main Content -->
+            
             <div class="main-content">
                 <div class="header">
                     <div class="header-left">
@@ -482,7 +478,7 @@
                         String errorMessage = "";
                         
                         try {
-                            // Try both parameter names to handle different URL patterns
+                            
                             String customerIdParam = request.getParameter("customer_id");
                             if (customerIdParam == null) {
                                 customerIdParam = request.getParameter("id");
@@ -600,7 +596,7 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
@@ -609,7 +605,7 @@
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');

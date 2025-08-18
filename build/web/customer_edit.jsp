@@ -1,8 +1,4 @@
-<%-- 
-    Document   : customer_edit
-    Created on : Aug 3, 2025, 9:08:14 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -14,9 +10,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Edit Customer</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -31,7 +27,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -100,7 +96,7 @@
                 text-align: center;
             }
 
-            /* Sidebar Footer Styles */
+            
             .sidebar-footer {
                 padding: 0.8rem 1.25rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -128,7 +124,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -177,7 +173,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -251,7 +247,7 @@
                 text-decoration: none;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -311,7 +307,7 @@
                 padding-left: 0.6rem;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 padding: 0.8rem;
                 margin-bottom: 1rem;
@@ -332,7 +328,7 @@
                 border-color: #c3e6cb;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -353,7 +349,7 @@
                 }
             }
             
-            /* Email verification styles */
+            
             #emailVerificationSection {
                 margin-top: 8px;
                 padding: 12px;
@@ -371,7 +367,7 @@
                 padding: 0.4em 0.6em;
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -410,7 +406,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -419,14 +415,14 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "customer");
             
             CustomerDAO customerDAO = new CustomerDAO();
@@ -434,7 +430,7 @@
             String errorMessage = "";
             String successMessage = "";
             
-            // Handle form submission
+            
             if ("POST".equalsIgnoreCase(request.getMethod())) {
                 try {
                     int customerId = Integer.parseInt(request.getParameter("customerId"));
@@ -444,16 +440,16 @@
                     String customerUsername = request.getParameter("username");
                     String email = request.getParameter("email");
                     
-                    // Validation
+                    
                     if (name == null || name.trim().isEmpty()) {
                         errorMessage = "Customer name is required";
                     } else if (phone == null || phone.trim().isEmpty()) {
                         errorMessage = "Phone number is required";
                     } else {
-                        // Get existing customer
+                        
                         customer = customerDAO.getCustomerById(customerId);
                         if (customer != null) {
-                            // Update customer details
+                            
                             customer.setName(name.trim());
                             customer.setPhone(phone.trim());
                             customer.setAddress(address != null ? address.trim() : "");
@@ -476,7 +472,7 @@
                 }
             }
             
-            // Load customer data for editing
+            
             if (customer == null) {
                 try {
                     String customerIdParam = request.getParameter("customer_id");
@@ -503,10 +499,10 @@
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
                 <div class="header">
                     <div class="header-left">
@@ -668,7 +664,7 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
@@ -689,7 +685,7 @@
                 const currentEmail = emailInput.value.trim();
                 
                 if (currentEmail !== originalEmail && currentEmail !== '') {
-                    // Email has changed, show verification button
+
                     sendVerificationBtn.style.display = 'inline-block';
                     emailVerificationSection.style.display = 'block';
                     emailStatus.textContent = 'Email Changed - Verification Required';
@@ -697,7 +693,7 @@
                     emailVerified = false;
                     showSuccessMessage('Email changed. Please verify the new email address.');
                 } else if (currentEmail === originalEmail) {
-                    // Email is back to original, hide verification
+
                     sendVerificationBtn.style.display = 'none';
                     emailVerificationSection.style.display = 'none';
                     emailStatus.textContent = 'Pending Verification';
@@ -826,7 +822,7 @@
                 xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -838,7 +834,7 @@
                 }
             });
 
-            // Form validation
+
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.querySelector('form');
                 if (form) {
@@ -859,14 +855,14 @@
                             return false;
                         }
                         
-                        // Check if email has changed and requires verification
+
                         if (email !== originalEmail && !emailVerified) {
                             e.preventDefault();
                             showErrorMessage('Please verify the new email address before updating the customer.');
                             return false;
                         }
                         
-                        // If email verification is not required or is completed, submit via AJAX
+
                         e.preventDefault();
                         submitCustomerUpdate();
                     });
@@ -892,12 +888,12 @@
                 console.log('Username:', username);
                 console.log('Email:', email);
                 
-                // Get account number from readonly field
+
                 const accountNumberField = document.querySelector('input[readonly]');
                 const accountNumber = accountNumberField ? accountNumberField.value : '';
                 console.log('Account Number:', accountNumber);
                 
-                // Create the request data
+
                 const data = 'customer_id=' + encodeURIComponent(customerId) +
                            '&account_number=' + encodeURIComponent(accountNumber) +
                            '&name=' + encodeURIComponent(name) +
@@ -924,14 +920,14 @@
                         
                         if (xhr.status === 200) {
                             console.log('Success response received');
-                            // Show success message on the same page
+
                             showSuccessMessage('Customer updated successfully!');
                             
-                            // Reset email verification status
+
                             emailVerified = false;
                             originalEmail = document.getElementById('customerEmail').value.trim();
                             
-                            // Hide verification section
+
                             document.getElementById('emailVerificationSection').style.display = 'none';
                             document.getElementById('sendVerificationBtn').style.display = 'none';
                         } else {
@@ -950,20 +946,20 @@
             }
             
             function showSuccessMessage(message) {
-                // Remove any existing messages
+
                 removeMessages();
                 
-                // Create success message
+
                 const successDiv = document.createElement('div');
                 successDiv.className = 'alert alert-success alert-dismissible fade show';
                 successDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + message + 
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                 
-                // Insert at the top of the content card
+
                 const contentCard = document.querySelector('.content-card');
                 contentCard.insertBefore(successDiv, contentCard.firstChild);
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (successDiv.parentNode) {
                         successDiv.remove();
@@ -972,20 +968,20 @@
             }
             
             function showErrorMessage(message) {
-                // Remove any existing messages
+
                 removeMessages();
                 
-                // Create error message
+
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger alert-dismissible fade show';
                 errorDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + message + 
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                 
-                // Insert at the top of the content card
+
                 const contentCard = document.querySelector('.content-card');
                 contentCard.insertBefore(errorDiv, contentCard.firstChild);
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (errorDiv.parentNode) {
                         errorDiv.remove();
@@ -994,7 +990,7 @@
             }
             
             function removeMessages() {
-                // Remove any existing alert messages
+
                 const existingAlerts = document.querySelectorAll('.alert');
                 existingAlerts.forEach(alert => alert.remove());
             }

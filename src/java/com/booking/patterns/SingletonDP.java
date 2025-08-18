@@ -33,7 +33,6 @@ public class SingletonDP {
     
     private void initializeDataSource() {
         try {
-            // Try to initialize DataSource via JNDI (only works in servlet container)
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup("jdbc/pahana");
@@ -41,8 +40,6 @@ public class SingletonDP {
         } catch (NamingException e) {
             System.out.println("Singleton: JNDI DataSource not available (running in standalone mode)");
             System.out.println("Singleton: Will use direct database connection as fallback");
-            // In standalone mode, we don't have JNDI, so dataSource remains null
-            // The getConnection method will handle the fallback
         } catch (Exception e) {
             System.err.println("Singleton: Unexpected error during DataSource initialization: " + e.getMessage());
         }
@@ -52,7 +49,6 @@ public class SingletonDP {
         if (dataSource != null) {
             return dataSource.getConnection();
         } else {
-            // Fallback to direct connection for standalone execution
             try {
                 String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
                 String username = "root";

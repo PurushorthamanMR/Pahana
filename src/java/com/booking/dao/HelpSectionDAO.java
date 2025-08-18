@@ -50,7 +50,6 @@ public class HelpSectionDAO {
                 helpSection.setTitle(rs.getString("title"));
                 helpSection.setContent(rs.getString("content"));
                 
-                // Set role information
                 if (rs.getInt("role_id") != 0) {
                     UserRole role = new UserRole();
                     role.setRoleId(rs.getInt("role_id"));
@@ -85,7 +84,6 @@ public class HelpSectionDAO {
                     helpSection.setTitle(rs.getString("title"));
                     helpSection.setContent(rs.getString("content"));
                     
-                    // Set role information
                     if (rs.getInt("role_id") != 0) {
                         UserRole role = new UserRole();
                         role.setRoleId(rs.getInt("role_id"));
@@ -157,8 +155,7 @@ public class HelpSectionDAO {
                     helpSection.setHelpId(rs.getInt("help_id"));
                     helpSection.setTitle(rs.getString("title"));
                     helpSection.setContent(rs.getString("content"));
-                    
-                    // Set role information
+                   
                     if (rs.getInt("role_id") != 0) {
                         UserRole role = new UserRole();
                         role.setRoleId(rs.getInt("role_id"));

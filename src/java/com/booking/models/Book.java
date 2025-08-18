@@ -32,7 +32,6 @@ public class Book {
         this.category = category;
     }
     
-    // Getters and Setters
     public int getBookId() {
         return bookId;
     }

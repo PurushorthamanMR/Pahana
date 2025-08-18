@@ -1,8 +1,4 @@
-<%-- 
-    Document   : login
-    Created on : Aug 3, 2025, 9:09:52 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,9 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BookClub - Login</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -199,7 +195,7 @@
                 color: #721c24;
             }
 
-            /* Responsive Design for 1920x1200 and other resolutions */
+            
             @media (max-width: 1200px) {
                 .login-container {
                     max-width: 900px;
@@ -273,11 +269,11 @@
     <body>
         <div class="login-container">
             <div class="login-content">
-                <!-- Form Section -->
+                
                 <div class="form-section">
-                    <!-- Login Form -->
+                    
                     <div id="loginForm">
-                        <!-- Message Display -->
+                        
                         <% if (request.getParameter("message") != null) {%>
                         <div class="alert alert-success" id="successMessage">
                             <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message")%>
@@ -326,7 +322,7 @@
                     </div>
                 </div>
 
-                <!-- Illustration Section -->
+                
                 <div class="illustration-section">
                     <div class="illustration-image">
                         <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana Welcome">
@@ -337,10 +333,10 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Custom JavaScript -->
+        
         <script>
             function togglePasswordVisibility(inputId) {
                 const input = document.getElementById(inputId);
@@ -361,13 +357,13 @@
                 document.getElementById(messageId).style.display = 'none';
             }
 
-            // Auto-close success message after 5 seconds
+
             document.addEventListener('DOMContentLoaded', function() {
                 const successMessage = document.getElementById('successMessage');
                 if (successMessage) {
                     setTimeout(function() {
                         successMessage.style.display = 'none';
-                    }, 5000); // 5 seconds
+                    }, 5000); 
                 }
             });
         </script>

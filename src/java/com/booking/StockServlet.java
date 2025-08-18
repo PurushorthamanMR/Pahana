@@ -31,7 +31,6 @@ public class StockServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Check if user is logged in
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
@@ -41,7 +40,6 @@ public class StockServlet extends HttpServlet {
             return;
         }
         
-        // Check role-based access - only ADMIN and MANAGER can access stock
         boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role);
         if (!canAccess) {
             response.sendRedirect("dashboard.jsp?error=Access denied.");
@@ -89,7 +87,6 @@ public class StockServlet extends HttpServlet {
         String bookIdStr = request.getParameter("bookId");
         String stockQuantityStr = request.getParameter("stockQuantity");
         
-        // Validation
         if (bookIdStr == null || stockQuantityStr == null || 
             bookIdStr.trim().isEmpty() || stockQuantityStr.trim().isEmpty()) {
             response.sendRedirect("StockServlet?action=list&error=Book ID and stock quantity are required.");
@@ -123,7 +120,6 @@ public class StockServlet extends HttpServlet {
         String bookIdStr = request.getParameter("bookId");
         String stockQuantityStr = request.getParameter("stockQuantity");
         
-        // Validation
         if (bookIdStr == null || stockQuantityStr == null || 
             bookIdStr.trim().isEmpty() || stockQuantityStr.trim().isEmpty()) {
             response.sendRedirect("StockServlet?action=list&error=Book ID and stock quantity are required.");
@@ -139,7 +135,6 @@ public class StockServlet extends HttpServlet {
                 return;
             }
 
-            // Get current stock quantity
             Book book = bookDAO.getBookById(bookId);
             if (book == null) {
                 response.sendRedirect("StockServlet?action=list&error=Book not found.");

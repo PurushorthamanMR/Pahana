@@ -1,8 +1,4 @@
-<%-- 
-    Document   : book_category
-    Created on : Aug 3, 2025, 9:07:20 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Book Category Management</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -126,7 +122,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -175,7 +171,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -212,7 +208,7 @@
                 color: white;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 border: none;
@@ -236,7 +232,7 @@
                 color: #0c5460;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -252,7 +248,7 @@
                 }
             }
 
-            /* Action Button Styles */
+            
             .btn-edit {
                 background-color: #ffc107;
                 border-color: #ffc107;
@@ -283,7 +279,7 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -313,7 +309,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -322,30 +318,30 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // If no book categories data is loaded, redirect to servlet to load data
+            
             if (request.getAttribute("bookCategories") == null) {
                 response.sendRedirect("BookCategoryServlet?action=list");
                 return;
             }
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "bookcategory");
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -361,7 +357,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -374,7 +370,7 @@
                 </div>
                 <% } %>
 
-                <!-- Book Category Management Content -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-tags me-2"></i>Book Category Management</span>
@@ -383,9 +379,9 @@
                         </button>
                     </h3>
                     
-                    <!-- Book Categories Table -->
+                    
                     <div class="table-responsive">
-                        <!-- Search Bar -->
+                        
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -443,7 +439,7 @@
                     </div>
                 </div>
 
-                <!-- Add Category Modal -->
+                
                 <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -477,7 +473,7 @@
                     </div>
                 </div>
 
-                <!-- Edit Category Modal -->
+                
                 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -512,7 +508,7 @@
                     </div>
                 </div>
 
-                <!-- Delete Confirmation Modal -->
+                
                 <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -538,17 +534,17 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -560,7 +556,7 @@
                 }
             });
 
-            // Edit category function
+
             function editCategory(categoryId, categoryName) {
                 document.getElementById('editCategoryId').value = categoryId;
                 document.getElementById('editCategoryName').value = categoryName;
@@ -568,14 +564,14 @@
                 new bootstrap.Modal(document.getElementById('editCategoryModal')).show();
             }
 
-            // Delete category function
+
             function deleteCategory(categoryId, categoryName) {
                 document.getElementById('deleteCategoryName').textContent = categoryName;
                 document.getElementById('confirmDeleteBtn').href = 'BookCategoryServlet?action=delete&id=' + categoryId;
                 new bootstrap.Modal(document.getElementById('deleteCategoryModal')).show();
             }
 
-            // Search categories function
+
             function searchCategories(searchTerm) {
                 const tableRows = document.querySelectorAll('tbody tr');
                 let visibleCount = 0;
@@ -595,9 +591,9 @@
                     }
                 });
                 
-                // Show "no results" message if no categories match search
+
                 if (visibleCount === 0) {
-                    // Remove existing "no results" row if it exists
+
                     const existingNoResults = document.querySelector('#noResultsRow');
                     if (existingNoResults) {
                         existingNoResults.remove();
@@ -613,7 +609,7 @@
                     `;
                     document.querySelector('tbody').appendChild(noResultsRow);
                 } else {
-                    // Remove "no results" row if it exists and we have results
+
                     const existingNoResults = document.querySelector('#noResultsRow');
                     if (existingNoResults) {
                         existingNoResults.remove();
@@ -621,40 +617,40 @@
                 }
             }
 
-            // Clear category search
+
             function clearCategorySearch() {
                 document.getElementById('categorySearch').value = '';
-                // Show all categories
+
                 const tableRows = document.querySelectorAll('tbody tr');
                 tableRows.forEach(row => {
                     row.style.display = '';
                 });
                 
-                // Remove "no results" row if it exists
+
                 const existingNoResults = document.querySelector('#noResultsRow');
                 if (existingNoResults) {
                     existingNoResults.remove();
                 }
             }
 
-            // Initialize search functionality
+
             document.addEventListener('DOMContentLoaded', function() {
                 const categorySearchInput = document.getElementById('categorySearch');
                 if (categorySearchInput) {
                     categorySearchInput.addEventListener('input', function() {
                         const searchTerm = this.value.toLowerCase().trim();
                         if (searchTerm === '') {
-                            // If search is empty, show all categories
+
                             clearCategorySearch();
                         } else {
-                            // Apply search filter
+
                             searchCategories(searchTerm);
                         }
                     });
                 }
             });
 
-            // Duplicate validation helpers
+
             function resetAddCategoryModal(){
                 const input = document.getElementById('categoryName');
                 if (input) input.value = '';

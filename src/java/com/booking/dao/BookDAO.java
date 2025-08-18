@@ -58,13 +58,11 @@ public class BookDAO {
                 book.setStockQuantity(rs.getInt("stock_quantity"));
                 book.setCreatedAt(rs.getTimestamp("created_at"));
                 
-                // Set category
                 BookCategory category = new BookCategory();
                 category.setCategoryId(rs.getInt("category_id"));
                 category.setCategoryName(rs.getString("category_name"));
                 book.setCategory(category);
                 
-                // Set created by user
                 User createdBy = new User();
                 createdBy.setUserId(rs.getInt("created_by"));
                 createdBy.setUsername(rs.getString("created_by_name"));
@@ -99,13 +97,11 @@ public class BookDAO {
                     book.setStockQuantity(rs.getInt("stock_quantity"));
                     book.setCreatedAt(rs.getTimestamp("created_at"));
                     
-                    // Set category
                     BookCategory category = new BookCategory();
                     category.setCategoryId(rs.getInt("category_id"));
                     category.setCategoryName(rs.getString("category_name"));
                     book.setCategory(category);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));
@@ -194,13 +190,11 @@ public class BookDAO {
                     book.setStockQuantity(rs.getInt("stock_quantity"));
                     book.setCreatedAt(rs.getTimestamp("created_at"));
                     
-                    // Set category
                     BookCategory category = new BookCategory();
                     category.setCategoryId(rs.getInt("category_id"));
                     category.setCategoryName(rs.getString("category_name"));
                     book.setCategory(category);
                     
-                    // Set created by user
                     User createdBy = new User();
                     createdBy.setUserId(rs.getInt("created_by"));
                     createdBy.setUsername(rs.getString("created_by_name"));

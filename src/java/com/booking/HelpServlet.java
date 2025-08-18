@@ -45,15 +45,12 @@ public class HelpServlet extends HttpServlet {
             return;
         }
 
-        // Get current user's role
         String currentUserRole = (String) session.getAttribute("role");
         
-        // If no action specified, default to list (load the page with data)
         if (action == null || action.isEmpty()) {
             action = "list";
         }
         
-        // Check role-based access
         if (!hasAccess(currentUserRole, action)) {
             response.sendRedirect("help.jsp?error=Access denied.");
             return;
@@ -61,7 +58,6 @@ public class HelpServlet extends HttpServlet {
 
         switch (action) {
             case "create":
-                // Redirect to create page for GET, process form for POST
                 if ("GET".equals(request.getMethod())) {
                     response.sendRedirect("help_create.jsp");
                 } else {
@@ -87,16 +83,13 @@ public class HelpServlet extends HttpServlet {
 
     private boolean hasAccess(String currentUserRole, String action) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin has access to everything
+            return true;
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can manage help content (create, update, delete, view, list)
             return "create".equals(action) || "update".equals(action) || 
                    "delete".equals(action) || "view".equals(action) || "list".equals(action);
         } else if ("CASHIER".equals(currentUserRole)) {
-            // Cashier can only view help content
             return "view".equals(action) || "list".equals(action);
         } else if ("CUSTOMER".equals(currentUserRole)) {
-            // Customer can only view help content
             return "view".equals(action) || "list".equals(action);
         }
         return false;
@@ -107,12 +100,11 @@ public class HelpServlet extends HttpServlet {
      */
     private boolean canCreateForRole(String currentUserRole, int targetRoleId) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin can create for all roles
+            return true; 
         } else if ("MANAGER".equals(currentUserRole)) {
-            // Manager can only create for CUSTOMER role (role_id = 4)
             return targetRoleId == 4;
         }
-        return false; // Other roles cannot create help sections
+        return false;
     }
 
     private void handleCreateHelpSection(HttpServletRequest request, HttpServletResponse response, HttpSession session)
@@ -132,12 +124,10 @@ public class HelpServlet extends HttpServlet {
             helpSection.setTitle(title.trim());
             helpSection.setContent(content.trim());
             
-            // Handle role assignment with restrictions
             if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
                 try {
                     int roleId = Integer.parseInt(roleIdStr.trim());
                     
-                    // Check if current user can create help sections for this role
                     if (!canCreateForRole(currentUserRole, roleId)) {
                         response.sendRedirect("help.jsp?error=You don't have permission to create help sections for this role.");
                         return;
@@ -147,7 +137,6 @@ public class HelpServlet extends HttpServlet {
                     role.setRoleId(roleId);
                     helpSection.setRole(role);
                 } catch (NumberFormatException e) {
-                    // Invalid role ID, continue without role assignment
                     System.err.println("Invalid role ID: " + roleIdStr);
                 }
             }
@@ -186,7 +175,6 @@ public class HelpServlet extends HttpServlet {
             helpSection.setTitle(title.trim());
             helpSection.setContent(content.trim());
             
-            // Handle role assignment
             if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
                 try {
                     int roleId = Integer.parseInt(roleIdStr.trim());
@@ -194,7 +182,6 @@ public class HelpServlet extends HttpServlet {
                     role.setRoleId(roleId);
                     helpSection.setRole(role);
                 } catch (NumberFormatException e) {
-                    // Invalid role ID, continue without role assignment
                     System.err.println("Invalid role ID: " + roleIdStr);
                 }
             }
@@ -261,21 +248,15 @@ public class HelpServlet extends HttpServlet {
             String currentUserRole = (String) session.getAttribute("role");
             List<HelpSection> helpSections;
             
-            // Filter help sections based on user role
             if ("ADMIN".equals(currentUserRole)) {
-                // Admin sees all help sections
                 helpSections = facade.getAllHelpSections();
             } else if ("MANAGER".equals(currentUserRole)) {
-                // Manager sees only MANAGER role help sections
-                helpSections = facade.getHelpSectionsByRole(2); // role_id = 2 for MANAGER
+                helpSections = facade.getHelpSectionsByRole(2);
             } else if ("CASHIER".equals(currentUserRole)) {
-                // Cashier sees only CASHIER role help sections
-                helpSections = facade.getHelpSectionsByRole(3); // role_id = 3 for CASHIER
+                helpSections = facade.getHelpSectionsByRole(3); 
             } else if ("CUSTOMER".equals(currentUserRole)) {
-                // Customer sees only CUSTOMER role help sections
-                helpSections = facade.getHelpSectionsByRole(4); // role_id = 4 for CUSTOMER
+                helpSections = facade.getHelpSectionsByRole(4); 
             } else {
-                // Default: show no help sections
                 helpSections = new ArrayList<>();
             }
             

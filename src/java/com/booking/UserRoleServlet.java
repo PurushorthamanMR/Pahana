@@ -43,14 +43,12 @@ public class UserRoleServlet extends HttpServlet {
             return;
         }
 
-        // Check if user is admin (only admin can manage user roles)
         String currentUserRole = (String) session.getAttribute("role");
         if (!"ADMIN".equals(currentUserRole)) {
             response.sendRedirect("dashboard.jsp?error=Access denied. Only administrators can manage user roles.");
             return;
         }
 
-        // If no action specified, default to list (load the page with data)
         if (action == null || action.isEmpty()) {
             action = "list";
         }
@@ -86,7 +84,6 @@ public class UserRoleServlet extends HttpServlet {
                 return;
             }
 
-            // Check if role already exists
             List<UserRole> existingRoles = facade.getAllUserRoles();
             if (existingRoles.stream().anyMatch(role -> role.getRoleName().equalsIgnoreCase(roleName.trim()))) {
                 response.sendRedirect("user_role.jsp?error=Role name already exists.");
@@ -123,7 +120,6 @@ public class UserRoleServlet extends HttpServlet {
                 return;
             }
 
-            // Check if role already exists (excluding current role)
             List<UserRole> existingRoles = facade.getAllUserRoles();
             if (existingRoles.stream().anyMatch(role -> 
                 role.getRoleId() != roleId && role.getRoleName().equalsIgnoreCase(roleName.trim()))) {
@@ -156,9 +152,7 @@ public class UserRoleServlet extends HttpServlet {
         try {
             int roleId = Integer.parseInt(request.getParameter("role_id"));
 
-            // Check if role is being used by any users
-            // This is a basic check - in a real system, you'd want more sophisticated validation
-            if (roleId <= 4) { // Prevent deletion of core roles (ADMIN, MANAGER, CASHIER, CUSTOMER)
+            if (roleId <= 4) {
                 response.sendRedirect("user_role.jsp?error=Cannot delete core system roles.");
                 return;
             }

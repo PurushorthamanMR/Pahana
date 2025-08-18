@@ -38,8 +38,7 @@ public class BookServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Check if user is logged in
+
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
@@ -48,8 +47,7 @@ public class BookServlet extends HttpServlet {
             response.sendRedirect("login.jsp?error=Please login first.");
             return;
         }
-        
-        // Check role-based access
+
         boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
         if (!canAccess) {
             response.sendRedirect("dashboard.jsp?error=Access denied.");
@@ -111,8 +109,7 @@ public class BookServlet extends HttpServlet {
         String priceStr = request.getParameter("price");
         String stockStr = request.getParameter("stock");
         String categoryIdStr = request.getParameter("categoryId");
-        
-        // Validation
+
         if (title == null || title.trim().isEmpty()) {
             response.sendRedirect("book.jsp?error=Book title is required.");
             return;
@@ -137,16 +134,13 @@ public class BookServlet extends HttpServlet {
             BigDecimal price = new BigDecimal(priceStr);
             int stock = Integer.parseInt(stockStr);
             int categoryId = Integer.parseInt(categoryIdStr);
-            
-            // Get current user
+
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("user");
-            
-            // Set category
+
             BookCategory category = new BookCategory();
             category.setCategoryId(categoryId);
-            
-            // Create book object using Builder Pattern
+
             Book book = new com.booking.patterns.BuilderDP.BookBuilder()
                 .title(title.trim())
                 .description(description != null ? description.trim() : "")
@@ -183,7 +177,6 @@ public class BookServlet extends HttpServlet {
             Book book = bookDAO.getBookById(bookId);
             
             if (book != null) {
-                // Get all categories for the dropdown
                 List<BookCategory> categories = bookCategoryDAO.getAllBookCategories();
                 request.setAttribute("book", book);
                 request.setAttribute("categories", categories);
@@ -205,8 +198,7 @@ public class BookServlet extends HttpServlet {
         String priceStr = request.getParameter("price");
         String stockStr = request.getParameter("stock");
         String categoryIdStr = request.getParameter("categoryId");
-        
-        // Validation
+
         if (bookIdStr == null || title == null || priceStr == null || 
             stockStr == null || categoryIdStr == null ||
             bookIdStr.trim().isEmpty() || title.trim().isEmpty() || 
@@ -221,16 +213,14 @@ public class BookServlet extends HttpServlet {
             BigDecimal price = new BigDecimal(priceStr);
             int stock = Integer.parseInt(stockStr);
             int categoryId = Integer.parseInt(categoryIdStr);
-            
-            // Create book object
+
             Book book = new Book();
             book.setBookId(bookId);
             book.setTitle(title.trim());
             book.setDescription(description != null ? description.trim() : "");
             book.setPricePerUnit(price);
             book.setStockQuantity(stock);
-            
-            // Set category
+
             BookCategory category = new BookCategory();
             category.setCategoryId(categoryId);
             book.setCategory(category);
@@ -274,8 +264,7 @@ public class BookServlet extends HttpServlet {
 
     private void getBooksByCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Skip session check for AJAX calls to allow testing
+
         System.out.println("getBooksByCategory called");
         
         String categoryIdStr = request.getParameter("categoryId");
@@ -292,11 +281,9 @@ public class BookServlet extends HttpServlet {
             System.out.println("Getting books for category ID: " + categoryId);
             
             if (categoryId == 0) {
-                // Get all books
                 books = bookDAO.getAllBooks();
                 System.out.println("Retrieved " + (books != null ? books.size() : 0) + " books from getAllBooks()");
             } else {
-                // Get books by category
                 books = bookDAO.getBooksByCategory(categoryId);
                 System.out.println("Retrieved " + (books != null ? books.size() : 0) + " books from getBooksByCategory(" + categoryId + ")");
             }
@@ -306,7 +293,6 @@ public class BookServlet extends HttpServlet {
                 System.out.println("Books list was null, created empty list");
             }
             
-            // Convert books to JSON format
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             

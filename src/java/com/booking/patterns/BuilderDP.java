@@ -17,7 +17,6 @@ import com.booking.models.UserRole;
  */
 public class BuilderDP {
     
-    // Book Builder
     public static class BookBuilder {
         private int bookId;
         private String title;
@@ -29,7 +28,6 @@ public class BuilderDP {
         private java.sql.Timestamp createdAt;
         
         public BookBuilder() {
-            // Initialize with default values
             this.stockQuantity = 0;
             this.pricePerUnit = java.math.BigDecimal.ZERO;
         }
@@ -88,7 +86,6 @@ public class BuilderDP {
         }
     }
     
-    // Customer Builder
     public static class CustomerBuilder {
         private int customerId;
         private String accountNumber;
@@ -104,7 +101,6 @@ public class BuilderDP {
         private java.sql.Timestamp updatedAt;
         
         public CustomerBuilder() {
-            // Initialize with default values
         }
         
         public CustomerBuilder customerId(int customerId) {
@@ -185,7 +181,6 @@ public class BuilderDP {
         }
     }
     
-    // User Builder
     public static class UserBuilder {
         private int userId;
         private String username;
@@ -196,7 +191,6 @@ public class BuilderDP {
         private java.sql.Timestamp updatedAt;
         
         public UserBuilder() {
-            // Initialize with default values
         }
         
         public UserBuilder userId(int userId) {

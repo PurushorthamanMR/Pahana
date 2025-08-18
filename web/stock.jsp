@@ -1,8 +1,4 @@
-<%-- 
-    Document   : stock
-    Created on : Aug 3, 2025, 9:10:17 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Stock Management</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -126,7 +122,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -175,7 +171,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -212,7 +208,7 @@
                 color: white;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 border: none;
@@ -231,7 +227,7 @@
                 color: #721c24;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -247,7 +243,7 @@
                 }
             }
 
-            /* Action Button Styles */
+            
             .btn-edit {
                 background-color: #ffc107;
                 border-color: #ffc107;
@@ -263,7 +259,7 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -293,7 +289,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -302,30 +298,30 @@
                 return;
             }
             
-            // Check role-based access - only ADMIN and MANAGER can access stock
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // If no books data is loaded, redirect to servlet to load data
+            
             if (request.getAttribute("books") == null) {
                 response.sendRedirect("StockServlet?action=list");
                 return;
             }
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "stock");
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -341,7 +337,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -354,7 +350,7 @@
                 </div>
                 <% } %>
 
-                <!-- Stock Management Content -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-boxes me-2"></i>Stock Management</span>
@@ -365,7 +361,7 @@
                     
 
                     
-                    <!-- Stock Table -->
+                    
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
@@ -426,7 +422,7 @@
                     </div>
                 </div>
 
-                <!-- Update Stock Modal -->
+                
                 <div class="modal fade" id="updateStockModal" tabindex="-1" aria-labelledby="updateStockModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -464,17 +460,17 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -486,7 +482,7 @@
                 }
             });
 
-            // Edit stock function
+
             function editStock(bookId, bookTitle, currentStock) {
                 document.getElementById('updateBookId').value = bookId;
                 document.getElementById('updateBookTitle').value = bookTitle;
@@ -494,7 +490,7 @@
                 new bootstrap.Modal(document.getElementById('updateStockModal')).show();
             }
             
-            // Add stock function
+
             function addStock(bookId, bookTitle, currentStock) {
                 const addStockInput = document.getElementById('addStock_' + bookId);
                 const addQuantity = parseInt(addStockInput.value) || 0;
@@ -504,7 +500,7 @@
                     return;
                 }
                 
-                // Create a form and submit it
+
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = 'StockServlet';

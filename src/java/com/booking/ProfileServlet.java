@@ -34,7 +34,6 @@ public class ProfileServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Check if user is logged in
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
@@ -72,7 +71,6 @@ public class ProfileServlet extends HttpServlet {
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
         
-        // Validation
         if (currentPassword == null || currentPassword.trim().isEmpty()) {
             response.sendRedirect("profile.jsp?error=Current password is required.");
             return;
@@ -104,14 +102,12 @@ public class ProfileServlet extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         String email = request.getParameter("email");
         
-        // Verify current password
         User user = userDAO.getUserByUsername(currentUser.getUsername());
         if (user == null || !user.getPassword().equals(currentPassword)) {
             response.sendRedirect("profile.jsp?error=Current password is incorrect.");
             return;
         }
         
-        // Update user
         user.setEmail(email != null ? email.trim() : user.getEmail());
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             user.setPassword(newPassword.trim());
@@ -120,7 +116,6 @@ public class ProfileServlet extends HttpServlet {
         boolean success = userDAO.updateUser(user);
         
         if (success) {
-            // Update session
             session.setAttribute("user", user);
             response.sendRedirect("profile.jsp?message=Profile updated successfully.");
         } else {
@@ -135,14 +130,12 @@ public class ProfileServlet extends HttpServlet {
         Customer currentCustomer = (Customer) session.getAttribute("user");
         String name = request.getParameter("name");
         
-        // Verify current password
         Customer customer = customerDAO.getCustomerByUsername(currentCustomer.getUsername());
         if (customer == null || !customer.getPassword().equals(currentPassword)) {
             response.sendRedirect("profile.jsp?error=Current password is incorrect.");
             return;
         }
         
-        // Update customer
         customer.setName(name != null ? name.trim() : customer.getName());
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             customer.setPassword(newPassword.trim());
@@ -151,7 +144,6 @@ public class ProfileServlet extends HttpServlet {
         boolean success = customerDAO.updateCustomer(customer);
         
         if (success) {
-            // Update session
             session.setAttribute("user", customer);
             response.sendRedirect("profile.jsp?message=Profile updated successfully.");
         } else {

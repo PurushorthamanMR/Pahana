@@ -1,8 +1,4 @@
-<%-- 
-    Document   : forgotpassword
-    Created on : Aug 12, 2025, 1:10:00 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,9 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BookClub - Forgot Password</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -284,7 +280,7 @@
     <body>
         <div class="forgot-container">
             <div class="forgot-content">
-                <!-- Form Section -->
+                
                 <div class="form-section">
                     <h1 class="form-title">Reset Password</h1>
                     <p class="form-subtitle">Enter your email to receive a verification code</p>
@@ -351,7 +347,7 @@
                     </div>
                 </div>
 
-                <!-- Illustration Section -->
+                
                 <div class="illustration-section">
                     <div class="illustration-image">
                         <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana Password Reset">
@@ -362,12 +358,12 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Custom JavaScript -->
+        
         <script>
-            // Email verification functions for password reset
+
             let emailVerified = false;
             
             function sendVerificationCode() {
@@ -377,13 +373,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Checking email...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Check if email exists in ANY table (customers or users) using CustomerServlet
+
                 const checkEmailXhr = new XMLHttpRequest();
                 checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                 checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -395,10 +391,10 @@
                             try {
                                 const response = JSON.parse(checkEmailXhr.responseText);
                                 if (response.status === 'success' && response.exists) {
-                                    // Email exists in either table, determine which one and proceed
+
                                     determineEmailContextAndSendVerification(email);
                                 } else {
-                                    // Email doesn't exist in either table
+
                                     document.getElementById('verificationSpinner').style.display = 'none';
                                     document.getElementById('sendVerificationBtn').disabled = false;
                                     document.getElementById('emailStatus').textContent = 'Email Not Found';
@@ -407,18 +403,18 @@
                                 }
                             } catch (e) {
                                 console.log('Error parsing email check response:', e);
-                                // Fallback: try to determine context
+
                                 determineEmailContextAndSendVerification(email);
                             }
                         } else {
-                            // Fallback: try to determine context
+
                             determineEmailContextAndSendVerification(email);
                         }
                     }
                 };
                 
                 checkEmailXhr.onerror = function() {
-                    // Fallback: try to determine context
+
                     determineEmailContextAndSendVerification(email);
                 };
                 
@@ -426,7 +422,7 @@
             }
             
             function determineEmailContextAndSendVerification(email) {
-                // Determine context precisely by checking users first, then customers
+
                 const checkUserXhr = new XMLHttpRequest();
                 checkUserXhr.open('POST', 'UserServlet?action=check-email-exists', true);
                 checkUserXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -438,7 +434,7 @@
                             try {
                                 const userResp = JSON.parse(checkUserXhr.responseText);
                                 if (userResp.status === 'success' && userResp.exists) {
-                                    // Email exists in users table
+
                                     sendVerificationEmail(email, 'user');
                                     return;
                                 }
@@ -447,7 +443,7 @@
                             }
                         }
 
-                        // If not a user, check customers table
+
                         const checkCustomerXhr = new XMLHttpRequest();
                         checkCustomerXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                         checkCustomerXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -459,7 +455,7 @@
                                     try {
                                         const custResp = JSON.parse(checkCustomerXhr.responseText);
                                         if (custResp.status === 'success' && custResp.exists) {
-                                            // Email exists in customers table
+
                                             sendVerificationEmail(email, 'customer');
                                             return;
                                         }
@@ -467,7 +463,7 @@
                                         console.log('Error parsing customer response:', e);
                                     }
                                 }
-                                // Not found in either table
+
                                 document.getElementById('verificationSpinner').style.display = 'none';
                                 document.getElementById('sendVerificationBtn').disabled = false;
                                 document.getElementById('emailStatus').textContent = 'Email Not Found';
@@ -487,7 +483,7 @@
                 };
 
                 checkUserXhr.onerror = function() {
-                    // Fallback: try customers only
+
                     const checkCustomerXhr = new XMLHttpRequest();
                     checkCustomerXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                     checkCustomerXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -521,20 +517,20 @@
                 console.log('Email:', email);
                 console.log('Context:', context);
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Sending...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Determine which servlet to use based on context
+
                 const servletUrl = context === 'user' ? 'UserServlet?action=send-verification' : 'CustomerServlet?action=send-verification';
                 const contextParam = context === 'user' ? 'forgot-password' : 'forgot-password';
                 
                 console.log('Using servlet URL:', servletUrl);
                 console.log('Context parameter:', contextParam);
                 
-                // Send AJAX request for verification code
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', servletUrl, true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -559,12 +555,12 @@
                                     document.getElementById('emailStatus').textContent = 'Code Sent';
                                     document.getElementById('emailStatus').className = 'badge bg-info';
                                     
-                                    // Enable verification pin input and button
+
                                     document.getElementById('verificationPin').disabled = false;
                                     document.getElementById('verifyPinBtn').disabled = false;
                                     document.getElementById('verificationPin').focus();
                                     
-                                    // Store context for password reset
+
                                     window.passwordResetContext = context;
                                     console.log('Password reset context set to:', context);
                                 } else {
@@ -576,7 +572,7 @@
                                 console.error('Error parsing email verification response:', e);
                                 console.log('Raw response was:', xhr.responseText);
                                 
-                                // If we get HTML instead of JSON, there's a servlet error
+
                                 if (xhr.responseText.includes('<!DOCTYPE')) {
                                     console.error('Servlet returned HTML instead of JSON - likely a servlet error');
                                     showAlert('System error: Servlet is not responding correctly. Please contact administrator.', 'error');
@@ -585,12 +581,12 @@
                                     document.getElementById('emailStatus').textContent = 'Code Sent';
                                     document.getElementById('emailStatus').className = 'badge bg-info';
                                     
-                                    // Enable verification pin input and button
+
                                     document.getElementById('verificationPin').disabled = false;
                                     document.getElementById('verifyPinBtn').disabled = false;
                                     document.getElementById('verificationPin').focus();
                                     
-                                    // Store context for password reset
+
                                     window.passwordResetContext = context;
                                     console.log('Password reset context set to:', context);
                                 }
@@ -613,7 +609,7 @@
                     document.getElementById('emailStatus').className = 'badge bg-danger';
                 };
                 
-                // Send with context parameter for forgot password
+
                 const postData = 'email=' + encodeURIComponent(email) + '&context=' + contextParam;
                 console.log('Sending POST data:', postData);
                 xhr.send(postData);
@@ -628,13 +624,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('verifyPinBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Verifying...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request to the correct servlet based on context
+
                 const verifyServletUrl = (window.passwordResetContext === 'user') 
                     ? 'UserServlet?action=verify-email' 
                     : 'CustomerServlet?action=verify-email';
@@ -661,17 +657,17 @@
                                     console.log('Email verified: true');
                                     console.log('Password reset section should be visible now');
                                     
-                                    // Disable verification inputs
+
                                     document.getElementById('verificationPin').disabled = true;
                                     document.getElementById('verifyPinBtn').disabled = true;
                                     document.getElementById('sendVerificationBtn').disabled = true;
                                     
-                                    // Show password reset section
+
                                     const passwordResetSection = document.getElementById('passwordResetSection');
                                     passwordResetSection.style.display = 'block';
                                     console.log('Password reset section display style:', passwordResetSection.style.display);
                                     
-                                    // Focus on new password field
+
                                     document.getElementById('newPassword').focus();
                                 } else {
                                     showAlert(response.message, 'error');
@@ -684,15 +680,15 @@
                                 document.getElementById('emailStatus').className = 'badge bg-success';
                                 emailVerified = true;
                                 
-                                // Disable verification inputs
+
                                 document.getElementById('verificationPin').disabled = true;
                                 document.getElementById('verifyPinBtn').disabled = true;
                                 document.getElementById('sendVerificationBtn').disabled = true;
                                 
-                                // Show password reset section
+
                                 document.getElementById('passwordResetSection').style.display = 'block';
                                 
-                                // Focus on new password field
+
                                 document.getElementById('newPassword').focus();
                             }
                         } else {
@@ -735,7 +731,7 @@
                 }
             }
             
-            // Form validation and submission
+
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('forgotPasswordForm');
                 if (form) {
@@ -778,11 +774,11 @@
                         console.log('Email:', document.getElementById('resetEmail').value.trim());
                         console.log('New password:', newPassword);
                         
-                        // Determine which servlet to use based on context
+
                         const resetServletUrl = window.passwordResetContext === 'user' ? 'UserServlet?action=reset-password' : 'CustomerServlet?action=reset-password';
                         console.log('Using servlet:', resetServletUrl);
                         
-                        // Send password reset request to appropriate servlet
+
                         const xhr = new XMLHttpRequest();
                         xhr.open('POST', resetServletUrl, true);
                         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -796,7 +792,7 @@
                                         if (response.status === 'success') {
                                             showAlert('Password reset successfully! You can now login with your new password.', 'success');
                                             
-                                            // Redirect to login page after 2 seconds
+
                                             setTimeout(() => {
                                                 window.location.href = 'login.jsp';
                                             }, 2000);
@@ -806,7 +802,7 @@
                                     } catch (e) {
                                         showAlert('Password reset successfully! You can now login with your new password.', 'success');
                                         
-                                        // Redirect to login page after 2 seconds
+
                                         setTimeout(() => {
                                             window.location.href = 'login.jsp';
                                         }, 2000);
@@ -826,7 +822,7 @@
                 }
             });
             
-            // Alert function for showing messages
+
             function showAlert(message, type) {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show';
@@ -840,7 +836,7 @@
                     '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
                 document.body.appendChild(alertDiv);
                 
-                // Auto remove after 3 seconds
+
                 setTimeout(() => {
                     if (alertDiv.parentNode) {
                         alertDiv.remove();

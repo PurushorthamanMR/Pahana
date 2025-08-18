@@ -33,11 +33,9 @@ public class LoginServlet extends HttpServlet {
         try {
             DatabaseUtil.initializeDatabase();
             
-            // Initialize patterns
             facade = new FacadeDP();
             authContext = new StrategyDP.AuthenticationContext(new StrategyDP.DatabaseAuthenticationStrategy());
             
-            // Initialize observers
             eventManager = ObserverDP.SystemEventManager.getInstance();
             eventManager.registerObserver(new ObserverDP.SystemLogger());
             eventManager.registerObserver(new ObserverDP.AuditTrail());
@@ -82,7 +80,6 @@ public class LoginServlet extends HttpServlet {
             String password = request.getParameter("password");
             String roleId = request.getParameter("role_id");
 
-            // Create user object
             UserRole role = new UserRole();
             role.setRoleId(Integer.parseInt(roleId));
             
@@ -92,7 +89,6 @@ public class LoginServlet extends HttpServlet {
             user.setPassword(password);
             user.setRole(role);
 
-            // Register user using facade
             boolean success = facade.registerUser(user);
 
             if (success) {
@@ -115,21 +111,17 @@ public class LoginServlet extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            // Try external authentication first using Adapter Pattern
             boolean externalAuthSuccess = tryExternalAuthentication(username, password);
             
             if (externalAuthSuccess) {
                 eventManager.logEvent("External authentication successful for: " + username, "INFO");
             }
 
-            // First try to authenticate as a regular user (ADMIN, MANAGER, CASHIER)
             User user = authContext.getUser(username, password);
 
             if (user != null) {
-                // Check if user has valid role (ADMIN=1, MANAGER=2, CASHIER=3)
                 String roleName = user.getRole().getRoleName();
                 if ("ADMIN".equals(roleName) || "MANAGER".equals(roleName) || "CASHIER".equals(roleName)) {
-                    // Store user in session
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
                     session.setAttribute("username", user.getUsername());
@@ -139,7 +131,6 @@ public class LoginServlet extends HttpServlet {
                     
                     eventManager.logEvent("User logged in successfully: " + username + " (Role: " + roleName + ")", "INFO");
                     
-                    // Redirect based on role
                     if ("ADMIN".equals(roleName)) {
                         response.sendRedirect("CustomerServlet?action=list&message=Login successful!");
                     } else if ("CASHIER".equals(roleName)) {
@@ -149,21 +140,17 @@ public class LoginServlet extends HttpServlet {
                     }
                     return;
                 } else {
-                    // User exists but has invalid role for users table
                     eventManager.logEvent("Login failed - invalid role for user: " + username + " (Role: " + roleName + ")", "WARNING");
                     response.sendRedirect("login.jsp?error=Invalid user role. Please contact administrator.");
                     return;
                 }
             }
             
-            // If not a regular user, try to authenticate as a customer (CUSTOMER role only)
             com.booking.models.Customer customer = facade.authenticateCustomer(username, password);
             
             if (customer != null) {
-                // Check if customer has CUSTOMER role (role_id = 4)
                 String roleName = customer.getRole().getRoleName();
                 if ("CUSTOMER".equals(roleName)) {
-                    // Store customer in session
                     HttpSession session = request.getSession();
                     session.setAttribute("user", customer);
                     session.setAttribute("username", customer.getUsername());
@@ -177,14 +164,12 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("transaction.jsp?message=Login successful!");
                     return;
                 } else {
-                    // Customer exists but has invalid role for customers table
                     eventManager.logEvent("Login failed - invalid role for customer: " + username + " (Role: " + roleName + ")", "WARNING");
                     response.sendRedirect("login.jsp?error=Invalid customer role. Please contact administrator.");
                     return;
                 }
             }
             
-            // If neither user nor customer authentication succeeded
             eventManager.logEvent("Login failed for username: " + username, "WARNING");
             response.sendRedirect("login.jsp?error=Invalid username or password.");
 
@@ -199,7 +184,6 @@ public class LoginServlet extends HttpServlet {
      */
     private boolean tryExternalAuthentication(String username, String password) {
         try {
-            // Try LDAP authentication first
             com.booking.patterns.AdapterDP.ExternalAuthAdapter ldapAdapter = 
                 new com.booking.patterns.AdapterDP.ExternalAuthAdapter(
                     new com.booking.patterns.AdapterDP.LDAPAuthService()
@@ -209,7 +193,6 @@ public class LoginServlet extends HttpServlet {
                 return true;
             }
             
-            // Try OAuth authentication
             com.booking.patterns.AdapterDP.ExternalAuthAdapter oauthAdapter = 
                 new com.booking.patterns.AdapterDP.ExternalAuthAdapter(
                     new com.booking.patterns.AdapterDP.OAuthAuthService()
@@ -226,7 +209,6 @@ public class LoginServlet extends HttpServlet {
         return false;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -263,6 +245,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

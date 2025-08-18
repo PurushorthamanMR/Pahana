@@ -1,3 +1,5 @@
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -5,11 +7,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana BookStore - Your Gateway to Knowledge</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-        <!-- Font Awesome -->
+        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
             :root {
@@ -122,7 +124,7 @@
                  color: var(--primary-color) !important;
              }
              
-             /* Login Navigation Link Styling */
+             
              .login-nav-link {
                  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
                  color: white !important;
@@ -145,7 +147,7 @@
                  margin-right: 5px;
              }
 
-            /* Modern Navigation Bar Styles */
+            
             .modern-navbar {
                 background: #1a1a1a;
                 padding: 0;
@@ -313,7 +315,7 @@
                 transition: all 0.3s ease;
             }
 
-            /* Mobile Navigation Backdrop */
+            
             .mobile-nav-backdrop {
                 display: none;
                 position: fixed;
@@ -329,7 +331,7 @@
                 display: block;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 1024px) {
                 .nav-container {
                     padding: 0 1.5rem;
@@ -531,7 +533,7 @@
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             }
 
-            /* Hero Section */
+            
             .hero-section {
                 background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
                 color: white;
@@ -539,7 +541,7 @@
                 text-align: left;
             }
 
-            /* Brand Logo Section */
+            
             .brand-logo-section {
                 display: flex;
                 align-items: center;
@@ -566,7 +568,7 @@
                 margin: 0;
             }
 
-            /* Hero Headline */
+            
             .hero-headline {
                 font-size: 3.5rem;
                 font-weight: 700;
@@ -591,7 +593,7 @@
                 border-radius: 2px;
             }
 
-            /* Hero Description */
+            
             .hero-description {
                 font-size: 1.2rem;
                 line-height: 1.6;
@@ -600,7 +602,7 @@
                 max-width: 500px;
             }
 
-            /* Search Section */
+            
             .search-container-hero {
                 display: flex;
                 max-width: 450px;
@@ -648,7 +650,7 @@
                 background: #e55a2b;
             }
 
-            /* Quick Links */
+            
             .quick-links {
                 display: flex;
                 align-items: center;
@@ -672,7 +674,7 @@
                 font-weight: 300;
             }
 
-            /* Book Covers Section */
+            
             .book-covers-section {
                 position: relative;
                 display: flex;
@@ -742,7 +744,7 @@
                 object-fit: cover;
             }
 
-            /* Top row books - larger size */
+            
             .book-1 .book-cover-img,
             .book-2 .book-cover-img,
             .book-3 .book-cover-img {
@@ -771,7 +773,7 @@
 
 
 
-            /* Categories Section */
+            
             .categories-section {
                 padding: 80px 0;
                 background: var(--light-gray);
@@ -784,7 +786,7 @@
                 padding-right: 2rem;
             }
 
-            /* Full width categories styling */
+            
             .categories-section .row {
                 margin-left: -0.5rem;
                 margin-right: -0.5rem;
@@ -798,7 +800,7 @@
                 padding-right: 0.5rem;
             }
 
-            /* Ensure category cards maintain consistent height */
+            
             .category-card {
                 min-height: 200px;
                 display: flex;
@@ -893,7 +895,7 @@
                 color: var(--secondary-color);
             }
 
-            /* Daily Deals Section */
+            
             .deals-section {
                 padding: 80px 0;
             }
@@ -943,7 +945,7 @@
                 color: var(--primary-color);
             }
 
-            /* Promotional Banners */
+            
             .promo-banners {
                 padding: 60px 0;
                 background: var(--light-gray);
@@ -969,7 +971,7 @@
                 margin-bottom: 25px;
             }
 
-            /* Email Subscription */
+            
             .email-section {
                 padding: 80px 0;
                 background: linear-gradient(135deg, #28a745, #20c997);
@@ -1021,7 +1023,7 @@
                 background: #c82333;
             }
 
-                         /* Service Section */
+                         
              .service-card {
                  background: white;
                  border-radius: 15px;
@@ -1052,7 +1054,7 @@
                  line-height: 1.6;
              }
              
-             /* Blog Section */
+             
              .blog-section {
                  padding: 80px 0;
                  background: var(--light-gray);
@@ -1110,7 +1112,7 @@
                 color: var(--secondary-color);
             }
 
-            /* Footer */
+            
             .footer {
                 background: var(--text-dark);
                 color: white;
@@ -1168,7 +1170,7 @@
                 color: #ccc;
             }
 
-            /* Contact Form Styles */
+            
             .alert {
                 border-radius: 10px;
                 border: none;
@@ -1202,7 +1204,7 @@
                 color: white;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .hero-content h1 {
                     font-size: 2.5rem;
@@ -1235,7 +1237,7 @@
                     height: 210px;
                 }
 
-                /* Top row books - larger size on mobile */
+                
                 .book-1 .book-cover-img,
                 .book-2 .book-cover-img,
                 .book-3 .book-cover-img {
@@ -1293,7 +1295,7 @@
                 }
             }
             
-            /* Store Subscription Modal Styles */
+            
             #storeSubscriptionAlert {
                 display: block !important;
                 visibility: visible !important;
@@ -1348,7 +1350,7 @@
     <body>
 
 
-        <!-- Navigation -->
+        
         <nav class="modern-navbar">
             <div class="nav-container">
                 <div class="nav-brand">
@@ -1379,16 +1381,16 @@
             </div>
         </nav>
 
-        <!-- Mobile Navigation Backdrop -->
+        
         <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
 
-        <!-- Hero Section -->
+        
         <section id="home" class="hero-section">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <div class="hero-content">
-                            <!-- Brand Logo -->
+                            
                             <div class="brand-logo-section mb-4">
                                 <div class="brand-icon">
                                     <img src="<%= request.getContextPath() %>/IMG/pahana.png" alt="Pahana" style="width: 50px; height: 50px; border-radius: 12px; object-fit: contain; background: transparent;">
@@ -1396,19 +1398,19 @@
                                 <h2 class="brand-name">Pahana</h2>
                             </div>
                             
-                            <!-- Main Headline -->
+                            
                             <h1 class="hero-headline mb-4">
                                 Best Place to Find Your 
                                 <span class="highlighted-text">Favorite</span> Books
                             </h1>
                             
-                            <!-- Descriptive Text -->
+                            
                             <p class="hero-description mb-4">
                                 Discover millions of book titles with the best price offered here. 
                                 Available for worldwide shipping and payment.
                             </p>
                             
-                            <!-- Search Bar -->
+                            
                             <div class="search-section mb-4">
                                 <div class="search-container-hero">
                                     <div class="search-input-wrapper">
@@ -1420,7 +1422,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Quick Category Links -->
+                            
                             <div class="quick-links">
                                 <a href="#" class="quick-link" onclick="shopNowComingSoon(); return false;">Best Seller</a>
                                 <span class="separator">|</span>
@@ -1434,7 +1436,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="book-covers-section">
-                            <!-- Book 1 - Top Left -->
+                            
                             <div class="book-cover book-1">
                                 <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="Love in Paris" class="book-cover-img">
@@ -1444,7 +1446,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Book 2 - Top Center -->
+                            
                             <div class="book-cover book-2">
                                 <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="THE JOURNEY" class="book-cover-img">
@@ -1454,7 +1456,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Book 3 - Top Right -->
+                            
                             <div class="book-cover book-3">
                                 <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="Children Reading" class="book-cover-img">
@@ -1464,7 +1466,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Book 4 - Bottom Left -->
+                            
                             <div class="book-cover book-4">
                                 <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="River of My Blood" class="book-cover-img">
@@ -1474,7 +1476,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Book 5 - Bottom Center -->
+                            
                             <div class="book-cover book-5">
                                 <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="Bobi Puribar Age" class="book-cover-img">
@@ -1484,7 +1486,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Book 6 - Bottom Right -->
+                            
                             <div class="book-cover book-6">
                                 <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
                                      alt="The Great Adventure" class="book-cover-img">
@@ -1501,7 +1503,7 @@
             </div>
         </section>
 
-                 <!-- Categories Section -->
+                 
          <section id="categories" class="py-5 bg-light">
             <div class="container-fluid px-4">
                 <h2 class="section-title">Categories</h2>
@@ -1662,7 +1664,7 @@
             </div>
         </section>
 
-        <!-- Daily Deals Section -->
+        
         <section class="py-5">
             <div class="container">
                 <h2 class="section-title">Daily Deals</h2>
@@ -1779,7 +1781,7 @@
             </div>
         </section>
 
-                 <!-- About Section -->
+                 
          <section id="about" class="py-5 bg-light">
              <div class="container">
                  <div class="row align-items-center">
@@ -1797,7 +1799,7 @@
              </div>
          </section>
 
-         <!-- Service Section -->
+         
          <section id="service" class="py-5">
              <div class="container">
                  <h2 class="section-title">Our Services</h2>
@@ -1860,7 +1862,7 @@
              </div>
          </section>
 
-        <!-- Contact Section -->
+        
         <section id="contact" class="py-5">
             <div class="container">
                 <h2 class="section-title">Contact Us</h2>
@@ -1906,7 +1908,7 @@
             </div>
         </section>
 
-        <!-- Footer -->
+        
         <footer class="footer">
             <div class="container">
                 <div class="row g-4">
@@ -1962,7 +1964,7 @@
             </div>
         </footer>
 
-        <!-- Store Subscription Modal -->
+        
         <div class="modal fade" id="storeSubscriptionModal" tabindex="-1" aria-labelledby="storeSubscriptionModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -1998,12 +2000,12 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
         
-        <!-- Smooth Scrolling for Navigation -->
+        
         <script>
-            // Modern Navigation Toggle Functionality
+
             document.addEventListener('DOMContentLoaded', function() {
                 const navToggle = document.getElementById('navToggle');
                 const navMenu = document.querySelector('.nav-menu');
@@ -2016,7 +2018,7 @@
                             mobileBackdrop.classList.toggle('active');
                         }
                         
-                        // Animate hamburger menu
+
                         const spans = navToggle.querySelectorAll('span');
                         spans.forEach((span, index) => {
                             if (navMenu.classList.contains('active')) {
@@ -2030,12 +2032,12 @@
                         });
                     });
                     
-                    // Close mobile menu when clicking on backdrop
+
                     if (mobileBackdrop) {
                         mobileBackdrop.addEventListener('click', function() {
                             navMenu.classList.remove('active');
                             mobileBackdrop.classList.remove('active');
-                            // Reset hamburger animation
+
                             const spans = navToggle.querySelectorAll('span');
                             spans.forEach(span => {
                                 span.style.transform = 'none';
@@ -2044,7 +2046,7 @@
                         });
                     }
                     
-                    // Close mobile menu when clicking on a nav item
+
                     const navItems = document.querySelectorAll('.nav-item');
                     navItems.forEach(item => {
                         item.addEventListener('click', function() {
@@ -2053,7 +2055,7 @@
                                 if (mobileBackdrop) {
                                     mobileBackdrop.classList.remove('active');
                                 }
-                                // Reset hamburger animation
+
                                 const spans = navToggle.querySelectorAll('span');
                                 spans.forEach(span => {
                                     span.style.transform = 'none';
@@ -2063,7 +2065,7 @@
                         });
                     });
                     
-                    // Close mobile menu when clicking outside
+
                     document.addEventListener('click', function(e) {
                         if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
                             navMenu.classList.remove('active');
@@ -2078,7 +2080,7 @@
                         }
                     });
 
-                    // Handle window resize
+
                     window.addEventListener('resize', function() {
                         if (window.innerWidth > 768) {
                             navMenu.classList.remove('active');
@@ -2095,7 +2097,7 @@
                 }
             });
 
-            // Smooth scrolling for navigation links
+
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -2109,7 +2111,7 @@
                 });
             });
 
-            // Active navigation highlighting
+
             window.addEventListener('scroll', () => {
                 let current = '';
                 const sections = document.querySelectorAll('section[id]');
@@ -2123,7 +2125,7 @@
                 });
 
                 document.querySelectorAll('.nav-item').forEach(link => {
-                    // Skip login button from active state management
+
                     if (link.classList.contains('login-btn')) return;
                     
                     link.classList.remove('active');
@@ -2133,14 +2135,14 @@
                 });
             });
 
-            // Contact form submission
+
             function submitContactForm(event) {
                 event.preventDefault();
                 console.log('Contact form submitted!');
                 
 
                 
-                // Get form data
+
                 const formData = new FormData(event.target);
                 const name = formData.get('name');
                 const email = formData.get('email');
@@ -2149,7 +2151,7 @@
                 
                 console.log('Form data:', { name, email, subject, message });
                 
-                // Validate form
+
                 if (!name || !email || !subject || !message) {
                     console.log('Validation failed: missing fields');
                     showContactAlert('Please fill in all fields.', 'danger');
@@ -2158,7 +2160,7 @@
                 
 
                 
-                // Validate email format
+
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(email)) {
                     console.log('Validation failed: invalid email');
@@ -2170,7 +2172,7 @@
                 
                 console.log('Form validation passed, sending to server...');
                 
-                // Show loading state
+
                 const submitBtn = document.getElementById('submitBtn');
                 const submitText = document.getElementById('submitText');
                 const submitSpinner = document.getElementById('submitSpinner');
@@ -2179,7 +2181,7 @@
                 submitText.style.display = 'none';
                 submitSpinner.style.display = 'inline';
                 
-                // Send form data to servlet
+
                 console.log('Sending request to ContactServlet...');
                 fetch('ContactServlet', {
                     method: 'POST',
@@ -2199,7 +2201,7 @@
                     console.log('Data received:', data);
                     if (data.success) {
                         showContactAlert(data.message, 'success');
-                        // Reset form
+
                         document.getElementById('contactForm').reset();
                     } else {
                         showContactAlert(data.message, 'danger');
@@ -2210,14 +2212,14 @@
                     showContactAlert('An error occurred while sending your message. Please try again.', 'danger');
                 })
                 .finally(() => {
-                    // Reset button state
+
                     submitBtn.disabled = false;
                     submitText.style.display = 'inline';
                     submitSpinner.style.display = 'none';
                 });
             }
             
-            // Show contact form alert
+
             function showContactAlert(message, type) {
                 console.log('Showing alert:', message, type);
                 const alertDiv = document.getElementById('contactAlert');
@@ -2236,7 +2238,7 @@
                 
                 console.log('Alert displayed:', alertDiv.style.display);
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (alertDiv && alertDiv.parentElement) {
                         alertDiv.style.display = 'none';
@@ -2245,20 +2247,20 @@
                 }, 5000);
             }
 
-            // Category filtering function
+
             function filterBooksByCategory(categoryId, categoryName) {
-                // Show coming soon message
+
                 showComingSoonMessage('Category: ' + categoryName);
             }
 
-            // General Shop Now function for other buttons
+
             function shopNowComingSoon() {
                 showComingSoonMessage('Shop Now');
             }
 
-            // Function to show coming soon message
+
             function showComingSoonMessage(feature) {
-                // Create a modal-like overlay
+
                 const overlay = document.createElement('div');
                 overlay.style.cssText = `
                     position: fixed;
@@ -2300,7 +2302,7 @@
                 overlay.appendChild(messageBox);
                 document.body.appendChild(overlay);
 
-                // Add CSS animations
+
                 const style = document.createElement('style');
                 style.textContent = `
                     @keyframes fadeIn {
@@ -2314,14 +2316,14 @@
                 `;
                 document.head.appendChild(style);
 
-                // Close on overlay click
+
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
                         overlay.remove();
                     }
                 });
 
-                // Auto-close after 5 seconds
+
                 setTimeout(() => {
                     if (overlay.parentElement) {
                         overlay.remove();
@@ -2329,10 +2331,10 @@
                 }, 5000);
             }
 
-            // Add loading animation to category cards and intercept footer links
+
             document.addEventListener('DOMContentLoaded', function() {
                 
-                // Hover animation for category cards
+
                 const categoryCards = document.querySelectorAll('.category-card');
                 categoryCards.forEach(card => {
                     card.addEventListener('mouseenter', function() {
@@ -2344,18 +2346,18 @@
                     });
                 });
 
-                // Intercept footer links (Important Links, Support, App buttons)
+
                 const footerLinks = document.querySelectorAll('.footer-links a, .footer .btn-outline-light');
                 footerLinks.forEach(link => {
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
                         const label = (this.textContent || 'This feature').trim();
-                        // Reuse existing Coming Soon modal
+
                         showComingSoonMessage(label);
                     });
                 });
 
-                // Handle payment logos and GitHub
+
                 const visaLogo = document.querySelector('.footer img[src*="visa"]');
                 const amexLogo = document.querySelector('.footer img[src*="amex"]');
                 const githubLogo = document.querySelector('.footer img[src*="github"]');
@@ -2382,13 +2384,13 @@
                 }
             });
 
-            // Store subscription form function
+
             function showStoreSubscriptionForm() {
                 const modal = new bootstrap.Modal(document.getElementById('storeSubscriptionModal'));
                 modal.show();
             }
 
-            // Handle store subscription form submission
+
             document.addEventListener('DOMContentLoaded', function() {
                 const storeSubscriptionForm = document.getElementById('storeSubscriptionForm');
                 if (storeSubscriptionForm) {
@@ -2406,7 +2408,7 @@
                             return;
                         }
                         
-                        // Show loading state
+
                         const submitBtn = document.getElementById('storeSubmitBtn');
                         const submitText = document.getElementById('storeSubmitText');
                         const submitSpinner = document.getElementById('storeSubmitSpinner');
@@ -2422,7 +2424,7 @@
                             console.error('Button elements not found');
                         }
                         
-                        // Send subscription data
+
                         console.log('Sending request to ContactServlet...');
                         fetch('ContactServlet', {
                             method: 'POST',
@@ -2459,7 +2461,7 @@
                             showStoreSubscriptionAlert('An error occurred while subscribing. Please try again.', 'danger');
                         })
                         .finally(() => {
-                            // Reset button state
+
                             if (submitBtn && submitText && submitSpinner) {
                                 submitBtn.disabled = false;
                                 submitText.style.display = 'inline';
@@ -2499,11 +2501,11 @@
                     console.log('Alert element display set to block and opacity to 1');
                 }
                 
-                // Force visibility
+
                 alertDiv.style.display = 'block';
                 alertDiv.style.visibility = 'visible';
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (alertDiv.firstChild) {
                         alertDiv.firstChild.remove();
@@ -2512,15 +2514,15 @@
                 }, 5000);
             }
 
-            // Active Navigation Functionality
+
             document.addEventListener('DOMContentLoaded', function() {
-                // Get all navigation links and sections
+
                 const navLinks = document.querySelectorAll('.navbar-nav .nav-link[href^="#"]');
                 const sections = document.querySelectorAll('section[id]');
                 
-                // Function to update active navigation link
+
                 function updateActiveNavLink() {
-                    const scrollPosition = window.scrollY + 100; // Offset for better detection
+                    const scrollPosition = window.scrollY + 100; 
                     
                     sections.forEach(section => {
                         const sectionTop = section.offsetTop;
@@ -2528,10 +2530,10 @@
                         const sectionId = section.getAttribute('id');
                         
                         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                            // Remove active class from all nav links
+
                             navLinks.forEach(link => link.classList.remove('active'));
                             
-                            // Add active class to corresponding nav link
+
                             const activeLink = document.querySelector(`.navbar-nav .nav-link[href="#${sectionId}"]`);
                             if (activeLink) {
                                 activeLink.classList.add('active');
@@ -2540,7 +2542,7 @@
                     });
                 }
                 
-                // Function to handle smooth scrolling for navigation links
+
                 function handleNavLinkClick(e) {
                     const href = this.getAttribute('href');
                     
@@ -2550,13 +2552,13 @@
                         const targetSection = document.getElementById(targetId);
                         
                         if (targetSection) {
-                            // Remove active class from all links
+
                             navLinks.forEach(link => link.classList.remove('active'));
                             
-                            // Add active class to clicked link
+
                             this.classList.add('active');
                             
-                            // Smooth scroll to target section
+
                             targetSection.scrollIntoView({
                                 behavior: 'smooth',
                                 block: 'start'
@@ -2565,15 +2567,15 @@
                     }
                 }
                 
-                // Add click event listeners to navigation links
+
                 navLinks.forEach(link => {
                     link.addEventListener('click', handleNavLinkClick);
                 });
                 
-                // Update active link on scroll
+
                 window.addEventListener('scroll', updateActiveNavLink);
                 
-                // Initial call to set active link based on current scroll position
+
                 updateActiveNavLink();
             });
         </script>

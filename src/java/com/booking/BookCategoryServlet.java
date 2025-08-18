@@ -30,8 +30,7 @@ public class BookCategoryServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Check if user is logged in
+
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
@@ -40,8 +39,7 @@ public class BookCategoryServlet extends HttpServlet {
             response.sendRedirect("login.jsp?error=Please login first.");
             return;
         }
-        
-        // Check role-based access
+
         boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
         if (!canAccess) {
             response.sendRedirect("dashboard.jsp?error=Access denied.");
@@ -102,7 +100,6 @@ public class BookCategoryServlet extends HttpServlet {
             return;
         }
 
-        // Duplicate validation
         if (bookCategoryDAO.isCategoryNameExists(categoryName.trim())) {
             response.sendRedirect("BookCategoryServlet?action=list&error=Category name already exists.");
             return;
@@ -159,8 +156,7 @@ public class BookCategoryServlet extends HttpServlet {
 
         try {
             int categoryId = Integer.parseInt(categoryIdStr);
-            
-            // Duplicate validation excluding current id
+
             if (bookCategoryDAO.isCategoryNameExistsExcludingId(categoryName.trim(), categoryId)) {
                 response.sendRedirect("BookCategoryServlet?action=list&error=Category name already exists.");
                 return;

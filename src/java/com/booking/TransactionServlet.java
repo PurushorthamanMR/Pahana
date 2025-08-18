@@ -64,15 +64,12 @@ public class TransactionServlet extends HttpServlet {
             return;
         }
 
-        // Get current user's role
         String currentUserRole = (String) session.getAttribute("role");
         
-        // If no action specified, default to list
         if (action == null || action.isEmpty()) {
             action = "list";
         }
         
-        // Check role-based access
         if (!hasAccess(currentUserRole, action)) {
             response.sendRedirect("transaction.jsp?error=Access denied.");
             return;
@@ -98,12 +95,10 @@ public class TransactionServlet extends HttpServlet {
 
     private boolean hasAccess(String currentUserRole, String action) {
         if ("ADMIN".equals(currentUserRole)) {
-            return true; // Admin has access to everything
+            return true;
         } else if ("MANAGER".equals(currentUserRole) || "CASHIER".equals(currentUserRole)) {
-            // Manager and Cashier can view, create transactions, and send bill emails
             return "view".equals(action) || "list".equals(action) || "create".equals(action) || "send-bill-email".equals(action);
         } else if ("CUSTOMER".equals(currentUserRole)) {
-            // Customer can only view their own transactions
             return "view".equals(action) || "list".equals(action);
         }
         return false;
@@ -114,7 +109,6 @@ public class TransactionServlet extends HttpServlet {
         response.setContentType("application/json");
         
         try {
-            // Read JSON data from request body
             BufferedReader reader = request.getReader();
             StringBuilder sb = new StringBuilder();
             String line;
@@ -124,22 +118,18 @@ public class TransactionServlet extends HttpServlet {
             
             String jsonData = sb.toString();
             
-            // Debug: Log the received JSON
             System.out.println("Received JSON: " + jsonData);
             
-            // Parse JSON data using simple regex patterns
             int customerId = extractIntValue(jsonData, "customerId");
             BigDecimal totalAmount = new BigDecimal(extractStringValue(jsonData, "totalAmount"));
             String itemsJson = extractArrayValue(jsonData, "items");
             
-            // Get customer
             Customer customer = customerDAO.getCustomerById(customerId);
             if (customer == null) {
                 sendErrorResponse(response, "Customer not found");
                 return;
             }
             
-            // Get current user
             String username = (String) session.getAttribute("username");
             User currentUser = userDAO.getUserByUsername(username);
             if (currentUser == null) {
@@ -147,16 +137,13 @@ public class TransactionServlet extends HttpServlet {
                 return;
             }
             
-            // Create transaction
             Transaction transaction = new Transaction();
             transaction.setCustomer(customer);
             transaction.setTotalAmount(totalAmount);
             transaction.setCreatedBy(currentUser);
             
-            // Parse items array
             List<TransactionItem> items = parseItemsArray(itemsJson);
             
-            // Validate items
             for (TransactionItem item : items) {
                 Book book = bookDAO.getBookById(item.getBook().getBookId());
                 if (book == null) {
@@ -164,7 +151,6 @@ public class TransactionServlet extends HttpServlet {
                     return;
                 }
                 
-                // Check stock availability
                 if (book.getStockQuantity() < item.getQuantity()) {
                     sendErrorResponse(response, "Insufficient stock for book: " + book.getTitle());
                     return;
@@ -175,18 +161,15 @@ public class TransactionServlet extends HttpServlet {
             
             transaction.setItems(items);
             
-            // Save transaction
             boolean success = transactionDAO.createTransaction(transaction);
             
             if (success) {
-                // Update book stock
                 for (TransactionItem item : items) {
                     Book book = item.getBook();
                     book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
                     bookDAO.updateBook(book);
                 }
                 
-                // Prepare response data
                 StringBuilder responseData = new StringBuilder();
                 responseData.append("{\"success\":true,");
                 responseData.append("\"transactionId\":").append(transaction.getTransactionId()).append(",");
@@ -214,7 +197,6 @@ public class TransactionServlet extends HttpServlet {
                 String finalResponse = responseData.toString();
                 System.out.println("Sending response: " + finalResponse);
                 
-                // Log successful transaction
                 eventManager.logEvent("Transaction created successfully: " + transaction.getTransactionId(), "INFO");
                 
                 response.getWriter().write(finalResponse);
@@ -233,7 +215,6 @@ public class TransactionServlet extends HttpServlet {
     private List<TransactionItem> parseItemsArray(String itemsJson) throws Exception {
         List<TransactionItem> items = new ArrayList<>();
         
-        // Simple regex to extract items from JSON array
         Pattern itemPattern = Pattern.compile("\\{[^}]*\\}");
         Matcher matcher = itemPattern.matcher(itemsJson);
         
@@ -266,14 +247,12 @@ public class TransactionServlet extends HttpServlet {
     }
 
     private String extractStringValue(String json, String key) {
-        // First try to find string value
         Pattern pattern = Pattern.compile("\"" + key + "\":\\s*\"([^\"]*)\"");
         Matcher matcher = pattern.matcher(json);
         if (matcher.find()) {
             return matcher.group(1);
         }
         
-        // If not found as string, try to find as number
         Pattern numberPattern = Pattern.compile("\"" + key + "\":\\s*([0-9]+\\.?[0-9]*)");
         Matcher numberMatcher = numberPattern.matcher(json);
         if (numberMatcher.find()) {
@@ -304,7 +283,6 @@ public class TransactionServlet extends HttpServlet {
             Transaction transaction = facade.getTransactionById(transactionId);
             
             if (transaction != null) {
-                // Check if customer is viewing their own transaction
                 String currentUserRole = (String) session.getAttribute("role");
                 if ("CUSTOMER".equals(currentUserRole)) {
                     int customerId = (Integer) session.getAttribute("userId");
@@ -333,11 +311,9 @@ public class TransactionServlet extends HttpServlet {
             List<Transaction> transactions;
             
             if ("CUSTOMER".equals(currentUserRole)) {
-                // Customer can only see their own transactions
                 int customerId = (Integer) session.getAttribute("userId");
                 transactions = facade.getTransactionsByCustomer(customerId);
             } else {
-                // Admin, Manager, Cashier can see all transactions
                 transactions = facade.getAllTransactions();
             }
             
@@ -365,7 +341,6 @@ public class TransactionServlet extends HttpServlet {
     private void handleSendBillEmail(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
         try {
-            // Read JSON data from request body
             BufferedReader reader = request.getReader();
             StringBuilder sb = new StringBuilder();
             String line;
@@ -377,7 +352,6 @@ public class TransactionServlet extends HttpServlet {
             System.out.println("=== SEND BILL EMAIL DEBUG ===");
             System.out.println("Received JSON data: " + jsonData);
             
-            // Parse JSON data - only need customerId and transactionId
             int customerId = extractIntValue(jsonData, "customerId");
             int transactionId = extractIntValue(jsonData, "transactionId");
             
@@ -385,7 +359,6 @@ public class TransactionServlet extends HttpServlet {
             System.out.println("Customer ID: " + customerId);
             System.out.println("Transaction ID: " + transactionId);
             
-            // Get transaction details for the email using foreign key
             Transaction transaction = transactionDAO.getTransactionById(transactionId);
             if (transaction == null) {
                 sendJsonResponse(response, false, "Transaction not found.");
@@ -394,7 +367,6 @@ public class TransactionServlet extends HttpServlet {
             
             System.out.println("Transaction found: " + transaction.getTransactionId());
             
-            // Get customer details from database using foreign key relationship
             Customer customer = customerDAO.getCustomerById(customerId);
             if (customer == null) {
                 sendJsonResponse(response, false, "Customer not found.");
@@ -403,13 +375,11 @@ public class TransactionServlet extends HttpServlet {
             
             System.out.println("Customer found: " + customer.getName() + " (Email: " + customer.getEmail() + ")");
             
-            // Check if customer has email
             if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
                 sendJsonResponse(response, false, "Customer does not have an email address.");
                 return;
             }
             
-            // Send bill email using EmailService
             EmailService emailService = new EmailService();
             boolean emailSent = emailService.sendBillEmail(customer.getEmail(), transaction, customer);
             

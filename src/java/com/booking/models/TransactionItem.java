@@ -26,7 +26,6 @@ public class TransactionItem {
         this.price = price;
     }
     
-    // Getters and Setters
     public int getTransactionItemId() {
         return transactionItemId;
     }

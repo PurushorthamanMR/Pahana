@@ -25,7 +25,6 @@ public class FacadeDP {
     private final HelpSectionDAO helpSectionDAO;
     
     public FacadeDP() {
-        // Use Abstract Factory to create DAOs
         com.booking.patterns.AbstractFactoryDP.DAOFactory daoFactory = 
             com.booking.patterns.AbstractFactoryDP.DAOFactoryCreator.createFactory("mysql");
         
@@ -38,7 +37,6 @@ public class FacadeDP {
         this.helpSectionDAO = daoFactory.createHelpSectionDAO();
     }
     
-    // Authentication Facade
     public User authenticateUser(String username, String password) {
         return userDAO.authenticateUser(username, password);
     }
@@ -54,40 +52,39 @@ public class FacadeDP {
         Connection conn = null;
         try {
             conn = SingletonDP.getInstance().getConnection();
-            conn.setAutoCommit(false); // Start transaction
-            
-            // Create user
+            conn.setAutoCommit(false);
+
             boolean userCreated = userDAO.createUserWithConnection(user, conn);
             
             if (userCreated) {
-                conn.commit(); // Commit transaction
-                System.out.println("✓ User created successfully with transaction");
+                conn.commit(); 
+                System.out.println("User created successfully with transaction");
                 return true;
             } else {
-                conn.rollback(); // Rollback on failure
-                System.out.println("✗ User creation failed, transaction rolled back");
+                conn.rollback(); 
+                System.out.println("User creation failed, transaction rolled back");
                 return false;
             }
         } catch (Exception e) {
             try {
                 if (conn != null) {
-                    conn.rollback(); // Rollback on exception
-                    System.err.println("✗ Exception occurred, transaction rolled back: " + e.getMessage());
+                    conn.rollback();
+                    System.err.println("Exception occurred, transaction rolled back: " + e.getMessage());
                 }
             } catch (SQLException rollbackEx) {
-                System.err.println("✗ Error during rollback: " + rollbackEx.getMessage());
+                System.err.println("Error during rollback: " + rollbackEx.getMessage());
             }
-            System.err.println("✗ Error in registerUserWithTransaction: " + e.getMessage());
+            System.err.println("Error in registerUserWithTransaction: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
             try {
                 if (conn != null) {
-                    conn.setAutoCommit(true); // Reset auto-commit
+                    conn.setAutoCommit(true); 
                     conn.close();
                 }
             } catch (SQLException e) {
-                System.err.println("✗ Error closing connection: " + e.getMessage());
+                System.err.println("Error closing connection: " + e.getMessage());
             }
         }
     }
@@ -108,7 +105,6 @@ public class FacadeDP {
         return userDAO.deleteUser(userId);
     }
     
-    // Customer Management Facade
     public boolean createCustomer(Customer customer) {
         return customerDAO.createCustomer(customer);
     }
@@ -120,40 +116,39 @@ public class FacadeDP {
         Connection conn = null;
         try {
             conn = SingletonDP.getInstance().getConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false); 
             
-            // Create customer
             boolean customerCreated = customerDAO.createCustomerWithConnection(customer, conn);
             
             if (customerCreated) {
-                conn.commit(); // Commit transaction
-                System.out.println("✓ Customer created successfully with transaction");
+                conn.commit(); 
+                System.out.println("Customer created successfully with transaction");
                 return true;
             } else {
-                conn.rollback(); // Rollback on failure
-                System.out.println("✗ Customer creation failed, transaction rolled back");
+                conn.rollback(); 
+                System.out.println("Customer creation failed, transaction rolled back");
                 return false;
             }
         } catch (Exception e) {
             try {
                 if (conn != null) {
-                    conn.rollback(); // Rollback on exception
-                    System.err.println("✗ Exception occurred, transaction rolled back: " + e.getMessage());
+                    conn.rollback(); 
+                    System.err.println("Exception occurred, transaction rolled back: " + e.getMessage());
                 }
             } catch (SQLException rollbackEx) {
-                System.err.println("✗ Error during rollback: " + rollbackEx.getMessage());
+                System.err.println("Error during rollback: " + rollbackEx.getMessage());
             }
-            System.err.println("✗ Error in createCustomerWithTransaction: " + e.getMessage());
+            System.err.println("Error in createCustomerWithTransaction: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
             try {
                 if (conn != null) {
-                    conn.setAutoCommit(true); // Reset auto-commit
+                    conn.setAutoCommit(true);
                     conn.close();
                 }
             } catch (SQLException e) {
-                System.err.println("✗ Error closing connection: " + e.getMessage());
+                System.err.println("Error closing connection: " + e.getMessage());
             }
         }
     }
@@ -203,28 +198,20 @@ public class FacadeDP {
     }
     
     public boolean isEmailExistsInAnyTable(String email) {
-        // Check if email exists in customers table
         boolean existsInCustomers = customerDAO.isEmailExists(email);
-        // Check if email exists in users table
         boolean existsInUsers = userDAO.isEmailExists(email);
         
-        // Return true if email exists in either table
         return existsInCustomers || existsInUsers;
     }
     
     public boolean isEmailExistsForVerification(String email) {
-        // This method is specifically for verification checks
-        // Returns true if email exists in ANY table (customers or users)
         return isEmailExistsInAnyTable(email);
     }
     
     public boolean isUsernameExistsInAnyTable(String username) {
-        // Check if username exists in customers table
         boolean existsInCustomers = customerDAO.isUsernameExists(username);
-        // Check if username exists in users table
         boolean existsInUsers = userDAO.isUsernameExists(username);
-        
-        // Return true if username exists in either table
+    
         return existsInCustomers || existsInUsers;
     }
     
@@ -252,7 +239,6 @@ public class FacadeDP {
         return customerDAO.generateUniqueAccountNumber();
     }
     
-    // Book Management Facade
     public boolean createBook(Book book) {
         return bookDAO.createBook(book);
     }
@@ -273,7 +259,6 @@ public class FacadeDP {
         return bookDAO.deleteBook(bookId);
     }
     
-    // Transaction Management Facade
     public boolean createTransaction(Transaction transaction) {
         return transactionDAO.createTransaction(transaction);
     }
@@ -290,7 +275,6 @@ public class FacadeDP {
         return transactionDAO.getTransactionById(transactionId);
     }
     
-    // User Role Management Facade
     public List<UserRole> getAllUserRoles() {
         return userRoleDAO.getAllUserRoles();
     }
@@ -311,7 +295,6 @@ public class FacadeDP {
         return userRoleDAO.deleteUserRole(roleId);
     }
     
-    // Book Category Management Facade
     public List<BookCategory> getAllBookCategories() {
         return bookCategoryDAO.getAllBookCategories();
     }
@@ -332,7 +315,6 @@ public class FacadeDP {
         return bookCategoryDAO.deleteBookCategory(categoryId);
     }
     
-    // Help Section Management Facade
     public List<HelpSection> getAllHelpSections() {
         return helpSectionDAO.getAllHelpSections();
     }
@@ -357,7 +339,6 @@ public class FacadeDP {
         return helpSectionDAO.deleteHelpSection(helpId);
     }
     
-    // Dashboard Statistics Facade
     public DashboardStats getDashboardStats() {
         DashboardStats stats = new DashboardStats();
         
@@ -369,14 +350,12 @@ public class FacadeDP {
         return stats;
     }
     
-    // Inner class for dashboard statistics
     public static class DashboardStats {
         private int totalBooks;
         private int totalCustomers;
         private int totalTransactions;
         private int totalUsers;
         
-        // Getters and Setters
         public int getTotalBooks() { return totalBooks; }
         public void setTotalBooks(int totalBooks) { this.totalBooks = totalBooks; }
         

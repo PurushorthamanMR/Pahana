@@ -31,7 +31,6 @@ public class HelpSection {
         this.role = role;
     }
     
-    // Getters and Setters
     public int getHelpId() {
         return helpId;
     }

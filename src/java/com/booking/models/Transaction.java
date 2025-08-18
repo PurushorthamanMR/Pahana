@@ -28,7 +28,6 @@ public class Transaction {
         this.totalAmount = totalAmount;
     }
     
-    // Getters and Setters
     public int getTransactionId() {
         return transactionId;
     }

@@ -24,13 +24,11 @@ public class ContactServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         
         try {
-            // Get form data
             String name = request.getParameter("name");
             String email = request.getParameter("email");
             String subject = request.getParameter("subject");
             String message = request.getParameter("message");
             
-            // Validate required fields
             if (name == null || name.trim().isEmpty() ||
                 email == null || email.trim().isEmpty() ||
                 subject == null || subject.trim().isEmpty() ||
@@ -40,22 +38,18 @@ public class ContactServlet extends HttpServlet {
                 return;
             }
             
-            // Validate email format
             if (!isValidEmail(email)) {
                 sendJsonResponse(response, false, "Please enter a valid email address.");
                 return;
             }
             
-            // Send email to admin (pahanabookstore@gmail.com)
             EmailService emailService = new EmailService();
             
-            // Create admin notification email
             String adminSubject = "New Contact Form Message: " + subject;
             String adminHtmlContent = buildAdminEmailContent(name, email, subject, message);
             
             boolean adminEmailSent = emailService.sendEmail("pahanabookstore@gmail.com", adminSubject, adminHtmlContent);
             
-            // Send auto-reply to customer
             String customerSubject = "Thank you for contacting Pahana BookStore";
             String customerHtmlContent = buildCustomerAutoReplyContent(name, subject);
             
@@ -77,7 +71,6 @@ public class ContactServlet extends HttpServlet {
     }
     
     private boolean isValidEmail(String email) {
-        // Simple email validation
         return email != null && email.contains("@") && email.contains(".") && email.length() > 5;
     }
     
@@ -172,7 +165,6 @@ public class ContactServlet extends HttpServlet {
                .append("<li>📍 Address: 158, Saddnathar Road, Nallur, Jaffna</li>")
                .append("</ul>");
         
-        // Add special message for Book Store Subscription
         if (subject.contains("Store Location Subscription")) {
             content.append("<div style='background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;'>")
                    .append("<h3>🚀 Book Store Trail Link</h3>")

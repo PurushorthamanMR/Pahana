@@ -83,7 +83,7 @@ public class UserDAO {
             return result > 0;
         } catch (SQLException e) {
             System.err.println("✗ Error creating user with connection: " + e.getMessage());
-            throw e; // Re-throw to be handled by transaction manager
+            throw e;
         }
     }
     

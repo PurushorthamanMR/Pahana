@@ -1,8 +1,4 @@
-<%-- 
-    Document   : dashboard
-    Created on : Aug 3, 2025, 9:08:48 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.patterns.FacadeDP"%>
@@ -12,9 +8,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Dashboard</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -29,7 +25,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -125,7 +121,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -174,7 +170,7 @@
                 font-size: 0.9rem;
             }
 
-            /* Dashboard Cards */
+            
             .stats-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -254,7 +250,7 @@
                 color: #dc3545;
             }
 
-            /* Charts Section */
+            
             .charts-section {
                 display: grid;
                 grid-template-columns: 1fr;
@@ -276,7 +272,7 @@
                 margin-bottom: 0.8rem;
             }
 
-            /* Chart Styles */
+            
             .chart-container {
                 position: relative;
                 margin: 0.8rem 0;
@@ -290,7 +286,7 @@
                 margin-bottom: 1.5rem;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -310,7 +306,7 @@
                 }
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -346,7 +342,7 @@
     </head>
     <body>
         <%
-            // Get user role from session
+            
             String role = (String) session.getAttribute("role");
             String username = (String) session.getAttribute("username");
             
@@ -355,31 +351,31 @@
                 return;
             }
             
-            // Load dashboard statistics if not already loaded
+            
             if (request.getAttribute("dashboardStats") == null) {
                 try {
-                    // Try to load data directly if servlet fails
+                    
                     FacadeDP facade = new FacadeDP();
                     FacadeDP.DashboardStats stats = facade.getDashboardStats();
                     request.setAttribute("dashboardStats", stats);
                 } catch (Exception e) {
-                    // If direct loading fails, redirect to servlet
+                    
                     response.sendRedirect("DashboardServlet");
                     return;
                 }
             }
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "dashboard");
         %>
 
         <div class="dashboard-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -395,7 +391,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -408,7 +404,7 @@
                 </div>
                 <% } %>
 
-                <!-- Stats Cards -->
+                
                 <div class="stats-grid">
                     <%
                         FacadeDP.DashboardStats stats = (FacadeDP.DashboardStats) request.getAttribute("dashboardStats");
@@ -473,7 +469,7 @@
                     </div>
                 </div>
 
-                <!-- Charts Section -->
+                
                 <div class="charts-section">
                     <div class="chart-card">
                         <h3 class="chart-title">
@@ -487,19 +483,19 @@
             </div>
         </div>
 
-        <!-- Chart.js -->
+        
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -511,7 +507,7 @@
                 }
             });
 
-            // Load and display sales chart
+
             let salesChart;
             
             function loadSalesChart() {
@@ -522,13 +518,13 @@
                             createSalesChart(data.labels, data.data);
                         } else {
                             console.error('Error loading chart data:', data.error);
-                            // Show fallback chart with sample data
+
                             createSalesChart(['No Data'], [0]);
                         }
                     })
                     .catch(error => {
                         console.error('Error fetching chart data:', error);
-                        // Show fallback chart with sample data
+
                         createSalesChart(['No Data'], [0]);
                     });
             }
@@ -596,11 +592,11 @@
                 });
             }
             
-            // Load chart when page loads
+
             document.addEventListener('DOMContentLoaded', function() {
                 loadSalesChart();
                 
-                // Refresh chart every 5 minutes for real-time updates
+
                 setInterval(loadSalesChart, 300000);
             });
         </script>

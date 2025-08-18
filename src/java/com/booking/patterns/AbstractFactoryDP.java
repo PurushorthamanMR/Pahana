@@ -19,7 +19,6 @@ import com.booking.dao.BookCategoryDAO;
  */
 public class AbstractFactoryDP {
     
-    // Abstract Factory interface
     public interface DAOFactory {
         UserDAO createUserDAO();
         CustomerDAO createCustomerDAO();
@@ -30,7 +29,6 @@ public class AbstractFactoryDP {
         HelpSectionDAO createHelpSectionDAO();
     }
     
-    // Concrete Factory for MySQL
     public static class MySQLDAOFactory implements DAOFactory {
         @Override
         public UserDAO createUserDAO() {
@@ -68,46 +66,43 @@ public class AbstractFactoryDP {
         }
     }
     
-    // Concrete Factory for PostgreSQL (for future use)
     public static class PostgreSQLDAOFactory implements DAOFactory {
         @Override
         public UserDAO createUserDAO() {
-            // Return PostgreSQL-specific UserDAO implementation
-            return new UserDAO(); // Placeholder - would be PostgreSQLUserDAO
+            return new UserDAO();
         }
         
         @Override
         public CustomerDAO createCustomerDAO() {
-            return new CustomerDAO(); // Placeholder - would be PostgreSQLCustomerDAO
+            return new CustomerDAO(); 
         }
         
         @Override
         public BookDAO createBookDAO() {
-            return new BookDAO(); // Placeholder - would be PostgreSQLBookDAO
+            return new BookDAO(); 
         }
         
         @Override
         public TransactionDAO createTransactionDAO() {
-            return new TransactionDAO(); // Placeholder - would be PostgreSQLTransactionDAO
+            return new TransactionDAO(); 
         }
         
         @Override
         public BookCategoryDAO createBookCategoryDAO() {
-            return new BookCategoryDAO(); // Placeholder - would be PostgreSQLBookCategoryDAO
+            return new BookCategoryDAO(); 
         }
         
         @Override
         public UserRoleDAO createUserRoleDAO() {
-            return new UserRoleDAO(); // Placeholder - would be PostgreSQLUserDAO
+            return new UserRoleDAO(); 
         }
         
         @Override
         public HelpSectionDAO createHelpSectionDAO() {
-            return new HelpSectionDAO(); // Placeholder - would be PostgreSQLHelpSectionDAO
+            return new HelpSectionDAO(); 
         }
     }
     
-    // Factory creator
     public static class DAOFactoryCreator {
         public static DAOFactory createFactory(String databaseType) {
             if ("mysql".equalsIgnoreCase(databaseType)) {

@@ -1,8 +1,4 @@
-<%-- 
-    Document   : user_edit
-    Created on : Aug 3, 2025, 9:11:12 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Edit User</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -105,7 +101,7 @@
                 margin-top: auto;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -166,7 +162,7 @@
                 margin: 0;
             }
 
-            /* Card Styles */
+            
             .content-card {
                 background: white;
                 border-radius: 10px;
@@ -187,7 +183,7 @@
                 color: #333;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 1.25rem;
             }
@@ -212,7 +208,7 @@
                 box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             }
 
-            /* Button Styles */
+            
             .btn {
                 padding: 0.6rem 1.25rem;
                 border-radius: 5px;
@@ -253,7 +249,7 @@
                 color: white;
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 6px;
                 border: none;
@@ -272,7 +268,7 @@
                 color: #721c24;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -298,7 +294,7 @@
                 }
             }
             
-            /* Email verification styles */
+            
             #emailVerificationSection {
                 margin-top: 8px;
                 padding: 12px;
@@ -316,7 +312,7 @@
                 padding: 0.4em 0.6em;
             }
             
-            /* Loading overlay styles */
+            
             .loading-overlay {
                 position: fixed;
                 top: 0;
@@ -345,7 +341,7 @@
                 height: 2.5rem;
             }
 
-            /* High-resolution desktop optimizations */
+            
             @media (min-width: 1920px) and (max-height: 1200px) {
                 .sidebar {
                     width: 220px;
@@ -404,7 +400,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -413,14 +409,14 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // Get user to edit
+            
             User userToEdit = (User) request.getAttribute("user");
             if (userToEdit == null) {
                 response.sendRedirect("user.jsp?error=User not found.");
@@ -429,7 +425,7 @@
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <div class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <a href="dashboard.jsp" class="logo">
@@ -502,9 +498,9 @@
                 </div>
             </div>
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="content-header">
                     <h1 class="content-title">Edit User</h1>
                     <div class="user-info">
@@ -517,7 +513,7 @@
                     </div>
                 </div>
 
-                <!-- Alert Messages -->
+                
                 <%
                     String message = request.getParameter("message");
                     String error = request.getParameter("error");
@@ -539,7 +535,7 @@
                     }
                 %>
 
-                <!-- Edit User Form -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-person-edit me-2"></i>Edit User Information</span>
@@ -633,7 +629,7 @@
                         </div>
                     </form>
                     
-                    <!-- Loading Overlay -->
+                    
                     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
                         <div class="loading-content">
                             <div class="spinner-border text-primary mb-3" role="status">
@@ -647,20 +643,20 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
             let emailVerified = false;
             let originalEmail = '<%= userToEdit != null && userToEdit.getEmail() != null ? userToEdit.getEmail() : "" %>';
             
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -681,7 +677,7 @@
                 const currentEmail = emailInput.value.trim();
                 
                 if (currentEmail !== originalEmail && currentEmail !== '') {
-                    // Email has changed, show verification button
+
                     sendVerificationBtn.style.display = 'inline-block';
                     emailVerificationSection.style.display = 'block';
                     emailStatus.textContent = 'Email Changed - Verification Required';
@@ -689,7 +685,7 @@
                     emailVerified = false;
                     showSuccessMessage('Email changed. Please verify the new email address.');
                 } else if (currentEmail === originalEmail) {
-                    // Email is back to original, hide verification
+
                     sendVerificationBtn.style.display = 'none';
                     emailVerificationSection.style.display = 'none';
                     emailStatus.textContent = 'Pending Verification';
@@ -818,7 +814,7 @@
                 xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
             }
             
-            // Form validation and submission
+
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('userEditForm');
                 if (form) {
@@ -844,13 +840,13 @@
                             return false;
                         }
                         
-                        // Check if email has changed and requires verification
+
                         if (email !== originalEmail && !emailVerified) {
                             showErrorMessage('Please verify the new email address before updating the user.');
                             return false;
                         }
                         
-                        // If email verification is not required or is completed, submit via AJAX
+
                         submitUserUpdate();
                     });
                 }
@@ -873,14 +869,14 @@
                 console.log('Password length:', password ? password.length : 0);
                 console.log('Role ID:', roleId);
                 
-                // Show loading overlay with appropriate message
+
                 if (password && password.trim() !== '') {
                     showLoadingOverlay('Updating user information and sending new password to email...');
                 } else {
                     showLoadingOverlay('Updating user information...');
                 }
                 
-                // Create the request data
+
                 const data = 'user_id=' + encodeURIComponent(userId) +
                            '&username=' + encodeURIComponent(username) +
                            '&email=' + encodeURIComponent(email) +
@@ -903,19 +899,19 @@
                         console.log('Status:', xhr.status);
                         console.log('Response text:', xhr.responseText);
                         
-                        // Hide loading overlay
+
                         hideLoadingOverlay();
                         
                         if (xhr.status === 200) {
                             console.log('Success response received');
-                            // Show success message on the same page
+
                             showSuccessMessage('User updated successfully!');
                             
-                            // Reset email verification status
+
                             emailVerified = false;
                             originalEmail = document.getElementById('userEmail').value.trim();
                             
-                            // Hide verification section
+
                             document.getElementById('emailVerificationSection').style.display = 'none';
                             document.getElementById('sendVerificationBtn').style.display = 'none';
                         } else {
@@ -935,20 +931,20 @@
             }
             
             function showSuccessMessage(message) {
-                // Remove any existing messages
+
                 removeMessages();
                 
-                // Create success message
+
                 const successDiv = document.createElement('div');
                 successDiv.className = 'alert alert-success alert-dismissible fade show';
                 successDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + message + 
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                 
-                // Insert at the top of the content card
+
                 const contentCard = document.querySelector('.content-card');
                 contentCard.insertBefore(successDiv, contentCard.firstChild);
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (successDiv.parentNode) {
                         successDiv.remove();
@@ -957,19 +953,19 @@
             }
             
             function showErrorMessage(message) {
-                // Remove any existing messages
+
                 removeMessages();
                 
-                // Create error message
+
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger alert-dismissible fade show';
                 errorDiv.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + message + 
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                 
-                // Insert at the top of the content card
+
                 contentCard.insertBefore(errorDiv, contentCard.firstChild);
                 
-                // Auto-hide after 5 seconds
+
                 setTimeout(() => {
                     if (errorDiv.parentNode) {
                         errorDiv.remove();
@@ -978,7 +974,7 @@
             }
             
             function removeMessages() {
-                // Remove any existing alert messages
+
                 const existingAlerts = document.querySelectorAll('.alert');
                 existingAlerts.forEach(alert => alert.remove());
             }
@@ -993,7 +989,7 @@
                 
                 overlay.style.display = 'flex';
                 
-                // Disable the update button
+
                 const updateBtn = document.getElementById('updateUserBtn');
                 if (updateBtn) {
                     updateBtn.disabled = true;
@@ -1004,7 +1000,7 @@
                 const overlay = document.getElementById('loadingOverlay');
                 overlay.style.display = 'none';
                 
-                // Re-enable the update button
+
                 const updateBtn = document.getElementById('updateUserBtn');
                 if (updateBtn) {
                     updateBtn.disabled = false;

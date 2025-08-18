@@ -1,8 +1,4 @@
-<%-- 
-    Document   : customer
-    Created on : Aug 3, 2025, 9:07:51 AM
-    Author     : pruso
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.booking.models.*"%>
@@ -13,9 +9,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pahana - Customer Management</title>
-        <!-- Bootstrap CSS -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap Icons -->
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
         <style>
             body {
@@ -30,7 +26,7 @@
                 min-height: 100vh;
             }
 
-            /* Sidebar Styles */
+            
             .sidebar {
                 width: 240px;
                 background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -125,7 +121,7 @@
                 text-decoration: none;
             }
 
-            /* Main Content Styles */
+            
             .main-content {
                 flex: 1;
                 margin-left: 260px;
@@ -172,7 +168,7 @@
                 font-weight: 600;
             }
 
-            /* Content Cards */
+            
             .content-card {
                 background: white;
                 border-radius: 12px;
@@ -208,7 +204,7 @@
                 color: white;
             }
 
-            /* Table Styles */
+            
             .table {
                 margin-bottom: 0;
                 font-size: 0.9rem;
@@ -251,7 +247,7 @@
                 color: white;
             }
 
-            /* Form Styles */
+            
             .form-group {
                 margin-bottom: 0.75rem;
             }
@@ -275,7 +271,7 @@
                 box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             }
 
-            /* Alert Styles */
+            
             .alert {
                 border-radius: 8px;
                 border: none;
@@ -293,7 +289,7 @@
                 color: #721c24;
             }
 
-            /* Custom Popup Styles */
+            
             .custom-popup-overlay {
                 position: fixed;
                 top: 0;
@@ -406,7 +402,7 @@
                 border-color: #bd2130;
             }
 
-            /* Responsive Design */
+            
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
@@ -430,7 +426,7 @@
     </head>
     <body>
         <%
-            // Check if user is logged in
+            
             String username = (String) session.getAttribute("username");
             String role = (String) session.getAttribute("role");
             
@@ -439,30 +435,30 @@
                 return;
             }
             
-            // Check role-based access
+            
             boolean canAccess = "ADMIN".equals(role) || "MANAGER".equals(role) || "CASHIER".equals(role);
             if (!canAccess) {
                 response.sendRedirect("dashboard.jsp?error=Access denied.");
                 return;
             }
             
-            // If no customers data is loaded, redirect to servlet to load data
+            
             if (request.getAttribute("customers") == null) {
                 response.sendRedirect("CustomerServlet?action=list");
                 return;
             }
             
-            // Set current page for sidebar highlighting
+            
             request.setAttribute("currentPage", "customer");
         %>
 
         <div class="main-container">
-            <!-- Sidebar -->
+            
             <jsp:include page="includes/sidebar.jsp" />
 
-            <!-- Main Content -->
+            
             <div class="main-content">
-                <!-- Header -->
+                
                 <div class="header">
                     <div class="header-left">
                         <button class="menu-toggle" onclick="toggleSidebar()">
@@ -478,7 +474,7 @@
                     </div>
                 </div>
 
-                <!-- Messages -->
+                
                 <% if (request.getParameter("message") != null) { %>
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><%= request.getParameter("message") %>
@@ -491,7 +487,7 @@
                 </div>
                 <% } %>
 
-                <!-- Add Customer Form -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-person-plus me-2"></i>Add New Customer</span>
@@ -597,7 +593,7 @@
                     </form>
                 </div>
 
-                <!-- Customer List -->
+                
                 <div class="content-card">
                     <h3 class="card-title">
                         <span><i class="bi bi-people me-2"></i>Customer List</span>
@@ -667,7 +663,7 @@
             </div>
         </div>
 
-        <!-- Loading Screen Overlay -->
+        
         <div id="loadingOverlay" class="loading-overlay" style="display: none;">
             <div class="loading-content">
                 <div class="spinner-border text-primary mb-3" role="status">
@@ -678,11 +674,11 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <style>
-            /* Loading Screen Styles */
+            
             .loading-overlay {
                 position: fixed;
                 top: 0;
@@ -709,7 +705,7 @@
                 height: 3rem;
             }
             
-            /* Compact form styles */
+            
             .form-control-sm {
                 padding: 0.375rem 0.5rem;
                 font-size: 0.875rem;
@@ -726,20 +722,20 @@
                 height: 1rem;
             }
             
-            /* Reduce spacing between sections */
+            
             .content-card + .content-card {
                 margin-top: 0.5rem;
             }
         </style>
 
         <script>
-            // Toggle sidebar on mobile
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('show');
             }
 
-            // Close sidebar when clicking outside on mobile
+
             document.addEventListener('click', function(event) {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.querySelector('.menu-toggle');
@@ -751,7 +747,7 @@
                 }
             });
 
-            // Loading screen functions
+
             function showLoadingScreen() {
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 const addCustomerBtn = document.querySelector('button[type="submit"]');
@@ -765,7 +761,7 @@
                     addCustomerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating Customer...';
                 }
                 
-                // Show alert
+
                 showAlert('Creating customer, please wait...', 'info');
             }
 
@@ -783,14 +779,14 @@
                 }
             }
 
-            // Customer management functions
+
             function editCustomer(customerId) {
-                // Navigate to edit page
+
                 window.location.href = 'customer_edit.jsp?customer_id=' + customerId;
             }
 
             function deleteCustomer(customerId) {
-                // Create custom popup
+
                 const popup = document.createElement('div');
                 popup.className = 'custom-popup-overlay';
                 popup.innerHTML = 
@@ -818,7 +814,7 @@
             }
 
             function confirmDelete(customerId) {
-                // Create AJAX request
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=delete&customer_id=' + customerId, true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -831,25 +827,25 @@
                             try {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
-                                    // Show success message
+
                                     showAlert(response.message, 'success');
-                                    // Reload the page after a short delay
+
                                     setTimeout(() => {
                                         window.location.reload();
                                     }, 1500);
                                 } else {
-                                    // Show error message
+
                                     showAlert(response.message, 'error');
                                 }
                             } catch (e) {
-                                // Fallback for non-JSON responses
+
                                 showAlert('Customer deleted successfully!', 'success');
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 1500);
                             }
                         } else {
-                            // Show error message
+
                             showAlert('Failed to delete customer. Please try again.', 'error');
                         }
                     }
@@ -871,7 +867,7 @@
                     '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
                 document.body.appendChild(alertDiv);
                 
-                // Auto remove after 3 seconds
+
                 setTimeout(() => {
                     if (alertDiv.parentNode) {
                         alertDiv.remove();
@@ -879,7 +875,7 @@
                 }, 3000);
             }
 
-            // Toggle password visibility
+
             function togglePassword(inputId) {
                 const input = document.getElementById(inputId);
                 const icon = document.getElementById(inputId + 'Icon');
@@ -895,7 +891,7 @@
                 }
             }
             
-            // Email verification functions
+
             let emailVerified = false;
             
             function sendVerificationCode() {
@@ -905,13 +901,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Checking email...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // First check if email exists in ANY table (customers or users)
+
                 const checkEmailXhr = new XMLHttpRequest();
                 checkEmailXhr.open('POST', 'CustomerServlet?action=check-email-exists', true);
                 checkEmailXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -923,7 +919,7 @@
                             try {
                                 const response = JSON.parse(checkEmailXhr.responseText);
                                 if (response.status === 'success' && response.exists) {
-                                    // Email already exists in either table - BLOCK verification
+
                                     document.getElementById('verificationSpinner').style.display = 'none';
                                     document.getElementById('sendVerificationBtn').disabled = false;
                                     document.getElementById('emailStatus').textContent = 'Email Exists';
@@ -931,23 +927,23 @@
                                     showAlert('This email address is already registered in our system. Please use a different email address.', 'error');
                                     return;
                                 } else {
-                                    // Email is unique - proceed with verification
+
                                     sendVerificationEmail(email);
                                 }
                             } catch (e) {
                                 console.log('Error parsing email check response:', e);
-                                // Fallback: proceed with verification
+
                                 sendVerificationEmail(email);
                             }
                         } else {
-                            // Fallback: proceed with verification
+
                             sendVerificationEmail(email);
                         }
                     }
                 };
                 
                 checkEmailXhr.onerror = function() {
-                    // Fallback: proceed with verification
+
                     sendVerificationEmail(email);
                 };
                 
@@ -955,13 +951,13 @@
             }
             
             function sendVerificationEmail(email) {
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('sendVerificationBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Sending...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request for verification code
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=send-verification', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -980,7 +976,7 @@
                                     document.getElementById('emailStatus').textContent = 'Code Sent';
                                     document.getElementById('emailStatus').className = 'badge bg-info';
                                     
-                                    // Enable verification pin input and button
+
                                     document.getElementById('verificationPin').disabled = false;
                                     document.getElementById('verifyPinBtn').disabled = false;
                                     document.getElementById('verificationPin').focus();
@@ -994,7 +990,7 @@
                                 document.getElementById('emailStatus').textContent = 'Code Sent';
                                 document.getElementById('emailStatus').className = 'badge bg-info';
                                 
-                                // Enable verification pin input and button
+
                                 document.getElementById('verificationPin').disabled = false;
                                 document.getElementById('verifyPinBtn').disabled = false;
                                 document.getElementById('verificationPin').focus();
@@ -1027,13 +1023,13 @@
                     return;
                 }
                 
-                // Show spinner and disable button
+
                 document.getElementById('verificationSpinner').style.display = 'inline-block';
                 document.getElementById('verifyPinBtn').disabled = true;
                 document.getElementById('emailStatus').textContent = 'Verifying...';
                 document.getElementById('emailStatus').className = 'badge bg-warning';
                 
-                // Send AJAX request
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=verify-email', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -1053,12 +1049,12 @@
                                     document.getElementById('emailStatus').className = 'badge bg-success';
                                     emailVerified = true;
                                     
-                                    // Disable verification inputs
+
                                     document.getElementById('verificationPin').disabled = true;
                                     document.getElementById('verifyPinBtn').disabled = true;
                                     document.getElementById('sendVerificationBtn').disabled = true;
                                     
-                                    // Enable the Add Customer button
+
                                     document.getElementById('addCustomerBtn').disabled = false;
                                 } else {
                                     showAlert(response.message, 'error');
@@ -1071,12 +1067,12 @@
                                 document.getElementById('emailStatus').className = 'badge bg-success';
                                 emailVerified = true;
                                 
-                                // Disable verification inputs
+
                                 document.getElementById('verificationPin').disabled = true;
                                 document.getElementById('verifyPinBtn').disabled = true;
                                 document.getElementById('sendVerificationBtn').disabled = true;
                                 
-                                // Enable the Add Customer button
+
                                 document.getElementById('addCustomerBtn').disabled = false;
                             }
                         } else {
@@ -1090,7 +1086,7 @@
                 xhr.send('email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(pin));
             }
             
-            // Form validation - disable Add Customer button until email is verified
+
             document.addEventListener('DOMContentLoaded', function() {
                 const addCustomerBtn = document.querySelector('button[type="submit"]');
                 if (addCustomerBtn) {
@@ -1099,18 +1095,18 @@
                     addCustomerBtn.title = 'Please verify your email first';
                 }
                 
-                // Add form validation
+
                 const form = document.querySelector('form[action="CustomerServlet"]');
                 if (form) {
                     form.addEventListener('submit', function(e) {
-                        e.preventDefault(); // Always prevent default first
+                        e.preventDefault(); 
                         
                         if (!emailVerified) {
                             showAlert('Please verify your email address before adding the customer.', 'error');
                             return false;
                         }
                         
-                        // Check username before submitting
+
                         const username = document.getElementById('username').value.trim();
                         if (username) {
                             checkUsernameExists(username, function(exists) {
@@ -1118,7 +1114,7 @@
                                     showAlert('This username is already taken. Please choose a different username.', 'error');
                                     return false;
                                 } else {
-                                    // Username is unique, check phone number
+
                                     const phone = document.getElementById('phone').value.trim();
                                     if (phone) {
                                         checkPhoneNumberExists(phone, function(phoneExists) {
@@ -1126,7 +1122,7 @@
                                                 showAlert('This phone number is already registered in our system. Please use a different phone number.', 'error');
                                                 return false;
                                             } else {
-                                                // Both username and phone are unique, show loading and submit
+
                                                 showLoadingScreen();
                                                 setTimeout(() => {
                                                     form.submit();
@@ -1134,7 +1130,7 @@
                                             }
                                         });
                                     } else {
-                                        // Username is unique and no phone to check, show loading and submit
+
                                         showLoadingScreen();
                                         setTimeout(() => {
                                             form.submit();
@@ -1143,7 +1139,7 @@
                                 }
                             });
                         } else {
-                            // No username to check, show loading and submit
+
                             showLoadingScreen();
                             setTimeout(() => {
                                 form.submit();
@@ -1153,7 +1149,7 @@
                 }
             });
             
-            // Function to check if phone number already exists
+
             function checkPhoneNumberExists(phone, callback) {
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=check-phone-exists', true);
@@ -1168,33 +1164,33 @@
                                 if (response.status === 'success') {
                                     callback(response.exists);
                                 } else {
-                                    callback(false); // Allow submission on error
+                                    callback(false); 
                                 }
                             } catch (e) {
-                                callback(false); // Allow submission on parse error
+                                callback(false); 
                             }
                         } else {
-                            callback(false); // Allow submission on network error
+                            callback(false); 
                         }
                     }
                 };
                 
                 xhr.onerror = function() {
-                    callback(false); // Allow submission on error
+                    callback(false); 
                 };
                 
                 xhr.send('phone=' + encodeURIComponent(phone));
             }
 
-            // Function to check phone number on blur
+
             function checkPhoneNumberOnBlur(phone) {
                 if (phone) {
                     checkPhoneNumberExists(phone, function(exists) {
                         const phoneWarning = document.getElementById('phoneWarning');
                         if (exists) {
                             phoneWarning.style.display = 'block';
-                            // Optionally, you can disable the input or show a message
-                            // For now, we just show the warning.
+
+
                         } else {
                             phoneWarning.style.display = 'none';
                         }
@@ -1202,7 +1198,7 @@
                 }
             }
             
-            // Function to check if username already exists
+
             function checkUsernameExists(username, callback) {
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'CustomerServlet?action=check-username-exists', true);
@@ -1217,19 +1213,19 @@
                                 if (response.status === 'success') {
                                     callback(response.exists);
                                 } else {
-                                    callback(false); // Allow submission on error
+                                    callback(false); 
                                 }
                             } catch (e) {
-                                callback(false); // Allow submission on parse error
+                                callback(false); 
                             }
                         } else {
-                            callback(false); // Allow submission on network error
+                            callback(false); 
                         }
                     }
                 };
                 
                 xhr.onerror = function() {
-                    callback(false); // Allow submission on error
+                    callback(false); 
                 };
                 
                 xhr.send('username=' + encodeURIComponent(username));

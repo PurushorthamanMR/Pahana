@@ -21,7 +21,6 @@ import javax.sql.DataSource;
  */
 public class DatabaseUtil {
 
-    // Load MySQL driver
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -45,12 +44,10 @@ public class DatabaseUtil {
         System.out.println("Starting database initialization...");
         Connection connection = null;
         try {
-            // Get database connection
             System.out.println("Getting database connection...");
             connection = getConnection();
             System.out.println("Database connection obtained successfully");
 
-            // Create tables in order (respecting foreign key dependencies)
             createUserRolesTable(connection);
             createUsersTable(connection);
             createCustomersTable(connection);
@@ -60,7 +57,6 @@ public class DatabaseUtil {
             createTransactionItemsTable(connection);
             createHelpSectionsTable(connection);
 
-            // Insert initial data
             insertInitialData(connection);
 
             isInitialized = true;
@@ -68,7 +64,7 @@ public class DatabaseUtil {
 
         } catch (Exception e) {
             System.err.println("Error initializing database: " + e.getMessage());
-            isInitialized = false; // Reset flag so we can try again
+            isInitialized = false; 
         } finally {
             if (connection != null) {
                 try {
@@ -87,7 +83,6 @@ public class DatabaseUtil {
      * @throws java.lang.Exception
      */
     public static Connection getConnection() throws Exception {
-        // Try to get connection from JNDI first
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
@@ -96,7 +91,6 @@ public class DatabaseUtil {
             System.out.println("JNDI connection successful");
             return conn;
         } catch (SQLException | NamingException e) {
-            // Fallback to direct connection if JNDI fails
             System.out.println("JNDI connection failed, using direct connection: " + e.getMessage());
             String url = "jdbc:mysql://localhost:3306/pahana?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
             String username = "root";
@@ -112,7 +106,7 @@ public class DatabaseUtil {
      */
     private static boolean tableExists(Connection connection, String tableName) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        String catalog = connection.getCatalog(); // Get current database name
+        String catalog = connection.getCatalog(); 
         System.out.println("Checking for table '" + tableName + "' in database '" + catalog + "'");
 
         ResultSet tables = metaData.getTables(catalog, null, tableName, new String[]{"TABLE"});
@@ -360,10 +354,8 @@ public class DatabaseUtil {
     private static void insertInitialData(Connection connection) throws SQLException {
         System.out.println("Inserting initial data...");
         
-        // Insert user roles
         insertUserRoles(connection);
         
-        // Insert admin user
         insertAdminUser(connection);
         
         System.out.println("Initial data inserted successfully!");
@@ -378,7 +370,6 @@ public class DatabaseUtil {
         String[] roles = {"ADMIN", "MANAGER", "CASHIER", "CUSTOMER"};
         
         for (String role : roles) {
-            // Check if role already exists
             String checkSQL = "SELECT COUNT(*) FROM user_roles WHERE role_name = ?";
             try (java.sql.PreparedStatement checkStmt = connection.prepareStatement(checkSQL)) {
                 checkStmt.setString(1, role);
@@ -387,7 +378,6 @@ public class DatabaseUtil {
                 int count = rs.getInt(1);
                 
                 if (count == 0) {
-                    // Insert role if it doesn't exist
                     String insertSQL = "INSERT INTO user_roles (role_name) VALUES (?)";
                     try (java.sql.PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
                         insertStmt.setString(1, role);
@@ -407,7 +397,6 @@ public class DatabaseUtil {
     private static void insertAdminUser(Connection connection) throws SQLException {
         System.out.println("Inserting admin user...");
         
-        // Check if Pahana user already exists
         String checkSQL = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (java.sql.PreparedStatement checkStmt = connection.prepareStatement(checkSQL)) {
             checkStmt.setString(1, "Pahana");
@@ -416,13 +405,12 @@ public class DatabaseUtil {
             int count = rs.getInt(1);
             
             if (count == 0) {
-                // Insert Pahana user if it doesn't exist
                 String insertSQL = "INSERT INTO users (username, password, email, role_id) VALUES (?, ?, ?, ?)";
                 try (java.sql.PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
                     insertStmt.setString(1, "Pahana");
                     insertStmt.setString(2, "123");
                     insertStmt.setString(3, "pahanabookstore@gmail.com");
-                    insertStmt.setInt(4, 1); // role_id = 1 for ADMIN
+                    insertStmt.setInt(4, 1); 
                     insertStmt.executeUpdate();
                     System.out.println("Admin user created successfully!");
                 }
@@ -441,11 +429,9 @@ public class DatabaseUtil {
         result.append("Database Connection Test Results:\n");
 
         try {
-            // Test connection
             Connection conn = getConnection();
             result.append("✓ Database connection successful\n");
 
-            // Test all tables existence
             String[] tables = {"user_roles", "users", "customers", "book_categories", 
                              "books", "transactions", "transaction_items", "help_sections"};
             
