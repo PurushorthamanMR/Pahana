@@ -1,4 +1,8 @@
-
+<%-- 
+    Document   : error
+    Created on : Aug 3, 2025, 9:07:20 AM
+    Author     : pruso
+--%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page isErrorPage="true" %>
